@@ -1,4 +1,4 @@
-from boto.dynamodb2.fields import GlobalIncludeIndex
+from boto.dynamodb2.fields import GlobalIncludeIndex, GlobalAllIndex
 from boto.dynamodb2.fields import HashKey, RangeKey
 from boto.dynamodb2.items import Item
 from boto.dynamodb2.layer1 import DynamoDBConnection #DynamoDB Conexion
@@ -22,7 +22,7 @@ print (tables)
 
 schema_list = [
      HashKey('Key_Post',data_type = STRING),
-     RangeKey('Key_TimelinePost',data_type = STRING),
+     #RangeKey('Key_TimelinePost',data_type = STRING),
  ]
 
 throughput_dict = {'read': 5, 'write': 2}
@@ -30,48 +30,28 @@ throughput_dict = {'read': 5, 'write': 2}
 #HashKey('secondKey',data_type = STRING)
 #data_type si no se especifica por default queda STRING
 
-GII_TimelinePublic = GlobalIncludeIndex('GII_Timeline_Public'
+GAI_TimelinePublic = GlobalAllIndex('GAI_TimelinePublic'
                                        ,parts=[HashKey('FlagAnswer',data_type = NUMBER)
                                        ,RangeKey('Key_TimelinePost',data_type = STRING)
                                                ]
                                        ,throughput=throughput_dict
-                                       ,includes=['Geolocation'
-                                                 ,'Message'
-                                                 ,'TotalAnswers'
-                                                 ,'Tags'
-                                                 ,'Key_Post'
-                                                 ,'Key_User'
-                                                 ]
                                        )
 
-GII_VerTodoPublic = GlobalIncludeIndex('GII_VerTodoPublic'
+GAI_VerTodoPublic = GlobalAllIndex('GAI_VerTodoPublic'
                                        ,parts=[HashKey('Key_PostOriginal',data_type = STRING),
                                                RangeKey('Key_TimelinePost',data_type = STRING)
                                                ]
                                        ,throughput=throughput_dict
-                                       ,includes=['Geolocation'
-                                                 ,'Message'
-                                                 ,'TotalAnswers'
-                                                 ,'Tags'
-                                                 ,'Key_Post'
-                                                 ,'Key_User'
-                                                 ]
                                        )
 
-GII_Home = GlobalIncludeIndex('GII_Home'
+GAI_Home = GlobalAllIndex('GAI_Home'
                               ,parts=[HashKey('Key_User',data_type = STRING),
                                       RangeKey('Key_TimelinePost',data_type = STRING)
                                       ]
                               ,throughput=throughput_dict
-                              ,includes=['Geolocation'
-                                         ,'Message'
-                                         ,'TotalAnswers'
-                                         ,'Tags'
-                                         ,'Key_Post'
-                                         ]
                                )
 
-table_name = 'TimelineV2'
+table_name = 'TimelineV9'
 
 table = Table(table_name, connection=conn)
 
@@ -79,9 +59,9 @@ if table_name not in tables['TableNames']:
     Table.create(table_name
         , schema=schema_list
         , throughput=throughput_dict
-        , global_indexes=[GII_TimelinePublic,
-                          GII_VerTodoPublic,
-                          GII_Home,]
+        , global_indexes=[GAI_TimelinePublic,
+                          GAI_VerTodoPublic,
+                          GAI_Home,]
         , connection=conn
     )
     
@@ -91,12 +71,13 @@ if table_name not in tables['TableNames']:
                         ,'Key_TimelinePost' : '2014-05-13 17:24:31'
                         ,'Geolocation'      : '4.598056,-74.075833'
                         ,'TotalAnswers'     : 2
-                        ,'Language'         : 'en'
                         ,'Tags'             : set(['Flask','Python','DynamoDB'])
                         ,'Source'           : 'Web'
-                        ,'Message'          : 'Howto Create a table with Python in DynamoDB from Flask?'
+                        ,'Message140'          : 'Howto Create a table with Python in DynamoDB from Flask?'
                         ,'Key_User'         : 'AEA-4069-A2DD-08002B30309D'
                         ,'FlagAnswer'       : 1
+                        ,'WinAnswers'       : set(['31EC2020-3AEA-4069-A2DD-08002B30309D'])
+                        ,'Link'             : 'Imagen de Pregunta'
                         }
                 )
     item.save()
@@ -106,11 +87,11 @@ if table_name not in tables['TableNames']:
                         'Key_Post'          : '21EC2020-3AEA-4069-A2DD-08002B30309D'
                         ,'Key_TimelinePost' : '2014-05-14 17:24:31'
                         ,'Geolocation'      : '4.598056,-74.075833'
-                        ,'Language'         : 'es'
                         ,'Source'           : 'Web'
-                        ,'Message'          : 'UNO link del video mas respuesta del usuario'
+                        ,'Message140'       : 'UNO link del video mas respuesta del usuario'
                         ,'Key_User'         : 'BEA-4069-A2DD-08002B30309D'
                         ,'Key_PostOriginal' : '11EC2020-3AEA-4069-A2DD-08002B30309D'
+                        ,'Link'             : 'link video'
                         }
                 )
     item.save()
@@ -120,11 +101,25 @@ if table_name not in tables['TableNames']:
                         'Key_Post'          : '31EC2020-3AEA-4069-A2DD-08002B30309D'
                         ,'Key_TimelinePost' : '2014-05-15 17:24:31'
                         ,'Geolocation'      : '4.598056,-74.075833'
-                        ,'Language'         : 'es'
                         ,'Source'           : 'Web'
-                        ,'Message'          : 'DOS link del video mas respuesta del usuario'
+                        ,'Message140'          : 'DOS link del video mas respuesta del usuario'
                         ,'Key_User'         : 'CEA-4069-A2DD-08002B30309D'
                         ,'Key_PostOriginal' : '11EC2020-3AEA-4069-A2DD-08002B30309D'
+                        ,'Link'             : 'link video'
+                        }
+                )
+    item.save()
+    
+    item = Item(  table
+                , data={
+                        'Key_Post'          : '41EC2020-3AEA-4069-A2DD-08002B30309D'
+                        ,'Key_TimelinePost' : '2014-05-15 17:24:31'
+                        ,'Geolocation'      : '4.598056,-74.075833'
+                        ,'Source'           : 'Web'
+                        ,'Message140'          : 'TRES link del video mas respuesta del usuario'
+                        ,'Key_User'         : 'DEA-4069-A2DD-08002B30309D'
+                        ,'Key_PostOriginal' : '11EC2020-3AEA-4069-A2DD-08002B30309D'
+                        ,'Link'             : 'link video'
                         }
                 )
     item.save()
@@ -134,12 +129,21 @@ if table_name not in tables['TableNames']:
                         'Key_Post'          : '12EC2020-3AEA-4069-A2DD-08002B30309D'
                         ,'Key_TimelinePost' : '2014-05-13 17:24:31'
                         ,'Geolocation'      : '4.598056,-74.075833'
-                        ,'Language'         : 'en'
                         ,'Tags'             : set(['Flask','Python','DynamoDB'])
                         ,'Source'           : 'Web'
-                        ,'Message'          : 'Howto preunta sin resolver?'
+                        ,'Message140'          : 'Howto preunta sin resolver?'
                         ,'Key_User'         : 'TTT-4069-A2DD-08002B30309D'
                         ,'FlagAnswer'       : 0
                         }
                 )
     item.save()
+    
+data = table.query_2(
+        FlagAnswer__eq=0
+        ,limit=20
+        ,index='GAI_TimelinePublic'
+        #,exclusive_start_key=_exclusive_start_key
+        )
+
+for item in data:
+    print dict(item)
