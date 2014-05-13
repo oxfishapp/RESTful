@@ -1,4 +1,3 @@
-import uuid
 from boto.dynamodb2.fields import GlobalIncludeIndex
 from boto.dynamodb2.fields import HashKey, RangeKey
 from boto.dynamodb2.items import Item
