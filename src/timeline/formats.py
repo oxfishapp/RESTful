@@ -3,15 +3,7 @@
 # -*- coding: utf-8 -*-
 
 from flask.ext.restful import fields
-from commons import hashValidation
-
-class Set_to_List(fields.Raw):
-    def format(self, value):
-        return list(value)
-    
-class HashKey_Validation(fields.Raw):
-    def format(self, value): 
-        return hashValidation(value)
+from commons import Set_to_List, HashKey_Validation
 
 timeline= {
           'Keys':

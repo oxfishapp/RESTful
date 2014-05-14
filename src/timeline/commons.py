@@ -2,6 +2,16 @@
 #!flask/bin/python
 # -*- coding: utf-8 -*-
 
+from flask.ext.restful.fields import Raw
+
+class Set_to_List(Raw):
+    def format(self, value):
+        return list(value)
+    
+class HashKey_Validation(Raw):
+    def format(self, value): 
+        return hashValidation(value)
+
 def hashValidation(value):
     import re
     regex = re.compile('[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\Z', re.I)
