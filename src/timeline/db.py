@@ -51,7 +51,7 @@ GAI_Home = GlobalAllIndex('GAI_Home'
                               ,throughput=throughput_dict
                                )
 
-table_name = 'TimelineV9'
+table_name = 'TimelineV11'
 
 table = Table(table_name, connection=conn)
 
@@ -70,7 +70,7 @@ if table_name not in tables['TableNames']:
                         'Key_Post'          : '11EC2020-3AEA-4069-A2DD-08002B30309D'
                         ,'Key_TimelinePost' : '2014-05-13 17:24:31'
                         ,'Geolocation'      : '4.598056,-74.075833'
-                        ,'TotalAnswers'     : 2
+                        ,'TotalAnswers'     : 3
                         ,'Tags'             : set(['Flask','Python','DynamoDB'])
                         ,'Source'           : 'Web'
                         ,'Message140'          : 'Howto Create a table with Python in DynamoDB from Flask?'
