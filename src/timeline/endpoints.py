@@ -1,6 +1,9 @@
 from flask import Blueprint
 from flask.ext import restful
-from models.timeline import Home_Index, Timeline_Index, AloneView_Index, WinAnswers_Table
+from views.timeline import (Home_Index
+                             , Timeline_Index
+                             , AloneView_Index
+                             , WinAnswers_Table)
 
 endpoints = Blueprint('Blueprint',__name__)
 

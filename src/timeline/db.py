@@ -16,7 +16,7 @@ conn = DynamoDBConnection(
 #Lista de tablas en DynamoDB
 tables = conn.list_tables()
 
-#Imprimo la lsita de tablas que se encuentran en DydamoDB
+#Imprimo la lsita de tablas que se encuentran en DynamoDB
 print ("Before Creation:")
 print (tables)
 
