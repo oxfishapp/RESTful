@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 
 from flask.ext.restful import fields
-from factory import hashValidation
+from commons import hashValidation
 
 class Set_to_List(fields.Raw):
     def format(self, value):

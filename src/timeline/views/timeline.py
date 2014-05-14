@@ -6,7 +6,7 @@ from boto.dynamodb2.layer1 import DynamoDBConnection
 from boto.dynamodb2.table import Table
 from flask.ext.restful import Resource, reqparse, marshal_with
 from formats import timeline
-from factory import hashKeyList, resultSet_to_list
+from commons import hashKeyList, resultSet_to_list
 
 
 conn = DynamoDBConnection(
