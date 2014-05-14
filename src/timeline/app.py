@@ -2,8 +2,7 @@
 #!flask/bin/python
 # -*- coding: utf-8 -*-
 
-from flask import Flask, request
-from flask.ext import restful
+from flask import Flask
 from endpoints import endpoints
 
 app = Flask(__name__)

@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+#!flask/bin/python
+# -*- coding: utf-8 -*-
+
 from flask.ext.restful import fields
 from factory import hashValidation
 

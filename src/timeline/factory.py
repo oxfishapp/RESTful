@@ -1,8 +1,7 @@
-'''
-Created on May 8, 2014
+#!/usr/bin/env python
+#!flask/bin/python
+# -*- coding: utf-8 -*-
 
-@author: root
-'''
 def hashValidation(value):
     import re
     regex = re.compile('[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\Z', re.I)

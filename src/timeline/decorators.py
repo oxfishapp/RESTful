@@ -1,5 +1,3 @@
-'''
-Created on May 8, 2014
-
-@author: root
-'''
+#!/usr/bin/env python
+#!flask/bin/python
+# -*- coding: utf-8 -*-

@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+#!flask/bin/python
+# -*- coding: utf-8 -*-
+
 from flask import Blueprint
 from flask.ext import restful
 from views.timeline import (Home_Index
