@@ -1,19 +1,27 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python
 #!flask/bin/python
-# -*- coding: utf-8 -*-
 
 from flask import Blueprint
 from flask.ext import restful
 from views.timeline import (Home_Index
                              , Timeline_Index
                              , AloneView_Index
-                             , WinAnswers_Table)
+                             , Timeline_WinAnswers
+                             , Timeline_Questions)
 
-endpoints = Blueprint('Blueprint',__name__)
+endpoints = Blueprint('endpoints',__name__)
 
 api = restful.Api(endpoints)
 
 api.add_resource(Timeline_Index, '/publictimeline')
-api.add_resource(AloneView_Index, '/aloneview/<string:hashKey>')
-api.add_resource(Home_Index, '/home/<string:hashKey>')
-api.add_resource(WinAnswers_Table, '/winanswers')
+
+api.add_resource(AloneView_Index, '/aloneview/<string:key>')
+
+api.add_resource(Home_Index, '/home/<string:key>')
+
+api.add_resource(Timeline_WinAnswers, '/winanswers')
+
+api.add_resource(Timeline_Questions, '/post_q/<string:key>')
+
+api.add_resource(Timeline_Questions, '/post_q',endpoint='post')
