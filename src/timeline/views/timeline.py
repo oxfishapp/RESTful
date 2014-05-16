@@ -5,13 +5,13 @@
 from boto.dynamodb2.layer1 import DynamoDBConnection
 from boto.dynamodb2.table import Table
 from flask.ext.restful import Resource, reqparse, marshal_with
-from timeline.commons import ( hashKeyList 
+from formats import timeline_f
+from commons import ( hashKeyList 
                              , items_to_list 
                              , hashValidation
                              , jsondecoder
                              , hashCreate
                              , timeUTCCreate)
-from timeline.formats import timeline_f
 
 conn = DynamoDBConnection(
     host                    =   'localhost'
@@ -50,13 +50,11 @@ class AloneView_Index(Resource):
         particular.
         
         """
-        answers = timeline_t.query_2(
-                         Key_PostOriginal__eq=key
-                        ,limit=20
-                        ,index='GAI_VerTodoPublic'
-               #,exclusive_start_key=_exclusive_start_key
-               )
-   
+        answers = timeline_t.query_2(Key_PostOriginal__eq=key
+                                    ,limit=20
+                                    ,index='GAI_VerTodoPublic')
+        #,exclusive_start_key=_exclusive_start_key
+
         return items_to_list(answers)
 
 #Global All Index Home
@@ -91,10 +89,9 @@ class Timeline_Questions(Resource):
         vista en particular.
         
         """
+        header_q = timeline_t.get_item(Key_Post=hashValidation(key))
         
-        header = timeline_t.get_item(Key_Post=hashValidation(key))
-        
-        return items_to_list(header._data)
+        return items_to_list(header_q._data)
     
     def post(self):
         """ () -> list
@@ -114,7 +111,7 @@ class Timeline_Questions(Resource):
         posting['Tags'] = set(posting['Tags'])
         
         from boto.dynamodb2.items import Item
-        item = Item(timeline_f, posting)
+        item = Item(timeline_t, posting)
         item.save()
         
         return items_to_list(posting)
@@ -141,85 +138,58 @@ class Timeline_WinAnswers(Resource):
         winAnswers = timeline_t.batch_get(hashkeylist)   
         
         return items_to_list(winAnswers)
-# 
-# class Timeline_Answers(Resource):
-#         
-#     def get(self):
-#         """ () -> list
-#         
-#         Retorna una lista cronologica con las respuetas
-#         de una pregunta en particular para ser cargadas 
-#         en la vista aloneview.
-#         
-#         """
-#         pass
-#         
-#     def post(self):
-#         """ () -> list
-#         
-#         Recibe por parse un string el cual es un 
-#         json encoder con los campos necesarios para 
-#         crear un nuevo registro en la tabla Timeline.  
-#         
-#         """
-#         
-#         pass
-#         
-# class Timeline_Update_Questions(Resource):
-#     
-#     def put(self):
-#         """ () -> list
-#         
-#         Recibe por parser un string el cual es un
-#         json encoder con los campos necesarios para 
-#         actualizar un registro en particular en la 
-#         tabla Timeline        
-#         
-#         """
-#         pass
-#     
-#     def delete(self):
-#         """ () -> list
-#         
-#         Recibe por parser un string el cual es un
-#         json encoder con los campos necesarios para 
-#         eliminar un registro en particular en la 
-#         tabla Timeline. 
-#         
-#         Se podra eliiminar una pregunta si y solo si 
-#         no tiene respuestas ya realizadas asociadas a 
-#         dicha pregunta.
-#         
-#         Se podra eliminar una respuesta si y solo si
-#         no es una respuesta ganadora o winanswer de la 
-#         pregunta a la que esta haciendo regeferencia.     
-#         
-#         """
-#         pass
-#     
-#     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-   
-    
+ 
+class Timeline_Answers(Resource):
+         
+    def get(self):
+        """ () -> list
+         
+        Retorna una lista cronologica con las respuetas
+        de una pregunta en particular para ser cargadas 
+        en la vista aloneview.
+         
+        """
+        pass
+         
+    def post(self):
+        """ () -> list
+         
+        Recibe por parse un string el cual es un 
+        json encoder con los campos necesarios para 
+        crear un nuevo registro en la tabla Timeline.  
+         
+        """
+         
+        pass
+         
+class Timeline_Update_Questions(Resource):
+     
+    def put(self):
+        """ () -> list
+         
+        Recibe por parser un string el cual es un
+        json encoder con los campos necesarios para 
+        actualizar un registro en particular en la 
+        tabla Timeline        
+         
+        """
+        pass
+     
+    def delete(self):
+        """ () -> list
+         
+        Recibe por parser un string el cual es un
+        json encoder con los campos necesarios para 
+        eliminar un registro en particular en la 
+        tabla Timeline. 
+         
+        Se podra eliiminar una pregunta si y solo si 
+        no tiene respuestas ya realizadas asociadas a 
+        dicha pregunta.
+         
+        Se podra eliminar una respuesta si y solo si
+        no es una respuesta ganadora o winanswer de la 
+        pregunta a la que esta haciendo regeferencia.     
+         
+        """
+        pass

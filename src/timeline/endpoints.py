@@ -10,7 +10,7 @@ from views.timeline import (Home_Index
                              , Timeline_WinAnswers
                              , Timeline_Questions)
 
-endpoints = Blueprint('endpoints',__name__)
+endpoints = Blueprint('Blueprint',__name__)
 
 api = restful.Api(endpoints)
 
