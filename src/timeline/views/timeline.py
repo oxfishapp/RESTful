@@ -31,6 +31,10 @@ class Timeline_Index(Resource):
         
         Retorna la lista de preguntas en la vista
         Publica de Oxfish.  
+        
+        Example:
+        
+            curl http://localhost:5000/publictimeline
              
         """
         questions = timeline_t.query_2(FlagAnswer__eq=1
@@ -48,7 +52,16 @@ class Home_Index(Resource):
         """ (str) -> list
         
         Retorna una lista con las preguntas realizadas
-        por un usuario en particular.        
+        por un usuario en particular.   
+        
+        Formato con el cual consulta en la tabla timeline
+        para obtener el Home de un usuario en particular:
+        
+        key= 
+            "str" -> UUID  
+            
+        Example:
+            curl http://localhost:5000/home/<string:"UUID">     
         
         """
         homeUser = timeline_t.query_2(Key_User__eq=key
@@ -58,13 +71,9 @@ class Home_Index(Resource):
         #,exclusive_start_key=_exclusive_start_key
         return items_to_list(homeUser)
 
+
 class Timeline_Questions(Resource):
     decorators = [marshal_with(timeline_f)]
-    
-    def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('JsonTimeline', type=str, required=True)
-        super(Timeline_Questions, self).__init__()
     
     def get(self, key):
         """ (str) -> list
@@ -72,11 +81,19 @@ class Timeline_Questions(Resource):
         Retorna el encabezado (Pregunta) de una 
         vista en particular.
         
+        Formato con el cual consulta en la tabla timeline
+        para obtener una pregunta en particular:
+        
+        key= 
+            "str" -> UUID  
+            
+        Example:
+            curl http://localhost:5000/post_q/<string:"UUID">
+        
         """
         header_q = timeline_t.get_item(Key_Post=hashValidation(key))
         
         return items_to_list(header_q._data)
-    
 
 #Batch Get Timeline Table
 class Timeline_WinAnswers(Resource):
@@ -93,6 +110,19 @@ class Timeline_WinAnswers(Resource):
         Retorna una lista con las respuestas ganadoras
         de una pregunta particular.
         
+        Formato con el cual consulta en la tabla timeline
+        para obtener la lista de respuestas ganadoras de 
+        una pregunta:
+        
+        HashKeyList= 
+            list["str","str"] -> "str" -> UUID  
+            
+        Example:
+            
+            curl http://localhost:5000/winanswers 
+                -d 'HashKeyList=["UUID","UUID"]' 
+                -X GET
+        
         """
         args = self.reqparse.parse_args()
         hashkeylist = args.HashKeyList
@@ -100,6 +130,7 @@ class Timeline_WinAnswers(Resource):
         winAnswers = timeline_t.batch_get(hashkeylist)   
         
         return items_to_list(winAnswers)
+ 
  
 class Timeline_Answers(Resource):
     decorators = [marshal_with(timeline_f)]  
@@ -116,6 +147,18 @@ class Timeline_Answers(Resource):
         de una pregunta en particular para ser cargadas 
         en la vista aloneview.
         
+        Formato con el cual consulta en la tabla timeline
+        para obtener la lista de respuestas de una pregunta:
+        
+        HashKey= 
+            "str" -> UUID  
+        
+        Example:
+        
+            curl http://localhost:5000/aloneview 
+                -d 'HashKey=UUID' 
+                -X GET
+        
         """
         
         args = self.reqparse.parse_args()
@@ -129,7 +172,7 @@ class Timeline_Answers(Resource):
 
         return items_to_list(answers)
 
-         
+
 class Timeline_Update(Resource):
      
     def __init__(self):
@@ -149,7 +192,58 @@ class Timeline_Update(Resource):
         Se valida la existencia del key Key_PostOriginal
         en el diccionario para determinar si es
         pregunta o respuesta.
-         
+        
+        Formato con el cual inserta el nuevo item
+        en la tabla timeline:
+        
+        Insert Question
+        JsonTimeline=
+            {
+                "Message140": str
+                , "Source": str
+                , "Geolocation": str -> Format = "4.598056,-74.075833"
+                , "Tags": [,,]
+                , "Link": str
+                , "Key_User": "UUID"
+            }
+        
+        Insert Answer
+        JsonTimeline=
+            {
+                "Message140": str
+                , "Source": str
+                , "Geolocation": str -> Format = "4.598056,-74.075833"
+                , "Link": "Imagen de Pregunta"
+                , "Key_User": "UUID"
+                , "Key_PostOriginal" : "UUID"
+            }
+        
+        Examples:
+        
+            curl http://localhost:5000/post_q 
+                -d 'JsonTimeline=
+                                {
+                                    "Message140": str
+                                    , "Source": str
+                                    , "Geolocation": str -> Format = "4.598056,-74.075833"
+                                    , "Tags": [,,]
+                                    , "Link": str
+                                    , "Key_User": "UUID"
+                                }'
+                 -X POST
+             
+            curl http://localhost:5000/post_a 
+                -d 'JsonTimeline=
+                                {
+                                    "Message140": str
+                                    , "Source": str
+                                    , "Geolocation": str -> Format = "4.598056,-74.075833"
+                                    , "Link": "Imagen de Pregunta"
+                                    , "Key_User": "UUID"
+                                    , "Key_PostOriginal" : "UUID"
+                                }' 
+                -X POST
+        
         """
         
         args = self.reqparse.parse_args()
@@ -180,14 +274,33 @@ class Timeline_Update(Resource):
         Formato con el cual actualiza los atributos
         en la tabla timeline:
         
-        {
-           "TotalAnswers" : int -> 1 sum 0 same
-           ,"WinAnswers" : {
-                            "State" : int -> 1 add 0 remove
-                            ,"HashKey" : "str" -> UUID
-                            }
-        }     
-         
+        JsonTimeline=
+            {
+               "TotalAnswers" : int -> 1 sum 0 same
+               ,"WinAnswers" : {
+                                "State" : int -> 1 add 0 remove
+                                ,"HashKey" : "str" -> UUID
+                                }
+            }    
+        
+        HashKey= 
+            "str" -> UUID  
+        
+        Examples:
+        
+        curl http://localhost:5000/update 
+            -d 'HashKey=UUID' 
+            -d 'JsonTimeline={"TotalAnswers" : int}' 
+            -X PUT
+            
+        curl http://localhost:5000/update 
+            -d 'HashKey=UUID' 
+            -d 'JsonTimeline={"WinAnswers" : {
+                                                "State" : int, 
+                                                "HashKey" : "UUID"
+                                              }
+                              }' 
+            -X PUT
         """
         args = self.reqparse.parse_args()
         attributes = jsondecoder(args.JsonTimeline)
@@ -243,6 +356,19 @@ class Timeline_Update(Resource):
                 
         Estas validaciones se deberan realizar en el frontend
         con javascript.
+        
+        Formato con el cual elimina un item 
+        en la tabla timeline:
+        
+        HashKey= 
+            "str" -> UUID  
+            
+        Examples:
+        
+        curl http://localhost:5000/delete 
+            -d 'HashKey=UUID' 
+            -X DELETE -v 
+            
         """
         
         args = self.reqparse.parse_args()
