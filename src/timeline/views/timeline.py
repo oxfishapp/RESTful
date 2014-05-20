@@ -13,13 +13,12 @@ from commons import (hashKeyList
                      , hashCreate
                      , timeUTCCreate)
 
-conn = DynamoDBConnection(
-    host                    =   'localhost'
-   ,port                    =   8000
-   ,aws_access_key_id       =   'DEVDB' #anything will do
-   ,aws_secret_access_key   =   'DEVDB' #anything will do
-   ,is_secure               =   False
-                        )
+conn = DynamoDBConnection(  host='localhost'
+                           ,port=8000
+                           ,aws_access_key_id='DEVDB' #anything will do
+                           ,aws_secret_access_key='DEVDB' #anything will do
+                           ,is_secure=False)
+
 timeline_t = Table('TimelineV14', connection=conn)
 
 #Global All Index Timeline Public
