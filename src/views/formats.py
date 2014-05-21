@@ -1,10 +1,14 @@
-'''
-Created on May 14, 2014
+# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+#!flask/bin/python
 
-@author: anroco
 '''
+Created on May 21, 2014
 
+@author: root
+'''
 from flask.ext.restful import fields
+from commons import Set_to_List, HashKey_Validation
 
 
 #lista de campos a traer en una consulta a la tabla users
@@ -33,3 +37,20 @@ format_user_twitter = {'key_twitter': fields.String(attribute='id_str')
                    ,'score_answers': fields.Integer
                    }
 
+timeline_f= {
+          'Keys':
+              {
+              'HashKey': HashKey_Validation(attribute='Key_Post')
+              ,'HashKeyOriginal': HashKey_Validation(attribute='Key_PostOriginal')
+              }
+           ,'Geolocation': fields.String
+           ,'FlagAnswer': fields.Integer
+           ,'Tags': Set_to_List
+           ,'Key_TimelinePost':fields.String
+           ,'Key_User':HashKey_Validation
+           ,'Message140':fields.String
+           ,'TotalAnswers':fields.Integer
+           ,'WinAnswers':Set_to_List
+           ,'Link':fields.String
+           ,'Source':fields.String
+          }

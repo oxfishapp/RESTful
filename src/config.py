@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+#!flask/bin/python
+
 '''
 Created on May 10, 2014
 

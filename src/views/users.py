@@ -4,12 +4,12 @@ Created on May 8, 2014
 @author: anroco
 '''
 
-from ..app import dynamodb
+from application import dynamodb
 from flask import abort, g
 from boto.dynamodb2.items import Item
-from ..views.formats import format_user,format_user_twitter
+from views.formats import format_user,format_user_twitter
 from flask.ext.restful import Resource, marshal_with, reqparse, marshal
-from ..common import (hashValidation, get_item, 
+from commons import (hashValidation, get_item, 
                       twitter_credentials, timeUTCCreate, hashCreate)
 
 
