@@ -37,14 +37,14 @@ class Timeline_Index(Resource):
              
         """
         questions = timeline_t.query_2(FlagAnswer__eq=1
-                                       ,limit=20
+                                       ,limit=3
                                        ,index='GAI_TimelinePublic'
                                        ,reverse=True)
                 #,exclusive_start_key=_exclusive_start_key
         return items_to_list(questions)
     
 #Global All Index Home
-class Home_Index(Resource):
+class Timeline_Home_Index(Resource):
     decorators = [marshal_with(timeline_f)]
     
     def get(self, key):
@@ -64,7 +64,7 @@ class Home_Index(Resource):
         
         """
         homeUser = timeline_t.query_2(Key_User__eq=key
-                                      ,limit=20
+                                      ,limit=3
                                       ,index='GAI_Home'
                                       ,reverse=True)
         #,exclusive_start_key=_exclusive_start_key
@@ -164,7 +164,7 @@ class Timeline_Answers(Resource):
         hashkey = args.HashKey
         
         answers = timeline_t.query_2(Key_PostOriginal__eq=hashkey
-                                     ,limit=20
+                                     ,limit=3
                                      ,index='GAI_VerTodoPublic'
                                      ,reverse=True)
         #,exclusive_start_key=_exclusive_start_key
