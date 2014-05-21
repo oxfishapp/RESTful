@@ -21,6 +21,7 @@ api = restful.Api(endpoints)
 
 #defir los diferentes endpoints de la aplicacion
 api.add_resource(users.User, api_version +  '/user/')
+api.add_resource(users.Nickname, api_version +  '/user/<string:nickname>')
 api.add_resource(users.User_post, api_version + '/post/user/')
 api.add_resource(users.User_scores, api_version + '/auth/user/')
 api.add_resource(users.Auth_user, api_version + '/login/')

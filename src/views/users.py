@@ -19,6 +19,7 @@ table = dynamodb.tables['tbl_user']
 
 class User(Resource):
     
+    decorators = [marshal_with(format_user)]
     parser = reqparse.RequestParser()
     
     def __init__(self):
@@ -28,19 +29,18 @@ class User(Resource):
         self.parser.add_argument('basic', type=types.boolean, default=False)
     
     
-    @marshal_with(format_user)   
     def get(self):
         '''
         () -> list        
         
         requisito: *key_t* no None
         
-        recibe las solicitudes GET del endpoint ('/user/'). Si el atributo 
+        recibe las solicitudes GET del endpoint ('/api/1.0/user/'). Si el atributo 
         *basic* es true, retorna el usuario con los atributos basicos 
         definidos en la lista formats.BASIC_USER_FIELDS. Si es false retorna
         el usuario con todos los campos que este tiene.
         
-        curl http://201.245.249.229:8080/user/ -d "id_t=23215634" -X GET
+        curl http://201.245.249.229:8080/api/1.0/user/ -d "id_t=23215634" -X GET
         
         [
             {
@@ -69,6 +69,30 @@ class User(Resource):
         return [result._data]
     
 
+class Nickname(Resource):
+
+    def get(self, nickname):
+        '''
+        (str) -> list        
+        
+        requisito: nickname no None 
+        
+        recibe las solicitudes GET del endpoint ('/api/1.0/user/<string:nickname>'). 
+        Retorna un json con el key_user del usuario. 
+        
+        curl http://localhost:5000/api/1.0/user/juanmen
+        
+        [
+            {
+                "id": "455597c8-59b6-f6cc-a6ed-078986e819fb"
+            }
+        ]
+        '''
+        
+        result = table.query_2(nickname__eq = nickname, index = 'nickname_user_index')
+        return [{'id':result.next()._data['key_user']}]
+    
+
 class User_post(Resource):
     
     parser = reqparse.RequestParser()
@@ -84,10 +108,10 @@ class User_post(Resource):
         
         requisito: key_u debe tener formato uuii(16)
         
-        recibe las solicitudes GET del endpoint ('/post/user/')
+        recibe las solicitudes GET del endpoint ('/api/1.0/post/user/')
         y retorna toda la informacion relacionada a ese usuario.
         
-        curl http://201.245.249.229:8080/post/user/ 
+        curl http://201.245.249.229:8080/api/1.0/post/user/ 
         -d "id_u=455597c8-59b6-f6cc-a6ed-078986e819fb" 
         -X GET
         
@@ -127,12 +151,12 @@ class User_scores(Resource):
         
         requisito: el usuario debe estar autenticado
         
-        recibe la solicitud PUT del endpoint ('/auth/user/') para actualizar 
+        recibe la solicitud PUT del endpoint ('/api/1.0/auth/user/') para actualizar 
         los totales de post y answers del usuario .
         
         Retorna un json con los datos del usuario actualizado.
         
-            curl http://201.245.249.229:8080/auth/user/ 
+            curl http://201.245.249.229:8080/api/1.0/auth/user/ 
             -d "access_token=85721956-EFmG1NywpV3VEMDnMDbNax9JJ4OfFvEsCLKWi4Slq" 
             -d "token_secret=FnDmaaBBzZceF3whMsZom9BmKpUFfyuRNFuBKJHXngZMf" 
             -d "post=false" 
@@ -183,7 +207,7 @@ class Auth_user(Resource):
         
         requisito: access_token y token_secret no None
         
-        Recibe la solicitud POST del endpoint ('/Auth_user/') para autenticar 
+        Recibe la solicitud POST del endpoint ('/api/1.0/login/') para autenticar 
         un usuario. Se recibe el access_token y token_secret que se genero al 
         autenticarse el usuario con su cuenta de twitter. Al final se retorna 
         un json con los datos del usuario.
@@ -193,7 +217,7 @@ class Auth_user(Resource):
         Si ya se encuentra registrado se realiza una actualizacion de los 
         atributos obtenidos desde la cuenta twitter del usuario.   
         
-            curl http://201.245.249.229:8080/login/ 
+            curl http://201.245.249.229:8080/api/1.0/login/ 
             -d "access_token=85721956-EFmG1NywpV3VEMDnMDbNax9JJ4OfFvEsCLKWi4Slq" 
             -d "token_secret=FnDmaaBBzZceF3whMsZom9BmKpUFfyuRNFuBKJHXngZMf" 
             -X POST

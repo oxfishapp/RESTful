@@ -32,6 +32,12 @@ class dbTables(object):
                                        , includes=['nickname', 'name', 'link_image'],
                                        )
         
+        nickname_user_index= GlobalIncludeIndex('nickname_user_index'
+                                       , parts=[HashKey('nickname', data_type = STRING)]
+                                       , throughput=throughput
+                                       , includes=['key_user'],
+                                       )
+        
         table_name = 'user' + self.TABLE_SUFFIX
         
         table = Table(table_name, connection=self.db_connection)
@@ -48,7 +54,7 @@ class dbTables(object):
             Table.create(table_name
                          , schema=schema_table
                          , throughput=throughput
-                         , global_indexes=[key_user_index]
+                         , global_indexes=[key_user_index, nickname_user_index]
                          , connection=self.db_connection
                          )
         

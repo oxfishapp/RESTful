@@ -22,7 +22,7 @@ class UserTestCase(unittest.TestCase):
         self.client = self.app.test_client()
         
 
-    def test_get_user_all(self):
+    def test_get_user_key_twitter(self):
         '''
         () -> NoneType
         permite realizar la prueba al recurso (/user/ -> GET) 
@@ -62,6 +62,25 @@ class UserTestCase(unittest.TestCase):
         self.assertListEqual(resultado_esperado, json_data)
         self.assertTrue(resultado.status_code == 200)
  
+ 
+    def test_get_user_nickname(self):
+        '''
+        () -> NoneType
+        permite realizar la prueba al recurso (/user/<string:nickname> -> GET) 
+           
+        verifica que los datos solicitados por el servicio tengan 
+        el formato adecuado y valida que el response sea el correcto.
+        status_code = 200 
+        '''
+           
+        resultado = self.client.get(url_for('endpoints.nickname', nickname='nickname_user_1'))
+           
+        json_data = json.loads(resultado.data.decode('utf-8'))
+        resultado_esperado = [{'id': '550e8400-e29b-41d4-a716-440000000001'}]
+        self.assertListEqual(resultado_esperado, json_data)
+        self.assertTrue(resultado.status_code == 200)
+           
+               
  
     def test_get_user_post(self):
         '''
