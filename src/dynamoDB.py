@@ -23,7 +23,6 @@ class dbTables(object):
         
         #Creacion de la tabla user_suffix_ (ej. user_tets_)
         tables = self.db_connection.list_tables()
-        print(tables)
         schema_table = [HashKey('key_twitter', data_type = STRING)]
         throughput={'read': 5, 'write': 3}
         
@@ -150,9 +149,11 @@ class dbTablesDev(dbTables):
         
         
     def create_table_user(self):
+        from commons import get_item 
+        
         table = self.dynamodb.tables['tbl_user']
-        x = table.get_item(key_twitter = '85721956')
-        if not x:
+        item = get_item(table, key_twitter = '85721956')
+        if not item:
             item = Item(table ,data={'key_twitter':'85721956'
                                      ,'key_user': 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
                                      ,'nickname': 'anroco'

@@ -3,8 +3,6 @@
 #!flask/bin/python
 
 from application import dynamodb
-from boto.dynamodb2.layer1 import DynamoDBConnection
-from boto.dynamodb2.table import Table
 from flask.ext.restful import Resource, reqparse, marshal_with
 from formats import timeline_f
 from commons import (hashKeyList 

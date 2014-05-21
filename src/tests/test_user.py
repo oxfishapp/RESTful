@@ -1,7 +1,7 @@
 import unittest
 import json
 from flask import url_for
-from user.app.app import create_app
+from application import create_app
 
 
 class UserTestCase(unittest.TestCase):
@@ -32,7 +32,7 @@ class UserTestCase(unittest.TestCase):
         status_code = 200 
         '''
            
-        resultado = self.client.get(url_for('endpoint.user', id_t='1'))
+        resultado = self.client.get(url_for('endpoints.user', id_t='1'))
            
         json_data = json.loads(resultado.data.decode('utf-8'))
         resultado_esperado = [{'hash_key': '1'
@@ -47,7 +47,7 @@ class UserTestCase(unittest.TestCase):
         self.assertListEqual(resultado_esperado, json_data)
         self.assertTrue(resultado.status_code == 200)
            
-        resultado = self.client.get(url_for('endpoint.user', id_t='1', basic=True))
+        resultado = self.client.get(url_for('endpoints.user', id_t='1', basic=True))
            
         json_data = json.loads(resultado.data.decode('utf-8'))
         resultado_esperado = [{'hash_key': '1'
@@ -74,7 +74,7 @@ class UserTestCase(unittest.TestCase):
         '''
             
         id_u = '550e8400-e29b-41d4-a716-440000000001'
-        resultado = self.client.get(url_for('endpoint.user_post', id_u = id_u))
+        resultado = self.client.get(url_for('endpoints.user_post', id_u = id_u))
              
         json_data = json.loads(resultado.data.decode('utf-8'))
         resultado_esperado = [{'hash_key': '1'

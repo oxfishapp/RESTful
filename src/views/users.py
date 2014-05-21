@@ -13,7 +13,6 @@ from commons import (hashValidation, get_item,
                       twitter_credentials, timeUTCCreate, hashCreate)
 
 
-
 db_connection = dynamodb.db_connection
 table = dynamodb.tables['tbl_user']
 

@@ -3,7 +3,6 @@
 #!flask/bin/python
 
 from flask.ext.restful.fields import Raw
-from boto.resultset import ResultSet
 
 class Set_to_List(Raw):
     def format(self, value):
