@@ -22,7 +22,7 @@ class Singleton(object):
 
 class DynamoDB(Singleton):
     '''
-    permite gestionar la conexion a la base de datos DynamoDB
+    permite gestionar la conexion a la base de datos dynamoDB
     '''
     
     #objeto para manejar la conexion a la base de datos

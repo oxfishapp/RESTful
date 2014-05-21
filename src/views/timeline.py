@@ -2,6 +2,7 @@
 #!/usr/bin/env python
 #!flask/bin/python
 
+from application import dynamodb
 from boto.dynamodb2.layer1 import DynamoDBConnection
 from boto.dynamodb2.table import Table
 from flask.ext.restful import Resource, reqparse, marshal_with
@@ -13,13 +14,9 @@ from commons import (hashKeyList
                      , hashCreate
                      , timeUTCCreate)
 
-conn = DynamoDBConnection(  host='localhost'
-                           ,port=8000
-                           ,aws_access_key_id='DEVDB' #anything will do
-                           ,aws_secret_access_key='DEVDB' #anything will do
-                           ,is_secure=False)
+db_connection = dynamodb.db_connection
+table = dynamodb.tables['tbl_timeline']
 
-timeline_t = Table('TimelineV14', connection=conn)
 
 #Global All Index Timeline Public
 class Timeline_Index(Resource):
@@ -36,7 +33,7 @@ class Timeline_Index(Resource):
             curl http://localhost:5000/publictimeline
              
         """
-        questions = timeline_t.query_2(FlagAnswer__eq=1
+        questions = table.query_2(FlagAnswer__eq=1
                                        ,limit=3
                                        ,index='GAI_TimelinePublic'
                                        ,reverse=True)
@@ -63,7 +60,7 @@ class Timeline_Home_Index(Resource):
             curl http://localhost:5000/home/<string:"UUID">     
         
         """
-        homeUser = timeline_t.query_2(Key_User__eq=key
+        homeUser = table.query_2(Key_User__eq=key
                                       ,limit=3
                                       ,index='GAI_Home'
                                       ,reverse=True)
@@ -90,7 +87,7 @@ class Timeline_Questions(Resource):
             curl http://localhost:5000/post_q/<string:"UUID">
         
         """
-        header_q = timeline_t.get_item(Key_Post=hashValidation(key))
+        header_q = table.get_item(Key_Post=hashValidation(key))
         
         return items_to_list(header_q._data)
 
@@ -126,7 +123,7 @@ class Timeline_WinAnswers(Resource):
         args = self.reqparse.parse_args()
         hashkeylist = args.HashKeyList
         
-        winAnswers = timeline_t.batch_get(hashkeylist)   
+        winAnswers = table.batch_get(hashkeylist)   
         
         return items_to_list(winAnswers)
  
@@ -163,7 +160,7 @@ class Timeline_Answers(Resource):
         args = self.reqparse.parse_args()
         hashkey = args.HashKey
         
-        answers = timeline_t.query_2(Key_PostOriginal__eq=hashkey
+        answers = table.query_2(Key_PostOriginal__eq=hashkey
                                      ,limit=3
                                      ,index='GAI_VerTodoPublic'
                                      ,reverse=True)
@@ -256,7 +253,7 @@ class Timeline_Update(Resource):
             posting['Tags'] = set(posting['Tags'])
         
         from boto.dynamodb2.items import Item
-        item = Item(timeline_t, posting)
+        item = Item(table, posting)
         item.save()
         
         return items_to_list(posting)
@@ -305,7 +302,7 @@ class Timeline_Update(Resource):
         attributes = jsondecoder(args.JsonTimeline)
         hashKey = args.HashKey
         
-        item = timeline_t.get_item(Key_Post=hashKey)
+        item = table.get_item(Key_Post=hashKey)
         item._data['FlagAnswer'] = 1
         
         if attributes.get('TotalAnswers'):
@@ -373,7 +370,7 @@ class Timeline_Update(Resource):
         args = self.reqparse.parse_args()
         hashKey = args.HashKey
         
-        deleteItem = timeline_t.get_item(Key_Post=hashKey)
+        deleteItem = table.get_item(Key_Post=hashKey)
         deleteItem.delete()
         
         return 'Eliminado'

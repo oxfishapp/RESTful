@@ -70,7 +70,7 @@ def hashKeyList(value):
     
     Recibe un string el cual es un json encoder 
     y retorna una lista de diccionarios para ser
-    usado en un batch_get de DynamoDB.
+    usado en un batch_get de dynamoDB.
     
     >>> hashKeyList('["11EC2020-3AEA-4069-A2DD-08002B30309D"]')
     [{'Key_Post': u'11EC2020-3AEA-4069-A2DD-08002B30309D'}]
