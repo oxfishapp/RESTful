@@ -3,10 +3,8 @@
 #!flask/bin/python
 
 from application import dynamodb
-from boto.dynamodb2.layer1 import DynamoDBConnection
-from boto.dynamodb2.table import Table
 from flask.ext.restful import Resource, reqparse, marshal_with
-from formats import timeline_f
+from formats import format_timeline
 from commons import (hashKeyList 
                      , items_to_list 
                      , hashValidation
@@ -17,10 +15,9 @@ from commons import (hashKeyList
 db_connection = dynamodb.db_connection
 table = dynamodb.tables['tbl_timeline']
 
-
 #Global All Index Timeline Public
 class Timeline_Index(Resource):
-    decorators = [marshal_with(timeline_f)]
+    decorators = [marshal_with(format_timeline)]
     
     def get(self):
         """ () -> list
@@ -30,7 +27,7 @@ class Timeline_Index(Resource):
         
         Example:
         
-            curl http://localhost:5000/publictimeline
+            curl http://localhost:5000/api/1.0/publictimeline
              
         """
         questions = table.query_2(FlagAnswer__eq=1
@@ -42,7 +39,7 @@ class Timeline_Index(Resource):
     
 #Global All Index Home
 class Timeline_Home_Index(Resource):
-    decorators = [marshal_with(timeline_f)]
+    decorators = [marshal_with(format_timeline)]
     
     def get(self, key):
         """ (str) -> list
@@ -57,7 +54,7 @@ class Timeline_Home_Index(Resource):
             "str" -> UUID  
             
         Example:
-            curl http://localhost:5000/home/<string:"UUID">     
+            curl http://localhost:5000/api/1.0/home/<string:"UUID">     
         
         """
         homeUser = table.query_2(Key_User__eq=key
@@ -69,7 +66,7 @@ class Timeline_Home_Index(Resource):
 
 
 class Timeline_Questions(Resource):
-    decorators = [marshal_with(timeline_f)]
+    decorators = [marshal_with(format_timeline)]
     
     def get(self, key):
         """ (str) -> list
@@ -84,7 +81,7 @@ class Timeline_Questions(Resource):
             "str" -> UUID  
             
         Example:
-            curl http://localhost:5000/post_q/<string:"UUID">
+            curl http://localhost:5000/api/1.0/post_q/<string:"UUID">
         
         """
         header_q = table.get_item(Key_Post=hashValidation(key))
@@ -93,7 +90,7 @@ class Timeline_Questions(Resource):
 
 #Batch Get Timeline Table
 class Timeline_WinAnswers(Resource):
-    decorators = [marshal_with(timeline_f)]
+    decorators = [marshal_with(format_timeline)]
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
@@ -115,7 +112,7 @@ class Timeline_WinAnswers(Resource):
             
         Example:
             
-            curl http://localhost:5000/winanswers 
+            curl http://localhost:5000/api/1.0/winanswers 
                 -d 'HashKeyList=["UUID","UUID"]' 
                 -X GET
         
@@ -129,7 +126,7 @@ class Timeline_WinAnswers(Resource):
  
  
 class Timeline_Answers(Resource):
-    decorators = [marshal_with(timeline_f)]  
+    decorators = [marshal_with(format_timeline)]  
     
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
@@ -151,7 +148,7 @@ class Timeline_Answers(Resource):
         
         Example:
         
-            curl http://localhost:5000/aloneview 
+            curl http://localhost:5000/api/1.0/aloneview 
                 -d 'HashKey=UUID' 
                 -X GET
         
@@ -177,7 +174,7 @@ class Timeline_Update(Resource):
         self.reqparse.add_argument('JsonTimeline', type=str, required=False)
         super(Timeline_Update, self).__init__()   
     
-    @marshal_with(timeline_f)
+    @marshal_with(format_timeline)
     def post(self):
         """ () -> list
          
@@ -216,7 +213,7 @@ class Timeline_Update(Resource):
         
         Examples:
         
-            curl http://localhost:5000/post_q 
+            curl http://localhost:5000/api/1.0/post_q 
                 -d 'JsonTimeline=
                                 {
                                     "Message140": str
@@ -228,7 +225,7 @@ class Timeline_Update(Resource):
                                 }'
                  -X POST
              
-            curl http://localhost:5000/post_a 
+            curl http://localhost:5000/api/1.0/post_a 
                 -d 'JsonTimeline=
                                 {
                                     "Message140": str
@@ -284,12 +281,12 @@ class Timeline_Update(Resource):
         
         Examples:
         
-        curl http://localhost:5000/update 
+        curl http://localhost:5000/api/1.0/update 
             -d 'HashKey=UUID' 
             -d 'JsonTimeline={"TotalAnswers" : int}' 
             -X PUT
             
-        curl http://localhost:5000/update 
+        curl http://localhost:5000/api/1.0/update 
             -d 'HashKey=UUID' 
             -d 'JsonTimeline={"WinAnswers" : {
                                                 "State" : int, 
@@ -361,7 +358,7 @@ class Timeline_Update(Resource):
             
         Examples:
         
-        curl http://localhost:5000/delete 
+        curl http://localhost:5000/api/1.0/delete 
             -d 'HashKey=UUID' 
             -X DELETE -v 
             

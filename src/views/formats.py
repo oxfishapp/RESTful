@@ -25,8 +25,8 @@ format_user = {'hash_key': fields.String(attribute='key_twitter')
                ,'score_answers': fields.Integer
                }
 
-#estructura de datos para mapear los datos de un usuario en formato twitter a 
-#la estuctura de la base de datos de la app.
+#estructura de datos para mapear los datos de un usuario en 
+#formato twitter a la estuctura de la base de datos de la app.
 format_user_twitter = {'key_twitter': fields.String(attribute='id_str')
                    ,'key_user': fields.String
                    ,'nickname': fields.String(attribute='screen_name')
@@ -37,20 +37,26 @@ format_user_twitter = {'key_twitter': fields.String(attribute='id_str')
                    ,'score_answers': fields.Integer
                    }
 
-timeline_f= {
-          'Keys':
-              {
-              'HashKey': HashKey_Validation(attribute='Key_Post')
-              ,'HashKeyOriginal': HashKey_Validation(attribute='Key_PostOriginal')
+format_timeline= {
+                  'Keys':
+                      {
+                      'HashKey': HashKey_Validation(attribute='Key_Post')
+                      ,'HashKeyOriginal': HashKey_Validation(attribute='Key_PostOriginal')
+                      }
+                   ,'Geolocation': fields.String
+                   ,'FlagAnswer': fields.Integer
+                   ,'Tags': Set_to_List
+                   ,'Key_TimelinePost':fields.String
+                   ,'Key_User':HashKey_Validation
+                   ,'Message140':fields.String
+                   ,'TotalAnswers':fields.Integer
+                   ,'WinAnswers':Set_to_List
+                   ,'Link':fields.String
+                   ,'Source':fields.String
+                  }
+
+format_skill={ 'Key_User' : HashKey_Validation
+              ,'Key_Post' : HashKey_Validation
+              ,'Key_Time' : fields.String
+              ,'Skill' : fields.String
               }
-           ,'Geolocation': fields.String
-           ,'FlagAnswer': fields.Integer
-           ,'Tags': Set_to_List
-           ,'Key_TimelinePost':fields.String
-           ,'Key_User':HashKey_Validation
-           ,'Message140':fields.String
-           ,'TotalAnswers':fields.Integer
-           ,'WinAnswers':Set_to_List
-           ,'Link':fields.String
-           ,'Source':fields.String
-          }
