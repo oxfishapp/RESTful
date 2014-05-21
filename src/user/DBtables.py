@@ -90,10 +90,10 @@ class dbTablesDev(dbTables):
     def create_tables(self):
         super(dbTablesDev, self).create_tables()
         table = self.dynamodb.tables['tbl_user']
-        x = table.get_item(key_twitter = '123456789')
+        x = table.get_item(key_twitter = '85721956')
         if not x:
-            item = Item(table ,data={'key_twitter':'123456789'
-                                     ,'key_user': '550e8400-e29b-41d4-a716-000123456789'
+            item = Item(table ,data={'key_twitter':'85721956'
+                                     ,'key_user': 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
                                      ,'nickname': 'anroco'
                                      ,'name' : 'Andres Rodriguez'
                                      ,'registered': '2014-05-09 23:59:59'
