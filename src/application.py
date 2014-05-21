@@ -29,7 +29,6 @@ def create_app(config_type):
     
     app.register_blueprint(endpoints)
     app.register_blueprint(auth)
-    app.register_blueprint(endpoints)
     
     #Flask OAuth para acceder al login de twitter
     tw_auth = OAuth().remote_app(name=config.TW_NAME
@@ -63,7 +62,7 @@ if __name__ == "__main__":
 
     
     app.run(use_debugger=uso_debug, debug=app.debug
-            , use_reloader=uso_debug, host='192.168.0.91', port=8080)
+            , use_reloader=uso_debug, host='localhost', port=5000)
 
 # curl http://localhost:5000/api/1.0/publictimeline
 # curl http://localhost:5000/api/1.0/home/AEAF8765-4069-4069-A2DD-08002B30309D
@@ -77,6 +76,10 @@ if __name__ == "__main__":
 # curl http://localhost:5000/api/1.0/update -d 'HashKey=722ae3bc-7e1c-aa3d-18c6-a95c028f1c8c' -d 'JsonTimeline={"WinAnswers" : {"State" : 1, "HashKey" : "02016600-6f94-4749-b225-040018f7eb19"}}' -X PUT
 
 #         {"WinAnswers" : {"State" : 1, "HashKey" : "02016600-6f94-4749-b225-040018f7eb19"}}
+
+
+#curl http://localhost:5000/api/1.0/auth/user/ -d "access_token=85721956-EFmG1NywpV3VEMDnMDbNax9JJ4OfFvEsCLKWi4Slq" -d "token_secret=FnDmaaBBzZceF3whMsZom9BmKpUFfyuRNFuBKJHXngZMf" -d "post=false" -d "answer=true" -X PUT
+
 
 #{
 #'Key_Post'          : '21EC2020-3AEA-4069-A2DD-08002B30309D'

@@ -1,7 +1,6 @@
 from boto.dynamodb2.items import Item
 from boto.dynamodb2.fields import GlobalIncludeIndex, GlobalAllIndex
 from boto.dynamodb2.fields import HashKey, RangeKey
-from boto.dynamodb2.layer1 import DynamoDBConnection #dynamoDB Conexion
 from boto.dynamodb2.table import Table
 from boto.dynamodb2.types import STRING, NUMBER
 
@@ -17,13 +16,14 @@ class dbTables(object):
         self.db_connection = database.db_connection
         
     def create_tables(self):
-        self.create_table_user()
-        self.create_table_timeline()
+        self.super_create_table_user()
+        self.super_create_table_timeline()
     
-    def create_table_user(self):
+    def super_create_table_user(self):
         
         #Creacion de la tabla user_suffix_ (ej. user_tets_)
         tables = self.db_connection.list_tables()
+        print(tables)
         schema_table = [HashKey('key_twitter', data_type = STRING)]
         throughput={'read': 5, 'write': 3}
         
@@ -55,7 +55,7 @@ class dbTables(object):
         
         self.dynamodb.tables['tbl_user'] = table
 
-    def create_table_timeline(self):
+    def super_create_table_timeline(self):
         
         #Creacion de la tabla user_suffix_ (ej. user_tets_)
         tables = self.db_connection.list_tables()
@@ -142,9 +142,9 @@ class dbTablesDev(dbTables):
     
     def __init__(self, database):
         super(dbTablesDev, self).__init__(database)
-        super(dbTablesDev, self).create_tables()
         
     def create_tables(self):
+        super(dbTablesDev, self).create_tables()
         self.create_table_user()
         self.create_table_timeline()
         
@@ -168,7 +168,7 @@ class dbTablesDev(dbTables):
     def create_table_timeline(self):
         table = self.dynamodb.tables['tbl_timeline']
         #x = table.get_item(key_twitter = '85721956')
-        if True: #not x:
+        if False: #not x:
                 item = Item(  table
                             , data={
                                     'Key_Post'          : '11EC2020-3AEA-4069-A2DD-08002B30309D'

@@ -10,7 +10,7 @@ Created on May 10, 2014
 
 class Config:
     
-    SERVER_NAME = '201.245.249.229:8080'
+    #SERVER_NAME = '201.245.249.229:8080'
     DB_HOST = 'localhost'
     DB_PORT = 8000
     DB_AWS_ACCESS_KEY_ID = 'DEVDB'

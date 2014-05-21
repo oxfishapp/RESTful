@@ -6,7 +6,7 @@ Created on May 17, 2014
 
 from flask import Blueprint, abort, g, request
 from flask.ext import restful
-from ..common import twitter_credentials
+from commons import twitter_credentials
 
 auth = Blueprint('auth',__name__)
 
