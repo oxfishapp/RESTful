@@ -29,12 +29,7 @@ class Timeline_Index(Resource):
         
             curl http://localhost:5000/api/1.0/publictimeline
              
-        """
-        
-        a = table.scan()
-        
-        a
-       
+        """       
         questions = table.query_2(flag_answer__eq=0
                                        ,limit=3
                                        ,index='GAI_TimelinePublic'

@@ -126,23 +126,31 @@ def items_to_list(items):
     [{1:1}]
     
     """
-    
-    
-    from application import dynamodb
-    table = dynamodb.tables['tbl_user']
-    
+        
     result = []
     
     from boto.dynamodb2.results import ResultSet
     if isinstance(items, ResultSet):
         for item in items:
-                user_insert = table.query_2(key_user__eq = item._data['key_user'], index = 'key_user_index').next()
-                result.append(item._data)
-                result[-1].update(user_insert._data)
+                result.append(item_to_dict(item._data))
         return result
     #print(value)
     result.append(items)
     return result
+
+def item_to_dict(value):
+    
+    dict = {}
+    dict.update(value)
+    
+    from application import dynamodb
+    table = dynamodb.tables['tbl_user']
+    
+    user_insert = table.query_2(key_user__eq = value['key_user'], index = 'key_user_index').next()
+    
+    dict.update(user_insert)
+    
+    return dict
 
 
 def get_item(table, **kwargs):

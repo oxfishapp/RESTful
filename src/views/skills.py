@@ -5,98 +5,88 @@
 from application import dynamodb
 from flask.ext.restful import Resource, reqparse, marshal_with
 #from formats import format_question
-from commons import hashValidation, timeUTCCreate
+from commons import hashValidation, timeUTCCreate, item_to_dict, get_item
+from formats import format_timeline
 
 db_connection = dynamodb.db_connection
 table = dynamodb.tables['tbl_skills']
 table_user = dynamodb.tables['tbl_user']
 table_timeline = dynamodb.tables['tbl_timeline']
 
-#se consulta para poner las habilidades
-#en el navigation bar
-class Skill_Navbar_Index(Resource):
-    #decorators = [marshal_with(format_timeline)]  
-    
-    def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('userk', type=hashValidation, required=True)
-        super(Skill_Navbar_Index, self).__init__()  
-        
-        
-    def get(self):
-        
-        args = self.reqparse.parse_args()
-        
-        skillUser = table.query_2(key_user__eq=args.userk
-                                ,limit=3
-                                ,index='GKOI_Navbar'
-                                ,reverse=True)
-        
-        result = []
-        for skill in skillUser:
-            result.append(skill._data['skill'])
-        
-        return result
-
 #Se ingresa los datos cuando se realiza una pregunta
 #Se ingresan los datos cuando un usuario se registre
-#se consulta cuando se hace un click en skills
+#se consulta cuando se hace un click en skills o por busqueda
+#en url
 class Skill_Table(Resource):
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('key_user', type=hashValidation, required=False)
         self.reqparse.add_argument('key_post', type=hashValidation, required=False)
-        self.reqparse.add_argument('skills', type=str,action='append', required=True)
+        self.reqparse.add_argument('jsonskills', type=str, required=False)
         super(Skill_Table, self).__init__()  
         
-        def post(self):
-            
-            args = self.reqparse.parse_args()
-            skillsList = args.skills
-            keyPost = args.get('key_post')
-            
-            
-            if not keyPost:
-                for skill in skillsList:
-                    table.put_item(data={'key_user' : args.key_user
-                                        ,'skill' : skill
-                                        ,'skill_user' : 'True'
-                                        ,'key_time' :  timeUTCCreate()})
-            else:
-                for skill in skillsList:
-                    table.put_item(data={'skill' : skill
-                                        ,'key_time' :  timeUTCCreate()
-                                        ,'key_post' : hashValidation(keyPost)})
+    def post(self):
         
-        return 'Ingreso'
-    
-    def get(self):
+        #curl http://localhost:5000/skills -d 'key_post=12EC2020-3AEA-4069-A2DD-08002B30309B' -d 'jsonskills=["csharp","html","jquery"]' 
+        #-d 'key_user=fedcf7af-e9f0-69cc-1c68-362d8f5164ea' 
+        
+        import json
         
         args = self.reqparse.parse_args()
-        skillsList = args.Skills
+        skillsList = json.loads(args.jsonskills)
+        keyPost = args.get('key_post')
+                
+        if not keyPost:
+            for skill in skillsList:
+                table.put_item(data={'key_user' : args.key_user
+                                    ,'skill' : skill
+                                    ,'key_time' :  timeUTCCreate()})
+        else:
+            for skill in skillsList:
+                table.put_item(data={'skill' : 'q_'+skill
+                                    ,'key_time' :  timeUTCCreate()
+                                    ,'key_post' : hashValidation(keyPost)})
+    
+        return 'Ingreso'
+
+    @marshal_with(format_timeline)
+    def get(self, skill):
         
-        items = table.query_2(Skill__eq=skillsList[0]
+        items = table.query_2(skill__eq='q_'+skill
                               , reverse=True
                               , limit=5
-                              , attributes=('Key_Time','Key_Post','Key_User'))
+                              , index='GII_Find')
         
         results = []
+        
+        post_table = dynamodb.tables['tbl_timeline']
+        
         for item in items:
-            skill = item._data.items()
-            post = table_timeline.get_item(Key_Post=hashValidation(item._data['Key_Post']))._data.items()
-            user = table_user.query_2(key_user__eq = hashValidation(item._data['Key_User']), index = 'key_user_index').next()._data.items()
-            
-            results.append(dict(skill,post,user))
-            
-   
-        return 0                
+            post = get_item(table=post_table, key_post=item._data['key_post'])
+            post_user = item_to_dict(post._data)
+            results.append(post_user)
+
+        return results              
 
 #Se consulta para saber si una habilidad ya tiene
 #personas relacionadas.
-class Skill_Count_Table(Resource):
-    pass
+class Skill_count(Resource):
+    
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('skill', type=str, required=True)
+        super(Skill_count, self).__init__()  
+    
+    def get(self):
+#         
+#       curl http://localhost:5000/api/1.0/auth/totalskills -d "access_token=85721956-EFmG1NywpV3VEMDnMDbNax9JJ4OfFvEsCLKWi4Slq" -d "token_secret=FnDmaaBBzZceF3whMsZom9BmKpUFfyuRNFuBKJHXngZMf" -d 'skill=dynamodb' 
 
+        args = self.reqparse.parse_args()
+        
+        totalUsers = table.query_count(skill__eq=args.skill)
+        
+        return {args.skill:totalUsers}
 
 
 

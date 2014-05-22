@@ -38,4 +38,12 @@ api.add_resource(timeline.Timeline_Update, api_version + '/auth/post_a', endpoin
 api.add_resource(timeline.Timeline_Update, api_version + '/auth/delete', endpoint='delete_q_a')
 api.add_resource(timeline.Timeline_Update, api_version + '/auth/update', endpoint='update_q')
 
-api.add_resource(skills.Skill_Table, api_version + '/finderskill', endpoint='finderskill')
+api.add_resource(skills.Skill_Table, api_version + '/findbyskill/<string:skill>')
+api.add_resource(skills.Skill_count, api_version + '/totalskills')
+api.add_resource(skills.Skill_Table, api_version + '/auth/skills' ,endpoint='insertskills')
+
+
+
+
+
+

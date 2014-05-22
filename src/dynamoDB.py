@@ -137,11 +137,12 @@ class dbTables(object):
                                                ,throughput=throughput
                                                )
         
-        GKOI_Count = GlobalKeysOnlyIndex('GKOI_Count'
+        GII_Find = GlobalIncludeIndex('GII_Find'
                                                ,parts=[HashKey('skill',data_type = STRING)
-                                               ,RangeKey('skill_user',data_type = STRING)
+                                               ,RangeKey('key_time',data_type = STRING)
                                                        ]
                                                ,throughput=throughput
+                                               , includes=['key_post']
                                                )
         
         table_name = 'skill' + self.TABLE_SUFFIX
@@ -160,7 +161,7 @@ class dbTables(object):
             Table.create(table_name
                          , schema=schema_table
                          , throughput=throughput
-                         , global_indexes=[GKOI_Navbar,GKOI_Count]
+                         , global_indexes=[GKOI_Navbar,GII_Find]
                          , connection=self.db_connection
                          )
         
@@ -304,42 +305,42 @@ class dbTablesTest(dbTables):
         
         item = Item(  table
                     , data={      
-                            'skill' : 'dynamodb'
+                            'skill' : 'q_dynamodb'
                             ,'key_time' :  str(datetime.utcnow())
                             ,'key_post' : '11EC2020-3AEA-4069-A2DD-08002B30309D'})
         item.save()
 
         item = Item(  table
                     , data={    
-                            'skill' : 'flask'
+                            'skill' : 'q_flask'
                             ,'key_time' :  str(datetime.utcnow())
                             ,'key_post' : '11EC2020-3AEA-4069-A2DD-08002B30309D'})
         item.save()
 
         item = Item(  table
                     , data={    
-                            'skill' : 'python'
+                            'skill' : 'q_python'
                             ,'key_time' :  str(datetime.utcnow())
                             ,'key_post' : '11EC2020-3AEA-4069-A2DD-08002B30309D'})
         item.save()
 
         item = Item(  table
                     , data={    
-                            'skill' : 'csharp'
+                            'skill' : 'q_csharp'
                             ,'key_time' :  str(datetime.utcnow())
                             ,'key_post' : '12EC2020-3AEA-4069-A2DD-08002B30309D'})
         item.save()
 
         item = Item(  table
                     , data={    
-                            'skill' : 'html'
+                            'skill' : 'q_dynamodb'
                             ,'key_time' :  str(datetime.utcnow())
                             ,'key_post' : '12EC2020-3AEA-4069-A2DD-08002B30309D'})
         item.save()
 
         item = Item(  table
                     , data={   
-                            'skill' : 'jquery'
+                            'skill' : 'q_jquery'
                             ,'key_time' :  str(datetime.utcnow())
                             ,'key_post' : '12EC2020-3AEA-4069-A2DD-08002B30309D'})
         item.save()
@@ -352,7 +353,6 @@ class dbTablesTest(dbTables):
                     , data={    
                             'key_user' : 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
                             ,'skill' : 'python'
-                            ,'skill_User' : 'True'
                             ,'key_time' :  str(datetime.utcnow())})
         item.save()
 
@@ -360,7 +360,6 @@ class dbTablesTest(dbTables):
                     , data={    
                             'key_user' : 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
                             ,'skill' : 'flask'
-                            ,'skill_User' : 'True'
                             ,'key_time' :  str(datetime.utcnow())})
         item.save()
 
@@ -368,7 +367,6 @@ class dbTablesTest(dbTables):
                     , data={    
                             'key_user' : 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
                             ,'skill' : 'dynamodb'
-                            ,'skill_User' : 'True'
                             ,'key_time' :  str(datetime.utcnow())})
         item.save()
 
@@ -376,7 +374,6 @@ class dbTablesTest(dbTables):
                     , data={    
                             'key_user' : '12345678-e9f0-69cc-1c68-362d8f5164ea'
                             ,'skill' : 'csharp'
-                            ,'skill_User' : 'True'
                             ,'key_time' :  str(datetime.utcnow())})
         item.save()
         
@@ -384,7 +381,6 @@ class dbTablesTest(dbTables):
                     , data={    
                             'key_user' : '12345678-e9f0-69cc-1c68-362d8f5164ea'
                             ,'skill' : 'dynamodb'
-                            ,'skill_User' : 'True'
                             ,'key_time' :  str(datetime.utcnow())})
         item.save()
 
@@ -392,7 +388,6 @@ class dbTablesTest(dbTables):
                     , data={    
                             'key_user' : '87654321-e9f0-69cc-1c68-362d8f5164ea'
                             ,'skill' : 'flask'
-                            ,'skill_User' : 'True'
                             ,'key_time' :  str(datetime.utcnow())})
         item.save()
 
@@ -400,7 +395,6 @@ class dbTablesTest(dbTables):
                     , data={    
                             'key_user' : '87654321-e9f0-69cc-1c68-362d8f5164ea'
                             ,'skill' : 'csharp'
-                            ,'skill_User' : 'True'
                             ,'key_time' :  str(datetime.utcnow())})
         item.save()
         
@@ -408,7 +402,6 @@ class dbTablesTest(dbTables):
                     , data={    
                             'key_user' : '87654321-e9f0-69cc-1c68-362d8f5164ea'
                             ,'skill' : 'dynamodb'
-                            ,'skill_User' : 'True'
                             ,'key_time' :  str(datetime.utcnow())})
         item.save()
 
