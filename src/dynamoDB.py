@@ -161,6 +161,7 @@ class dbTables(object):
         
         self.dynamodb.tables['tbl_skill'] = table
 
+
 class dbTablesTest(dbTables):
     
     def __init__(self, database):
@@ -303,48 +304,42 @@ class dbTablesDev(dbTables):
                             , data={      
                                     'Skill' : 'DynamoDB'
                                     ,'Key_Time' :  str(datetime.utcnow())
-                                    ,'Key_Post' : 'B2EC2020-3AEA-4069-A2DD-08002B30309D'
-                                    ,'Key_User' : 'BEAF8765-4069-4069-A2DD-08002B30309D'})
+                                    ,'Key_Post' : 'B2EC2020-3AEA-4069-A2DD-08002B30309D'})
                 item.save()
         
                 item = Item(  table
                             , data={    
                                     'Skill' : 'Flask'
                                     ,'Key_Time' :  str(datetime.utcnow())
-                                    ,'Key_Post' : 'B2EC2020-3AEA-4069-A2DD-08002B30309D'
-                                    ,'Key_User' : 'BEAF8765-4069-4069-A2DD-08002B30309D'})
+                                    ,'Key_Post' : 'B2EC2020-3AEA-4069-A2DD-08002B30309D'})
                 item.save()
         
                 item = Item(  table
                             , data={    
                                     'Skill' : 'Python'
                                     ,'Key_Time' :  str(datetime.utcnow())
-                                    ,'Key_Post' : 'B2EC2020-3AEA-4069-A2DD-08002B30309D'
-                                    ,'Key_User' : 'BEAF8765-4069-4069-A2DD-08002B30309D'})
+                                    ,'Key_Post' : 'B2EC2020-3AEA-4069-A2DD-08002B30309D'})
                 item.save()
         
                 item = Item(  table
                             , data={    
                                     'Skill' : 'CSharp'
                                     ,'Key_Time' :  str(datetime.utcnow())
-                                    ,'Key_Post' : 'A2EC2020-3AEA-4069-A2DD-08002B30309D'
-                                    ,'Key_User' : 'AEAF8765-4069-4069-A2DD-08002B30309D'})
+                                    ,'Key_Post' : 'A2EC2020-3AEA-4069-A2DD-08002B30309D'})
                 item.save()
         
                 item = Item(  table
                             , data={    
                                     'Skill' : 'HTML'
                                     ,'Key_Time' :  str(datetime.utcnow())
-                                    ,'Key_Post' : 'A2EC2020-3AEA-4069-A2DD-08002B30309D'
-                                    ,'Key_User' : 'AEAF8765-4069-4069-A2DD-08002B30309D'})
+                                    ,'Key_Post' : 'A2EC2020-3AEA-4069-A2DD-08002B30309D'})
                 item.save()
         
                 item = Item(  table
                             , data={   
                                     'Skill' : 'JQuery'
                                     ,'Key_Time' :  str(datetime.utcnow())
-                                    ,'Key_Post' : 'A2EC2020-3AEA-4069-A2DD-08002B30309D'
-                                    ,'Key_User' : 'AEAF8765-4069-4069-A2DD-08002B30309D'})
+                                    ,'Key_Post' : 'A2EC2020-3AEA-4069-A2DD-08002B30309D'})
                 item.save()
         
                 item = Item(  table

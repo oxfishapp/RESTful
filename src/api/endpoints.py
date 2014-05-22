@@ -12,6 +12,7 @@ from flask import Blueprint
 from flask.ext import restful
 from views import users
 from views import timeline
+from views import skills
 
 endpoints = Blueprint('endpoints',__name__)
 
@@ -34,3 +35,5 @@ api.add_resource(timeline.Timeline_Update, api_version + '/post_q', endpoint='po
 api.add_resource(timeline.Timeline_Update, api_version + '/post_a', endpoint='post_a')
 api.add_resource(timeline.Timeline_Update, api_version + '/delete', endpoint='delete_q_a')
 api.add_resource(timeline.Timeline_Update, api_version + '/update', endpoint='update_q')
+
+api.add_resource(skills.Skill_Table, api_version + '/finderskill', endpoint='finderskill')

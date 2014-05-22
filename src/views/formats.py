@@ -37,8 +37,7 @@ format_user_twitter = {'key_twitter': fields.String(attribute='id_str')
                    ,'score_answers': fields.Integer
                    }
 
-format_timeline= {
-                  'Keys':
+format_timeline= {'Keys':
                       {
                       'HashKey': HashKey_Validation(attribute='Key_Post')
                       ,'HashKeyOriginal': HashKey_Validation(attribute='Key_PostOriginal')
@@ -55,8 +54,19 @@ format_timeline= {
                    ,'Source':fields.String
                   }
 
-format_skill={ 'Key_User' : HashKey_Validation
-              ,'Key_Post' : HashKey_Validation
-              ,'Key_Time' : fields.String
-              ,'Skill' : fields.String
-              }
+format_question={'Keys':
+                      {
+                      'HashKey': HashKey_Validation(attribute='Key_Post')
+                      ,'HashKeyOriginal': HashKey_Validation(attribute='Key_PostOriginal')
+                      }
+                   ,'Geolocation': fields.String
+                   ,'FlagAnswer': fields.Integer
+                   ,'Tags': Set_to_List
+                   ,'Key_TimelinePost':fields.String
+                   ,'Key_User':HashKey_Validation
+                   ,'Message140':fields.String
+                   ,'TotalAnswers':fields.Integer
+                   ,'WinAnswers':Set_to_List
+                   ,'Link':fields.String
+                   ,'Source':fields.String
+                  }
