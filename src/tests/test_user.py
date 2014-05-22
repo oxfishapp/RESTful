@@ -32,33 +32,35 @@ class UserTestCase(unittest.TestCase):
         status_code = 200 
         '''
            
-        resultado = self.client.get(url_for('endpoints.user', id_t='1'))
+        resultado = self.client.get(url_for('endpoints.user', hash_key='85721956'))
            
         json_data = json.loads(resultado.data.decode('utf-8'))
-        resultado_esperado = [{'hash_key': '1'
-                                ,'id': '550e8400-e29b-41d4-a716-440000000001'
-                                ,'nickname': 'nickname_user_1'
-                                ,'name' : 'name_user_1'
-                                ,'registered': '2013-10-01 23:18:01'
-                                ,'link_image': 'http://twitter.com/user_1/image'
-                                ,'total_post': 10
-                                ,'score_answers': 5
-                                }]
+        resultado_esperado = [{'hash_key': '85721956'
+                               ,'key': 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
+                               ,'nickname': 'anroco'
+                               ,'name' : 'Andres Rodriguez'
+                               ,'registered': '2014-05-09 23:59:59'
+                               ,'link_image': 'http://twitter.com/anroco/image'
+                               ,'total_post': 2983
+                               ,'score_answers': 827377
+                               ,'email': None
+                               }]
         self.assertListEqual(resultado_esperado, json_data)
         self.assertTrue(resultado.status_code == 200)
            
-        resultado = self.client.get(url_for('endpoints.user', id_t='1', basic=True))
+        resultado = self.client.get(url_for('endpoints.user', hash_key='85721956', basic=True))
            
         json_data = json.loads(resultado.data.decode('utf-8'))
-        resultado_esperado = [{'hash_key': '1'
-                                ,'id': '550e8400-e29b-41d4-a716-440000000001'
-                                ,'nickname': 'nickname_user_1'
-                                ,'name' : 'name_user_1'
-                                ,'registered': None
-                                ,'link_image': 'http://twitter.com/user_1/image'
-                                ,'total_post': 0
-                                ,'score_answers': 0
-                                }]
+        resultado_esperado = [{'hash_key': '85721956'
+                               ,'key': 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
+                               ,'nickname': 'anroco'
+                               ,'name' : 'Andres Rodriguez'
+                               ,'registered': None
+                               ,'link_image': 'http://twitter.com/anroco/image'
+                               ,'total_post': 0
+                               ,'score_answers': 0
+                               ,'email': None
+                               }]
         self.assertListEqual(resultado_esperado, json_data)
         self.assertTrue(resultado.status_code == 200)
  
@@ -67,43 +69,44 @@ class UserTestCase(unittest.TestCase):
         '''
         () -> NoneType
         permite realizar la prueba al recurso (/api/1.0/user/<string:nickname> -> GET) 
-           
-        verifica que los datos solicitados por el servicio tengan 
-        el formato adecuado y valida que el response sea el correcto.
-        status_code = 200 
-        '''
-           
-        resultado = self.client.get(url_for('endpoints.nickname', nickname='nickname_user_1'))
-           
-        json_data = json.loads(resultado.data.decode('utf-8'))
-        resultado_esperado = [{'id': '550e8400-e29b-41d4-a716-440000000001'}]
-        self.assertListEqual(resultado_esperado, json_data)
-        self.assertTrue(resultado.status_code == 200)
-           
- 
-    def test_get_user_post(self):
-        '''
-        () -> NoneType
-        permite realizar la prueba al recurso (/api/1.0/post/user/ -> GET) 
-             
+            
         verifica que los datos solicitados por el servicio tengan 
         el formato adecuado y valida que el response sea el correcto.
         status_code = 200 
         '''
             
-        id_u = '550e8400-e29b-41d4-a716-440000000001'
-        resultado = self.client.get(url_for('endpoints.user_post', id_u = id_u))
-             
+        resultado = self.client.get(url_for('endpoints.nickname', nickname='anroco'))
+            
         json_data = json.loads(resultado.data.decode('utf-8'))
-        resultado_esperado = [{'hash_key': '1'
-                                ,'id': '550e8400-e29b-41d4-a716-440000000001'
-                                ,'nickname': 'nickname_user_1'
-                                ,'name' : 'name_user_1'
-                                ,'registered': None
-                                ,'link_image': 'http://twitter.com/user_1/image'
-                                ,'total_post': 0
-                                ,'score_answers': 0
-                                }]
+        resultado_esperado = [{'key': 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'}]
+        self.assertListEqual(resultado_esperado, json_data)
+        self.assertTrue(resultado.status_code == 200)
+            
+  
+    def test_get_user_post(self):
+        '''
+        () -> NoneType
+        permite realizar la prueba al recurso (/api/1.0/post/user/ -> GET) 
+              
+        verifica que los datos solicitados por el servicio tengan 
+        el formato adecuado y valida que el response sea el correcto.
+        status_code = 200 
+        '''
+             
+        key = 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
+        resultado = self.client.get(url_for('endpoints.user_post', key = key))
+              
+        json_data = json.loads(resultado.data.decode('utf-8'))
+        resultado_esperado = [{'hash_key': '85721956'
+                               ,'key': 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
+                               ,'nickname': 'anroco'
+                               ,'name' : 'Andres Rodriguez'
+                               ,'registered': None
+                               ,'link_image': 'http://twitter.com/anroco/image'
+                               ,'total_post': 0
+                               ,'score_answers': 0
+                               ,'email': None
+                               }]
         self.assertListEqual(resultado_esperado, json_data)
         self.assertTrue(resultado.status_code == 200)
 

@@ -16,7 +16,7 @@ BASIC_USER_FIELDS = ['key_twitter','key_user','link_image','name','nickname']
 
 #estructura de datos de usuario a ser retornados tras una solicitud a un recurso user
 format_user = {'hash_key': fields.String(attribute='key_twitter')
-               ,'id': HashKey_Validation(attribute='key_user')
+               ,'key': HashKey_Validation(attribute='key_user')
                ,'nickname': fields.String
                ,'name' : fields.String
                ,'email' : fields.String

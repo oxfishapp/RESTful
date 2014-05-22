@@ -23,7 +23,7 @@ class User(Resource):
     parser = reqparse.RequestParser()
     
     def __init__(self):
-        self.parser.add_argument('id_t', type=str, required=True)
+        self.parser.add_argument('hash_key', type=str, required=True)
     
         from flask.ext.restful import types
         self.parser.add_argument('basic', type=types.boolean, default=False)
@@ -40,12 +40,12 @@ class User(Resource):
         definidos en la lista formats.BASIC_USER_FIELDS. Si es false retorna
         el usuario con todos los campos que este tiene.
         
-        curl http://201.245.249.229:8080/api/1.0/user/ -d "id_t=23215634" -X GET
+        curl http://201.245.249.229:8080/api/1.0/user/ -d "hash_key=23215634" -X GET
         
         [
             {
                 "hash_key": "23215634", 
-                "id": "455597c8-59b6-f6cc-a6ed-078986e819fb", 
+                "key": "455597c8-59b6-f6cc-a6ed-078986e819fb", 
                 "link_image": "http://abs.twimg.com/sticky/default_profile.png", 
                 "name": "Juan Mendoza", 
                 "nickname": "juanmen", 
@@ -62,10 +62,10 @@ class User(Resource):
         
         #valida el atributo *basic* para definir el tipo de consulta a realizar.
         if args.basic:
-            result = table.get_item(key_twitter = args.id_t
+            result = table.get_item(key_twitter = args.hash_key
                                     , attributes = BASIC_USER_FIELDS)
         else:
-            result = table.get_item(key_twitter = args.id_t)
+            result = table.get_item(key_twitter = args.hash_key)
         return [result._data]
     
 
@@ -84,13 +84,13 @@ class Nickname(Resource):
         
         [
             {
-                "id": "455597c8-59b6-f6cc-a6ed-078986e819fb"
+                "key": "455597c8-59b6-f6cc-a6ed-078986e819fb"
             }
         ]
         '''
         
         result = table.query_2(nickname__eq = nickname, index = 'nickname_user_index')
-        return [{'id':result.next()._data['key_user']}]
+        return [{'key':result.next()._data['key_user']}]
     
 
 class User_post(Resource):
@@ -98,7 +98,7 @@ class User_post(Resource):
     parser = reqparse.RequestParser()
     
     def __init__(self):
-        self.parser.add_argument('id_u', type=hashValidation, required=True)
+        self.parser.add_argument('key', type=hashValidation, required=True)
     
     
     @marshal_with(format_user)
@@ -112,13 +112,13 @@ class User_post(Resource):
         y retorna toda la informacion relacionada a ese usuario.
         
         curl http://201.245.249.229:8080/api/1.0/post/user/ 
-        -d "id_u=455597c8-59b6-f6cc-a6ed-078986e819fb" 
+        -d "key=455597c8-59b6-f6cc-a6ed-078986e819fb" 
         -X GET
         
             [
                 {
                     "hash_key": "23215634", 
-                    "id": "455597c8-59b6-f6cc-a6ed-078986e819fb", 
+                    "key": "455597c8-59b6-f6cc-a6ed-078986e819fb", 
                     "link_image": "http://abs.twimg.com/sticky/default_profile.png", 
                     "name": "Juan Mendoza", 
                     "nickname": "juanmen", 
@@ -130,7 +130,7 @@ class User_post(Resource):
         '''
         
         args = self.parser.parse_args()
-        result = table.query_2(key_user__eq = args.id_u, index = 'key_user_index')
+        result = table.query_2(key_user__eq = args.key, index = 'key_user_index')
         return [result.next()._data]
 
 
@@ -166,7 +166,7 @@ class User_scores(Resource):
             [
                 {
                     "hash_key": "23215634", 
-                    "id": "455597c8-59b6-f6cc-a6ed-078986e819fb", 
+                    "key": "455597c8-59b6-f6cc-a6ed-078986e819fb", 
                     "link_image": "http://abs.twimg.com/sticky/default_profile.png", 
                     "name": "Juan Mendoza", 
                     "nickname": "juanmen", 
@@ -188,7 +188,7 @@ class User_scores(Resource):
             item._data['total_post'] = int (item._data['total_post']) + 1
             
         if args.answer: 
-            item._data['score_answers'] = str(int (item._data['score_answers']) + 10)
+            item._data['score_answers'] = int (item._data['score_answers']) + 10
             
         item.save()
             
@@ -225,7 +225,7 @@ class User_register(Resource):
                 {
                     "email": "juanmen@domain.com"
                     "hash_key": "23215634", 
-                    "id": "455597c8-59b6-f6cc-a6ed-078986e819fb", 
+                    "key": "455597c8-59b6-f6cc-a6ed-078986e819fb", 
                     "link_image": "http://abs.twimg.com/sticky/default_profile.png", 
                     "name": "Juan Mendoza", 
                     "nickname": "juanmen", 
@@ -244,6 +244,7 @@ class User_register(Resource):
             abort(401)
         
         item._data['email'] = args.email
+        item.save()
         return [item._data]
     
 
@@ -281,7 +282,7 @@ class Auth_user(Resource):
             [
                 {
                     "hash_key": "23215634", 
-                    "id": "455597c8-59b6-f6cc-a6ed-078986e819fb", 
+                    "key": "455597c8-59b6-f6cc-a6ed-078986e819fb", 
                     "link_image": "http://abs.twimg.com/sticky/default_profile.png", 
                     "name": "Juan Mendoza", 
                     "nickname": "juanmen", 
