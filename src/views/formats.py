@@ -57,3 +57,20 @@ format_timeline= {'keys':
                    ,'name':fields.String
                    ,'link_image':fields.String
                   }
+
+# format_question={'Keys':
+#                       {
+#                       'HashKey': HashKey_Validation(attribute='Key_Post')
+#                       ,'HashKeyOriginal': HashKey_Validation(attribute='Key_PostOriginal')
+#                       }
+#                    ,'Geolocation': fields.String
+#                    ,'FlagAnswer': fields.Integer
+#                    ,'Tags': Set_to_List
+#                    ,'Key_TimelinePost':fields.String
+#                    ,'Key_User':HashKey_Validation
+#                    ,'Message140':fields.String
+#                    ,'TotalAnswers':fields.Integer
+#                    ,'WinAnswers':Set_to_List
+#                    ,'Link':fields.String
+#                    ,'Source':fields.String
+#                   }
