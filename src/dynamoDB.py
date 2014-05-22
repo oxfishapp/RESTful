@@ -1,5 +1,5 @@
 from boto.dynamodb2.items import Item
-from boto.dynamodb2.fields import GlobalIncludeIndex, GlobalAllIndex
+from boto.dynamodb2.fields import GlobalIncludeIndex, GlobalAllIndex, GlobalKeysOnlyIndex
 from boto.dynamodb2.fields import HashKey, RangeKey
 from boto.dynamodb2.table import Table
 from boto.dynamodb2.types import STRING, NUMBER
@@ -18,6 +18,7 @@ class dbTables(object):
     def create_tables(self):
         self.super_create_table_user()
         self.super_create_table_timeline()
+        self.super_create_table_skill()
     
     def super_create_table_user(self):
         
@@ -118,6 +119,54 @@ class dbTables(object):
         
         self.dynamodb.tables['tbl_timeline'] = table
 
+    def super_create_table_skill(self):
+                
+        #Creacion de la tabla user_suffix_ (ej. user_tets_)
+        tables = self.db_connection.list_tables()
+        schema_table = [
+             HashKey('Skill',data_type = STRING),
+             RangeKey('Key_Time',data_type = STRING),
+             ]
+        
+        throughput={'read': 5, 'write': 3}
+        
+        GKOI_Navbar = GlobalKeysOnlyIndex('GKOI_Navbar'
+                                               ,parts=[HashKey('Key_User',data_type = STRING)
+                                               ,RangeKey('Skill',data_type = STRING)
+                                                       ]
+                                               ,throughput=throughput
+                                               )
+        
+        GKOI_Count = GlobalKeysOnlyIndex('GKOI_Count'
+                                               ,parts=[HashKey('Skill',data_type = STRING)
+                                               ,RangeKey('Skill_User',data_type = STRING)
+                                                       ]
+                                               ,throughput=throughput
+                                               )
+        
+        table_name = 'skill' + self.TABLE_SUFFIX
+        
+        table = Table(table_name, connection=self.db_connection)
+            
+#         if table.delete(): 
+#             tables['TableNames'].remove(table_name)
+          
+        if table_name in tables['TableNames'] and table_name.endswith('_'):
+            if table.delete(): 
+                tables['TableNames'].remove(table_name)
+        
+     
+        if not table_name in tables['TableNames']:
+            Table.create(table_name
+                         , schema=schema_table
+                         , throughput=throughput
+                         , global_indexes=[GKOI_Navbar,GKOI_Count]
+                         , connection=self.db_connection
+                         )
+        
+        self.dynamodb.tables['tbl_skill'] = table
+
+
 class dbTablesTest(dbTables):
     
     def __init__(self, database):
@@ -152,7 +201,7 @@ class dbTablesDev(dbTables):
         super(dbTablesDev, self).create_tables()
         self.create_table_user()
         self.create_table_timeline()
-        
+        self.create_table_skill()
         
     def create_table_user(self):
         table = self.dynamodb.tables['tbl_user']
@@ -172,8 +221,10 @@ class dbTablesDev(dbTables):
             
     def create_table_timeline(self):
         table = self.dynamodb.tables['tbl_timeline']
-        #x = table.get_item(key_twitter = '85721956')
-        if False: #not x:
+#         #x = table.get_item(key_twitter = '85721956')
+#         if False: #not x:
+        count = table.query_count(Key_Post__eq = '11EC2020-3AEA-4069-A2DD-08002B30309D')
+        if count == 0:
                 item = Item(  table
                             , data={
                                     'Key_Post'          : '11EC2020-3AEA-4069-A2DD-08002B30309D'
@@ -245,6 +296,87 @@ class dbTablesDev(dbTables):
                                     ,'FlagAnswer'       : 0
                                     }
                             )
+                item.save()
+
+    def create_table_skill(self):
+        from datetime import datetime
+        str(datetime.utcnow())
+
+        table = self.dynamodb.tables['tbl_skill']
+        count = table.query_count(Skill__eq = 'DynamoDB',Skill_User__eq = 'True',index='GKOI_Count')
+        if count == 0:
+                item = Item(  table
+                            , data={      
+                                    'Skill' : 'DynamoDB'
+                                    ,'Key_Time' :  str(datetime.utcnow())
+                                    ,'Key_Post' : 'B2EC2020-3AEA-4069-A2DD-08002B30309D'})
+                item.save()
+        
+                item = Item(  table
+                            , data={    
+                                    'Skill' : 'Flask'
+                                    ,'Key_Time' :  str(datetime.utcnow())
+                                    ,'Key_Post' : 'B2EC2020-3AEA-4069-A2DD-08002B30309D'})
+                item.save()
+        
+                item = Item(  table
+                            , data={    
+                                    'Skill' : 'Python'
+                                    ,'Key_Time' :  str(datetime.utcnow())
+                                    ,'Key_Post' : 'B2EC2020-3AEA-4069-A2DD-08002B30309D'})
+                item.save()
+        
+                item = Item(  table
+                            , data={    
+                                    'Skill' : 'CSharp'
+                                    ,'Key_Time' :  str(datetime.utcnow())
+                                    ,'Key_Post' : 'A2EC2020-3AEA-4069-A2DD-08002B30309D'})
+                item.save()
+        
+                item = Item(  table
+                            , data={    
+                                    'Skill' : 'HTML'
+                                    ,'Key_Time' :  str(datetime.utcnow())
+                                    ,'Key_Post' : 'A2EC2020-3AEA-4069-A2DD-08002B30309D'})
+                item.save()
+        
+                item = Item(  table
+                            , data={   
+                                    'Skill' : 'JQuery'
+                                    ,'Key_Time' :  str(datetime.utcnow())
+                                    ,'Key_Post' : 'A2EC2020-3AEA-4069-A2DD-08002B30309D'})
+                item.save()
+        
+                item = Item(  table
+                            , data={    
+                                    'Key_User' : 'AEAF8765-4069-4069-A2DD-08002B30309D'
+                                    ,'Skill' : 'Python'
+                                    ,'Skill_User' : 'True'
+                                    ,'Key_Time' :  str(datetime.utcnow())})
+                item.save()
+        
+                item = Item(  table
+                            , data={    
+                                    'Key_User' : 'AEAF8765-4069-4069-A2DD-08002B30309D'
+                                    ,'Skill' : 'Flask'
+                                    ,'Skill_User' : 'True'
+                                    ,'Key_Time' :  str(datetime.utcnow())})
+                item.save()
+        
+                item = Item(  table
+                            , data={    
+                                    'Key_User' : 'AEAF8765-4069-4069-A2DD-08002B30309D'
+                                    ,'Skill' : 'DynamoDB'
+                                    ,'Skill_User' : 'True'
+                                    ,'Key_Time' :  str(datetime.utcnow())})
+                item.save()
+        
+                item = Item(  table
+                            , data={    
+                                    'Key_User' : 'BEAF8765-4069-4069-A2DD-08002B30309D'
+                                    ,'Skill' : 'CSharp'
+                                    ,'Skill_User' : 'True'
+                                    ,'Key_Time' :  str(datetime.utcnow())})
                 item.save()
 
 config_db_env = {
