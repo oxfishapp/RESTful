@@ -19,6 +19,7 @@ format_user = {'hash_key': fields.String(attribute='key_twitter')
                ,'id': HashKey_Validation(attribute='key_user')
                ,'nickname': fields.String
                ,'name' : fields.String
+               ,'email' : fields.String
                ,'registered': fields.String
                ,'link_image': fields.String
                ,'total_post': fields.Integer

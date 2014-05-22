@@ -42,10 +42,7 @@ def create_app(config_type):
     app_ctx = app.app_context()
     app_ctx.g.tw_auth = tw_auth
     app_ctx.push()
-    
-    import os
-    app.secret_key = os.urandom(64)
-    
+
     return app
 
 

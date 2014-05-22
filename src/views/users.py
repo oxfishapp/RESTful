@@ -9,8 +9,8 @@ from flask import abort, g
 from boto.dynamodb2.items import Item
 from views.formats import format_user,format_user_twitter
 from flask.ext.restful import Resource, marshal_with, reqparse, marshal
-from commons import (hashValidation, get_item, 
-                      twitter_credentials, timeUTCCreate, hashCreate)
+from commons import (hashValidation, get_item, validate_email, hashCreate, 
+                     twitter_credentials, timeUTCCreate)
 
 
 db_connection = dynamodb.db_connection
@@ -131,7 +131,7 @@ class User_post(Resource):
         
         args = self.parser.parse_args()
         result = table.query_2(key_user__eq = args.id_u, index = 'key_user_index')
-        return [result.next()]
+        return [result.next()._data]
 
 
 class User_scores(Resource):
@@ -181,13 +181,69 @@ class User_scores(Resource):
         args = self.parser.parse_args()
         item = get_item(table, key_twitter = g.id_twitter)
         
-        if item != None:
-            if args.post: 
-                item._data['total_post'] = int (item._data['total_post']) + 1
-            if args.answer: 
-                item._data['score_answers'] = str(int (item._data['score_answers']) + 10)
-            item.save()
+        if item == None:
+            abort(401)
             
+        if args.post: 
+            item._data['total_post'] = int (item._data['total_post']) + 1
+            
+        if args.answer: 
+            item._data['score_answers'] = str(int (item._data['score_answers']) + 10)
+            
+        item.save()
+            
+        return [item._data]
+
+
+class User_register(Resource):
+     
+    parser = reqparse.RequestParser()
+     
+    def __init__(self):
+        self.parser.add_argument('email', type=validate_email, required=True)
+             
+     
+    @marshal_with(format_user)
+    def put(self):
+        '''
+        () -> list        
+         
+        requisito: email debe tener formato 
+         
+        recibe la solicitud PUT del endpoint ('/api/1.0/auth/register/') 
+        que permite registrar el correo electronico del usuario.
+         
+        Retorna un json con los datos del usuario actualizado.
+         
+            curl http://201.245.249.229:8080/api/1.0/auth/register/ 
+            -d "access_token=85721956-EFmG1NywpV3VEMDnMDbNax9JJ4OfFvEsCLKWi4Slq" 
+            -d "token_secret=FnDmaaBBzZceF3whMsZom9BmKpUFfyuRNFuBKJHXngZMf" 
+            -d "email=juanmen@domain.com" 
+            -X PUT
+             
+            [
+                {
+                    "email": "juanmen@domain.com"
+                    "hash_key": "23215634", 
+                    "id": "455597c8-59b6-f6cc-a6ed-078986e819fb", 
+                    "link_image": "http://abs.twimg.com/sticky/default_profile.png", 
+                    "name": "Juan Mendoza", 
+                    "nickname": "juanmen", 
+                    "registered": "2014-05-21 02:53:55.791210", 
+                    "score_answers": 40, 
+                    "total_post": 4
+                }
+            ]
+ 
+        '''
+         
+        args = self.parser.parse_args()
+        item = get_item(table, key_twitter = g.id_twitter)
+        
+        if item == None:
+            abort(401)
+        
+        item._data['email'] = args.email
         return [item._data]
     
 

@@ -182,4 +182,26 @@ def twitter_credentials(access_token, token_secret, tw_auth):
     tw_auth.tokengetter(get_twitter_token)    
     return tw_auth.get('account/verify_credentials.json')
     
+
+class email_validation(Raw):
+    def format(self, value): 
+        """ (str) -> str
+        
+        Verifica que value tiene la estructura de un email
+        """
+        
+        return validate_email(value)
+
+def validate_email(email):
+    """ (str) -> boolean
     
+    Permite verificar que el email proporcionado tiene el formato adecuado 
+    Si correcto retorna el email de lo contrario lanza un NameError.    
+    """
+    
+    import re
+    result = re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,4}$'
+                      ,email.lower())
+    if result:
+        return email
+    raise NameError('Malformed email')

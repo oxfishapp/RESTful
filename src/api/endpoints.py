@@ -25,6 +25,7 @@ api.add_resource(users.Nickname, api_version +  '/user/<string:nickname>')
 api.add_resource(users.User_post, api_version + '/post/user/')
 api.add_resource(users.User_scores, api_version + '/auth/user/')
 api.add_resource(users.Auth_user, api_version + '/login/')
+api.add_resource(users.User_register, api_version + '/auth/register/')
 
 api.add_resource(timeline.Timeline_Index, api_version + '/publictimeline')
 api.add_resource(timeline.Timeline_Answers, api_version + '/aloneview')

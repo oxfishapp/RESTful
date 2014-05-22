@@ -25,7 +25,7 @@ class UserTestCase(unittest.TestCase):
     def test_get_user_key_twitter(self):
         '''
         () -> NoneType
-        permite realizar la prueba al recurso (/user/ -> GET) 
+        permite realizar la prueba al recurso (/api/1.0/user/ -> GET) 
            
         verifica que los datos solicitados por el servicio tengan 
         el formato adecuado y valida que el response sea el correcto.
@@ -66,7 +66,7 @@ class UserTestCase(unittest.TestCase):
     def test_get_user_nickname(self):
         '''
         () -> NoneType
-        permite realizar la prueba al recurso (/user/<string:nickname> -> GET) 
+        permite realizar la prueba al recurso (/api/1.0/user/<string:nickname> -> GET) 
            
         verifica que los datos solicitados por el servicio tengan 
         el formato adecuado y valida que el response sea el correcto.
@@ -80,12 +80,11 @@ class UserTestCase(unittest.TestCase):
         self.assertListEqual(resultado_esperado, json_data)
         self.assertTrue(resultado.status_code == 200)
            
-               
  
     def test_get_user_post(self):
         '''
         () -> NoneType
-        permite realizar la prueba al recurso (/post/user/ -> GET) 
+        permite realizar la prueba al recurso (/api/1.0/post/user/ -> GET) 
              
         verifica que los datos solicitados por el servicio tengan 
         el formato adecuado y valida que el response sea el correcto.
