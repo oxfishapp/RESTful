@@ -4,7 +4,7 @@
 
 from application import dynamodb
 from flask.ext.restful import Resource, reqparse, marshal_with
-from formats import format_question
+#from formats import format_question
 from commons import hashValidation, timeUTCCreate
 
 db_connection = dynamodb.db_connection

@@ -60,7 +60,7 @@ if __name__ == "__main__":
             , use_reloader=uso_debug, host='localhost', port=5000)
 
 # curl http://localhost:5000/api/1.0/publictimeline
-# curl http://localhost:5000/api/1.0/home/AEAF8765-4069-4069-A2DD-08002B30309D
+# curl http://localhost:5000/api/1.0/home/fedcf7af-e9f0-69cc-1c68-362d8f5164ea
 # curl http://localhost:5000/api/1.0/winanswers -d 'HashKeyList=["31EC2020-3AEA-4069-A2DD-08002B30309D"]' -X GET
 # curl http://localhost:5000/api/1.0/post_q/11EC2020-3AEA-4069-A2DD-08002B30309D
 # curl http://localhost:5000/api/1.0/aloneview -d 'HashKey=11EC2020-3AEA-4069-A2DD-08002B30309D' -X GET

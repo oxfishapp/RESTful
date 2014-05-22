@@ -81,7 +81,7 @@ def hashKeyList(value):
     list_hashkey = []
     values = jsondecoder(value)
     for item in values:
-        list_hashkey.append({'Key_Post': hashValidation(item)})
+        list_hashkey.append({'key_post': hashValidation(item)})
     return list_hashkey
 
 def jsondecoder(encoder):

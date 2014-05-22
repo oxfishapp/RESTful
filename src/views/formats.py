@@ -38,36 +38,36 @@ format_user_twitter = {'key_twitter': fields.String(attribute='id_str')
                    ,'score_answers': fields.Integer
                    }
 
-format_timeline= {'Keys':
+format_timeline= {'keys':
                       {
-                      'HashKey': HashKey_Validation(attribute='Key_Post')
-                      ,'HashKeyOriginal': HashKey_Validation(attribute='Key_PostOriginal')
+                      'hash_key': HashKey_Validation(attribute='key_post')
+                      ,'hash_key_original': HashKey_Validation(attribute='key_post_original')
                       }
-                   ,'Geolocation': fields.String
-                   ,'FlagAnswer': fields.Integer
-                   ,'Tags': Set_to_List
-                   ,'Key_TimelinePost':fields.String
-                   ,'Key_User':HashKey_Validation
-                   ,'Message140':fields.String
-                   ,'TotalAnswers':fields.Integer
-                   ,'WinAnswers':Set_to_List
-                   ,'Link':fields.String
-                   ,'Source':fields.String
+                   ,'geolocation': fields.String
+                   ,'flag_answer': fields.Integer
+                   ,'skills': Set_to_List
+                   ,'key_timeline_post':fields.String
+                   ,'key_user':HashKey_Validation
+                   ,'message140':fields.String
+                   ,'total_answers':fields.Integer
+                   ,'win_answers':Set_to_List
+                   ,'link':fields.String
+                   ,'source':fields.String
                   }
 
-format_question={'Keys':
-                      {
-                      'HashKey': HashKey_Validation(attribute='Key_Post')
-                      ,'HashKeyOriginal': HashKey_Validation(attribute='Key_PostOriginal')
-                      }
-                   ,'Geolocation': fields.String
-                   ,'FlagAnswer': fields.Integer
-                   ,'Tags': Set_to_List
-                   ,'Key_TimelinePost':fields.String
-                   ,'Key_User':HashKey_Validation
-                   ,'Message140':fields.String
-                   ,'TotalAnswers':fields.Integer
-                   ,'WinAnswers':Set_to_List
-                   ,'Link':fields.String
-                   ,'Source':fields.String
-                  }
+# format_question={'Keys':
+#                       {
+#                       'HashKey': HashKey_Validation(attribute='Key_Post')
+#                       ,'HashKeyOriginal': HashKey_Validation(attribute='Key_PostOriginal')
+#                       }
+#                    ,'Geolocation': fields.String
+#                    ,'FlagAnswer': fields.Integer
+#                    ,'Tags': Set_to_List
+#                    ,'Key_TimelinePost':fields.String
+#                    ,'Key_User':HashKey_Validation
+#                    ,'Message140':fields.String
+#                    ,'TotalAnswers':fields.Integer
+#                    ,'WinAnswers':Set_to_List
+#                    ,'Link':fields.String
+#                    ,'Source':fields.String
+#                   }

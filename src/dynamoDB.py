@@ -66,8 +66,8 @@ class dbTables(object):
         #Creacion de la tabla user_suffix_ (ej. user_tets_)
         tables = self.db_connection.list_tables()
         schema_table = [
-             HashKey('Key_Post',data_type = STRING),
-             #RangeKey('Key_TimelinePost',data_type = STRING),
+             HashKey('key_post',data_type = STRING),
+             #RangeKey('key_timelinePost',data_type = STRING),
              ]
         
         throughput={'read': 5, 'write': 3}
@@ -75,22 +75,22 @@ class dbTables(object):
         
         
         GAI_TimelinePublic = GlobalAllIndex('GAI_TimelinePublic'
-                                               ,parts=[HashKey('FlagAnswer',data_type = NUMBER)
-                                               ,RangeKey('Key_TimelinePost',data_type = STRING)
+                                               ,parts=[HashKey('flag_answer',data_type = NUMBER)
+                                               ,RangeKey('key_timeline_post',data_type = STRING)
                                                        ]
                                                ,throughput=throughput
                                                )
         
         GAI_VerTodoPublic = GlobalAllIndex('GAI_VerTodoPublic'
-                                               ,parts=[HashKey('Key_PostOriginal',data_type = STRING),
-                                                       RangeKey('Key_TimelinePost',data_type = STRING)
+                                               ,parts=[HashKey('key_post_original',data_type = STRING),
+                                                       RangeKey('key_timeline_post',data_type = STRING)
                                                        ]
                                                ,throughput=throughput
                                                )
         
         GAI_Home = GlobalAllIndex('GAI_Home'
-                                      ,parts=[HashKey('Key_User',data_type = STRING),
-                                              RangeKey('Key_TimelinePost',data_type = STRING)
+                                      ,parts=[HashKey('key_user',data_type = STRING),
+                                              RangeKey('key_timeline_post',data_type = STRING)
                                               ]
                                       ,throughput=throughput
                                        )
@@ -124,22 +124,22 @@ class dbTables(object):
         #Creacion de la tabla user_suffix_ (ej. user_tets_)
         tables = self.db_connection.list_tables()
         schema_table = [
-             HashKey('Skill',data_type = STRING),
-             RangeKey('Key_Time',data_type = STRING),
+             HashKey('skill',data_type = STRING),
+             RangeKey('key_time',data_type = STRING),
              ]
         
         throughput={'read': 5, 'write': 3}
         
         GKOI_Navbar = GlobalKeysOnlyIndex('GKOI_Navbar'
-                                               ,parts=[HashKey('Key_User',data_type = STRING)
-                                               ,RangeKey('Skill',data_type = STRING)
+                                               ,parts=[HashKey('key_user',data_type = STRING)
+                                               ,RangeKey('skill',data_type = STRING)
                                                        ]
                                                ,throughput=throughput
                                                )
         
         GKOI_Count = GlobalKeysOnlyIndex('GKOI_Count'
-                                               ,parts=[HashKey('Skill',data_type = STRING)
-                                               ,RangeKey('Skill_User',data_type = STRING)
+                                               ,parts=[HashKey('skill',data_type = STRING)
+                                               ,RangeKey('skill_user',data_type = STRING)
                                                        ]
                                                ,throughput=throughput
                                                )
@@ -221,156 +221,196 @@ class dbTablesTest(dbTables):
         table = self.dynamodb.tables['tbl_timeline']
         item = Item(  table
                     , data={
-                            'Key_Post'          : '11EC2020-3AEA-4069-A2DD-08002B30309D'
-                            ,'Key_TimelinePost' : '2014-05-13 17:24:31'
-                            ,'Geolocation'      : '4.598056,-74.075833'
-                            ,'TotalAnswers'     : 3
-                            ,'Tags'             : set(['Flask','Python','dynamoDB'])
-                            ,'Source'           : 'Web'
-                            ,'Message140'          : 'Howto Create a table with Python in dynamoDB from Flask?'
-                            ,'Key_User'         : 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
-                            ,'FlagAnswer'       : 1
-                            ,'WinAnswers'       : set(['31EC2020-3AEA-4069-A2DD-08002B30309D'])
-                            ,'Link'             : 'Imagen de Pregunta'
+                            'key_post'          : '11EC2020-3AEA-4069-A2DD-08002B30309D'
+                            ,'key_timeline_post' : '2014-05-13 17:24:31'
+                            ,'geolocation'      : '4.598056,-74.075833'
+                            ,'total_answers'     : 3
+                            ,'skills'             : set(['flask','python','dynamodb'])
+                            ,'source'           : 'Web'
+                            ,'message140'          : 'Howto Create a table with Python in dynamodb from Flask?'
+                            ,'key_user'         : 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
+                            ,'flag_answer'       : 1
+                            ,'win_answers'       : set(['31EC2020-3AEA-4069-A2DD-08002B30309D','21EC2020-3AEA-4069-A2DD-08002B30309D'])
+                            ,'link'             : 'Imagen de Pregunta'
                             }
                     )
         item.save()
         
         item = Item(  table
                     , data={
-                            'Key_Post'          : '21EC2020-3AEA-4069-A2DD-08002B30309D'
-                            ,'Key_TimelinePost' : '2014-05-14 17:24:31'
-                            ,'Geolocation'      : '4.598056,-74.075833'
-                            ,'Source'           : 'Web'
-                            ,'Message140'       : 'UNO link del video mas respuesta del usuario'
-                            ,'Key_User'         : '12345678-e9f0-69cc-1c68-362d8f5164ea'
-                            ,'Key_PostOriginal' : '11EC2020-3AEA-4069-A2DD-08002B30309D'
-                            ,'Link'             : 'link video'
+                            'key_post'          : '21EC2020-3AEA-4069-A2DD-08002B30309D'
+                            ,'key_timeline_post' : '2014-05-14 17:24:31'
+                            ,'geolocation'      : '4.598056,-74.075833'
+                            ,'source'           : 'Web'
+                            ,'message140'       : 'UNO link del video mas respuesta del usuario'
+                            ,'key_user'         : '12345678-e9f0-69cc-1c68-362d8f5164ea'
+                            ,'key_post_original' : '11EC2020-3AEA-4069-A2DD-08002B30309D'
+                            ,'link'             : 'link video'
                             }
                     )
         item.save()
         
         item = Item(  table
                     , data={
-                            'Key_Post'          : '31EC2020-3AEA-4069-A2DD-08002B30309D'
-                            ,'Key_TimelinePost' : '2014-05-15 17:24:31'
-                            ,'Geolocation'      : '4.598056,-74.075833'
-                            ,'Source'           : 'Web'
-                            ,'Message140'          : 'DOS link del video mas respuesta del usuario'
-                            ,'Key_User'         : 'CEAF8765-4069-4069-A2DD-08002B30309D'
-                            ,'Key_PostOriginal' : '11EC2020-3AEA-4069-A2DD-08002B30309D'
-                            ,'Link'             : 'link video'
+                            'key_post'          : '31EC2020-3AEA-4069-A2DD-08002B30309D'
+                            ,'key_timeline_post' : '2014-05-15 17:24:31'
+                            ,'geolocation'      : '4.598056,-74.075833'
+                            ,'source'           : 'Web'
+                            ,'message140'          : 'DOS link del video mas respuesta del usuario'
+                            ,'key_user'         : '87654321-e9f0-69cc-1c68-362d8f5164ea'
+                            ,'key_post_original' : '11EC2020-3AEA-4069-A2DD-08002B30309D'
+                            ,'link'             : 'link video'
                             }
                     )
         item.save()
         
         item = Item(  table
                     , data={
-                            'Key_Post'          : '41EC2020-3AEA-4069-A2DD-08002B30309D'
-                            ,'Key_TimelinePost' : '2014-05-15 17:24:31'
-                            ,'Geolocation'      : '4.598056,-74.075833'
-                            ,'Source'           : 'Web'
-                            ,'Message140'          : 'TRES link del video mas respuesta del usuario'
-                            ,'Key_User'         : 'DEAF8765-4069-4069-A2DD-08002B30309D'
-                            ,'Key_PostOriginal' : '11EC2020-3AEA-4069-A2DD-08002B30309D'
-                            ,'Link'             : 'link video'
+                            'key_post'          : '41EC2020-3AEA-4069-A2DD-08002B30309D'
+                            ,'key_timeline_post' : '2014-05-15 17:24:31'
+                            ,'geolocation'      : '4.598056,-74.075833'
+                            ,'source'           : 'Web'
+                            ,'message140'          : 'TRES link del video mas respuesta del usuario'
+                            ,'key_user'         : '87654321-e9f0-69cc-1c68-362d8f5164ea'
+                            ,'key_post_original' : '11EC2020-3AEA-4069-A2DD-08002B30309D'
+                            ,'link'             : 'link video'
                             }
                     )
         item.save()
         
         item = Item(  table
                     , data={
-                            'Key_Post'          : '12EC2020-3AEA-4069-A2DD-08002B30309D'
-                            ,'Key_TimelinePost' : '2014-05-13 17:24:31'
-                            ,'Geolocation'      : '4.598056,-74.075833'
-                            ,'Tags'             : set(['Flask','Python','dynamoDB'])
-                            ,'Source'           : 'Web'
-                            ,'Message140'          : 'Howto preunta sin resolver?'
-                            ,'Key_User'         : 'FFFF8765-4069-4069-A2DD-08002B30309D'
-                            ,'FlagAnswer'       : 0
+                            'key_post'          : '12EC2020-3AEA-4069-A2DD-08002B30309D'
+                            ,'key_timeline_post' : '2014-05-13 17:24:31'
+                            ,'geolocation'      : '4.598056,-74.075833'
+                            ,'skills'             : set(['csharp','html','jquery'])
+                            ,'source'           : 'Web'
+                            ,'message140'          : 'Howto preunta sin resolver?'
+                            ,'key_user'         : '87654321-e9f0-69cc-1c68-362d8f5164ea'
+                            ,'flag_answer'       : 0
                             }
                     )
         item.save()
 
     def create_table_skill(self):
         from datetime import datetime
-        str(datetime.utcnow())
 
         table = self.dynamodb.tables['tbl_skills']
+        
+        #######################################################################################
+        #######################################PREGUNTAS#######################################
+        #######################################PREGUNTAS#######################################
+        #######################################PREGUNTAS#######################################
+        
         item = Item(  table
                     , data={      
-                            'Skill' : 'DynamoDB'
-                            ,'Key_Time' :  str(datetime.utcnow())
-                            ,'Key_Post' : 'B2EC2020-3AEA-4069-A2DD-08002B30309D'})
+                            'skill' : 'dynamodb'
+                            ,'key_time' :  str(datetime.utcnow())
+                            ,'key_post' : '11EC2020-3AEA-4069-A2DD-08002B30309D'})
         item.save()
 
         item = Item(  table
                     , data={    
-                            'Skill' : 'Flask'
-                            ,'Key_Time' :  str(datetime.utcnow())
-                            ,'Key_Post' : 'B2EC2020-3AEA-4069-A2DD-08002B30309D'})
+                            'skill' : 'flask'
+                            ,'key_time' :  str(datetime.utcnow())
+                            ,'key_post' : '11EC2020-3AEA-4069-A2DD-08002B30309D'})
         item.save()
 
         item = Item(  table
                     , data={    
-                            'Skill' : 'Python'
-                            ,'Key_Time' :  str(datetime.utcnow())
-                            ,'Key_Post' : 'B2EC2020-3AEA-4069-A2DD-08002B30309D'})
+                            'skill' : 'python'
+                            ,'key_time' :  str(datetime.utcnow())
+                            ,'key_post' : '11EC2020-3AEA-4069-A2DD-08002B30309D'})
         item.save()
 
         item = Item(  table
                     , data={    
-                            'Skill' : 'CSharp'
-                            ,'Key_Time' :  str(datetime.utcnow())
-                            ,'Key_Post' : 'A2EC2020-3AEA-4069-A2DD-08002B30309D'})
+                            'skill' : 'csharp'
+                            ,'key_time' :  str(datetime.utcnow())
+                            ,'key_post' : '12EC2020-3AEA-4069-A2DD-08002B30309D'})
         item.save()
 
         item = Item(  table
                     , data={    
-                            'Skill' : 'HTML'
-                            ,'Key_Time' :  str(datetime.utcnow())
-                            ,'Key_Post' : 'A2EC2020-3AEA-4069-A2DD-08002B30309D'})
+                            'skill' : 'html'
+                            ,'key_time' :  str(datetime.utcnow())
+                            ,'key_post' : '12EC2020-3AEA-4069-A2DD-08002B30309D'})
         item.save()
 
         item = Item(  table
                     , data={   
-                            'Skill' : 'JQuery'
-                            ,'Key_Time' :  str(datetime.utcnow())
-                            ,'Key_Post' : 'A2EC2020-3AEA-4069-A2DD-08002B30309D'})
+                            'skill' : 'jquery'
+                            ,'key_time' :  str(datetime.utcnow())
+                            ,'key_post' : '12EC2020-3AEA-4069-A2DD-08002B30309D'})
+        item.save()
+
+        ##################################################################################
+        #######################################USER#######################################
+        #######################################USER#######################################
+        #######################################USER#######################################
+        item = Item(  table
+                    , data={    
+                            'key_user' : 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
+                            ,'skill' : 'python'
+                            ,'skill_User' : 'True'
+                            ,'key_time' :  str(datetime.utcnow())})
         item.save()
 
         item = Item(  table
                     , data={    
-                            'Key_User' : 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
-                            ,'Skill' : 'Python'
-                            ,'Skill_User' : 'True'
-                            ,'Key_Time' :  str(datetime.utcnow())})
+                            'key_user' : 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
+                            ,'skill' : 'flask'
+                            ,'skill_User' : 'True'
+                            ,'key_time' :  str(datetime.utcnow())})
         item.save()
 
         item = Item(  table
                     , data={    
-                            'Key_User' : 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
-                            ,'Skill' : 'Flask'
-                            ,'Skill_User' : 'True'
-                            ,'Key_Time' :  str(datetime.utcnow())})
+                            'key_user' : 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
+                            ,'skill' : 'dynamodb'
+                            ,'skill_User' : 'True'
+                            ,'key_time' :  str(datetime.utcnow())})
         item.save()
 
         item = Item(  table
                     , data={    
-                            'Key_User' : 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
-                            ,'Skill' : 'DynamoDB'
-                            ,'Skill_User' : 'True'
-                            ,'Key_Time' :  str(datetime.utcnow())})
+                            'key_user' : '12345678-e9f0-69cc-1c68-362d8f5164ea'
+                            ,'skill' : 'csharp'
+                            ,'skill_User' : 'True'
+                            ,'key_time' :  str(datetime.utcnow())})
+        item.save()
+        
+        item = Item(  table
+                    , data={    
+                            'key_user' : '12345678-e9f0-69cc-1c68-362d8f5164ea'
+                            ,'skill' : 'dynamodb'
+                            ,'skill_User' : 'True'
+                            ,'key_time' :  str(datetime.utcnow())})
         item.save()
 
         item = Item(  table
                     , data={    
-                            'Key_User' : '12345678-e9f0-69cc-1c68-362d8f5164ea'
-                            ,'Skill' : 'CSharp'
-                            ,'Skill_User' : 'True'
-                            ,'Key_Time' :  str(datetime.utcnow())})
+                            'key_user' : '87654321-e9f0-69cc-1c68-362d8f5164ea'
+                            ,'skill' : 'flask'
+                            ,'skill_User' : 'True'
+                            ,'key_time' :  str(datetime.utcnow())})
         item.save()
 
+        item = Item(  table
+                    , data={    
+                            'key_user' : '87654321-e9f0-69cc-1c68-362d8f5164ea'
+                            ,'skill' : 'csharp'
+                            ,'skill_User' : 'True'
+                            ,'key_time' :  str(datetime.utcnow())})
+        item.save()
+        
+        item = Item(  table
+                    , data={    
+                            'key_user' : '87654321-e9f0-69cc-1c68-362d8f5164ea'
+                            ,'skill' : 'dynamodb'
+                            ,'skill_User' : 'True'
+                            ,'key_time' :  str(datetime.utcnow())})
+        item.save()
 
 class dbTablesDev(dbTables):
     
