@@ -19,7 +19,7 @@ class Skill_Navbar_Index(Resource):
     
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('KeyUser', type=hashValidation, required=True)
+        self.reqparse.add_argument('userk', type=hashValidation, required=True)
         super(Skill_Navbar_Index, self).__init__()  
         
         
@@ -27,14 +27,14 @@ class Skill_Navbar_Index(Resource):
         
         args = self.reqparse.parse_args()
         
-        skillUser = table.query_2(Key_User__eq=args.KeyUser
+        skillUser = table.query_2(key_user__eq=args.userk
                                 ,limit=3
                                 ,index='GKOI_Navbar'
                                 ,reverse=True)
         
         result = []
         for skill in skillUser:
-            result.append(skill._data['Skill'])
+            result.append(skill._data['skill'])
         
         return result
 
@@ -45,29 +45,29 @@ class Skill_Table(Resource):
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('KeyUser', type=hashValidation, required=False)
-        self.reqparse.add_argument('KeyPost', type=hashValidation, required=False)
-        self.reqparse.add_argument('Skills', type=str,action='append', required=True)
+        self.reqparse.add_argument('key_user', type=hashValidation, required=False)
+        self.reqparse.add_argument('key_post', type=hashValidation, required=False)
+        self.reqparse.add_argument('skills', type=str,action='append', required=True)
         super(Skill_Table, self).__init__()  
         
         def post(self):
             
             args = self.reqparse.parse_args()
-            skillsList = args.Skills
-            keyPost = args.get('KeyPost')
+            skillsList = args.skills
+            keyPost = args.get('key_post')
             
             
             if not keyPost:
                 for skill in skillsList:
-                    table.put_item(data={'Key_User' : args.KeyUser
-                                        ,'Skill' : skill
-                                        ,'Skill_User' : 'True'
-                                        ,'Key_Time' :  timeUTCCreate()})
+                    table.put_item(data={'key_user' : args.key_user
+                                        ,'skill' : skill
+                                        ,'skill_user' : 'True'
+                                        ,'key_time' :  timeUTCCreate()})
             else:
                 for skill in skillsList:
-                    table.put_item(data={'Skill' : skill
-                                        ,'Key_Time' :  timeUTCCreate()
-                                        ,'Key_Post' : hashValidation(keyPost)})
+                    table.put_item(data={'skill' : skill
+                                        ,'key_time' :  timeUTCCreate()
+                                        ,'key_post' : hashValidation(keyPost)})
         
         return 'Ingreso'
     

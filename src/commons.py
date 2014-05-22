@@ -114,6 +114,8 @@ def timeUTCCreate():
     from datetime import datetime
     return str(datetime.utcnow())
 
+#Post
+#Respuestas
 def items_to_list(items):
     """ (items) -> list
     
@@ -125,12 +127,18 @@ def items_to_list(items):
     
     """
     
+    
+    from application import dynamodb
+    table = dynamodb.tables['tbl_user']
+    
     result = []
     
     from boto.dynamodb2.results import ResultSet
     if isinstance(items, ResultSet):
         for item in items:
-                result.append(dict(item))
+                user_insert = table.query_2(key_user__eq = item._data['key_user'], index = 'key_user_index').next()
+                result.append(item._data)
+                result[-1].update(user_insert._data)
         return result
     #print(value)
     result.append(items)

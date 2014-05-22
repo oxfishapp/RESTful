@@ -53,6 +53,9 @@ format_timeline= {'keys':
                    ,'win_answers':Set_to_List
                    ,'link':fields.String
                    ,'source':fields.String
+                   ,'nickname':fields.String
+                   ,'name':fields.String
+                   ,'link_image':fields.String
                   }
 
 # format_question={'Keys':
