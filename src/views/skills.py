@@ -4,12 +4,12 @@
 
 from application import dynamodb
 from flask.ext.restful import Resource, reqparse, marshal_with
-from formats import format_skill
+from formats import format_question
 from commons import hashValidation, timeUTCCreate
 
 db_connection = dynamodb.db_connection
 table = dynamodb.tables['tbl_skills']
-table_user = dynamodb.tables['tbl_users']
+table_user = dynamodb.tables['tbl_user']
 table_timeline = dynamodb.tables['tbl_timeline']
 
 #se consulta para poner las habilidades
