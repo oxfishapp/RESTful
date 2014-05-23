@@ -150,6 +150,14 @@ class dbTables(object):
                                                , includes=['key_post']
                                                )
         
+        GII_Post = GlobalIncludeIndex('GII_Post'
+                                               ,parts=[HashKey('key_post',data_type = STRING)
+                                               ,RangeKey('key_time',data_type = STRING)
+                                                       ]
+                                               ,throughput=throughput
+                                               , includes=['skill']
+                                               )
+        
         table_name = 'skill' + self.TABLE_SUFFIX
         
         table = Table(table_name, connection=self.db_connection)
@@ -166,7 +174,7 @@ class dbTables(object):
             Table.create(table_name
                          , schema=schema_table
                          , throughput=throughput
-                         , global_indexes=[GKOI_Navbar,GII_Find]
+                         , global_indexes=[GKOI_Navbar,GII_Find,GII_Post]
                          , connection=self.db_connection
                          )
         
@@ -339,7 +347,7 @@ class dbTablesTest(dbTables):
 
         item = Item(  table
                     , data={    
-                            'skill' : 'q_dynamodb'
+                            'skill' : 'q_html'
                             ,'key_time' :  str(datetime.utcnow())
                             ,'key_post' : '12EC2020-3AEA-4069-A2DD-08002B30309D'})
         item.save()

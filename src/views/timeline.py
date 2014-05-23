@@ -11,14 +11,6 @@ from commons import *
 db_connection = dynamodb.db_connection
 table = dynamodb.tables['tbl_timeline']
 
-#Conexion
-# table = DynamoDBConnection(
-#     host='localhost',
-#     port=8000,
-#     aws_access_key_id='DEVDB', #anything will do
-#     aws_secret_access_key='DEVDB', #anything will do
-#     is_secure=False)
-
 #Global All Index Timeline Public
 class Timeline_Index(Resource):
     decorators = [marshal_with(format_timeline)]
@@ -42,6 +34,8 @@ class Timeline_Index(Resource):
         return items_to_list(questions)
     
 #Global All Index Home
+
+
 class Timeline_Home_Index(Resource):
     decorators = [marshal_with(format_timeline)]
     
@@ -154,7 +148,6 @@ class Timeline_Update(Resource):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('hash_key', type=hashValidation, required=False)
         self.reqparse.add_argument('jsontimeline', type=str, required=False)
-        self.reqparse.add_argument('plus', type=int, required=False)
         super(Timeline_Update, self).__init__()   
     
     @marshal_with(format_timeline)
@@ -267,8 +260,6 @@ class Timeline_Update(Resource):
         
         Examples:
             
-==============================================================================
-            
         curl http://localhost:5000/api/1.0/update 
             -d 'hash_key=11EC2020-3AEA-4069-A2DD-08002B30309D' 
             -d 'jsontimeline={
@@ -288,8 +279,12 @@ class Timeline_Update(Resource):
         args = self.reqparse.parse_args()
         
         item = table.get_item(key_post=args.hash_key)
-        attributes = {}
-        #item._data['flag_answer'] = 1
+        attributes = dict()
+        message = {"success" : {
+                                "message": "Updated successful from timeline", 
+                                "status": "Updated"
+                                }
+                   }
         
         if args.get('jsontimeline'):
             attributes = jsondecoder(args.jsontimeline)
@@ -297,7 +292,7 @@ class Timeline_Update(Resource):
         if not item._data.get('win_answers'):  
             item._data['win_answers'] = set([attributes["hash_key_answer"]])
             item.save()
-            return 'Actualizado'    
+            return message['success']    
             
         if attributes["state"]:
             item._data['win_answers'].add(attributes["hash_key_answer"])
@@ -306,7 +301,7 @@ class Timeline_Update(Resource):
         
         item.save()
         
-        return 'Actualizado'
+        return message['success']
      
      
     def delete(self):
@@ -363,9 +358,7 @@ class Timeline_Update(Resource):
                                 "message": "delete fail from timeline", 
                                 "status": "NoChange"
                              }
-                    }
-         
-        
+                    }        
 #        db_connection.delete_item('timeline', key={'key_post':hash_key})
         
         deleteItem = table.get_item(key_post=hash_key)
@@ -376,8 +369,21 @@ class Timeline_Update(Resource):
             questionItem = table.get_item(key_post=deleteItem._data['key_post_original'])       
         elif not deleteItem._data['total_answers']:
             db_connection.delete_item('timeline', key={'key_post':hash_key})
+            
+            
+            skillsDelete = db_connection.query('skill', { 
+                                                  "key_post": 
+                                                            { 
+                                                    "ComparisonOperator": "EQ",
+                                                    "AttributeValueList": [ {"S": hash_key} ]
+                                                            }
+                                                         }, index_name='GII_Post')
+            
+            for skill in dict(skillsDelete.items())['Items']:
+                db_connection.delete_item('skill', key={'skill':'q_'+skill['key_time']['S']
+                                                        ,'key_time':skill['key_time']['S']
+                                                        })
             return message['success']
- 
         else:
             return message['error']
          
