@@ -3,17 +3,21 @@
 #!flask/bin/python
 
 from application import dynamodb
-from flask.ext.restful import Resource, reqparse, marshal_with
+from flask.ext.restful import Resource, reqparse, marshal_with, marshal
 from formats import format_timeline
-from commons import (  hashKeyList 
-                     , items_to_list 
-                     , hashValidation
-                     , jsondecoder
-                     , hashCreate
-                     , timeUTCCreate)
+from commons import *
+#from boto.dynamodb2.layer1 import DynamoDBConnection #DynamoDB Conexion
 
 db_connection = dynamodb.db_connection
 table = dynamodb.tables['tbl_timeline']
+
+#Conexion
+# table = DynamoDBConnection(
+#     host='localhost',
+#     port=8000,
+#     aws_access_key_id='DEVDB', #anything will do
+#     aws_secret_access_key='DEVDB', #anything will do
+#     is_secure=False)
 
 #Global All Index Timeline Public
 class Timeline_Index(Resource):
@@ -30,9 +34,9 @@ class Timeline_Index(Resource):
             curl http://localhost:5000/api/1.0/publictimeline
              
         """       
-        questions = table.query_2(flag_answer__eq=0
+        questions = table.query_2(flag_answer__eq='True'
                                        ,limit=3
-                                       ,index='GAI_TimelinePublic'
+                                       ,index='TimelinePublic'
                                        ,reverse=True)
                 #,exclusive_start_key=_exclusive_start_key
         return items_to_list(questions)
@@ -54,75 +58,57 @@ class Timeline_Home_Index(Resource):
             "str" -> UUID  
             
         Example:
-            curl http://localhost:5000/api/1.0/home/87654321-e9f0-69cc-1c68-362d8f5164ea">     
+            curl http://localhost:5000/api/1.0/home/87654321-e9f0-69cc-1c68-362d8f5164ea
         
         """
         homeUser = table.query_2(key_user__eq=key
                                       ,limit=3
-                                      ,index='GAI_Home'
+                                      ,index='Home'
                                       ,reverse=True)
         #,exclusive_start_key=_exclusive_start_key
         return items_to_list(homeUser)
 
 
-class Timeline_Questions(Resource):
-    decorators = [marshal_with(format_timeline)]
+class Timeline_QandWinA(Resource):
+    #decorators = [marshal_with(format_timeline)]
     
     def get(self, key):
         """ (str) -> list
         
         Retorna el encabezado (Pregunta) de una 
-        vista en particular.
+        vista en particular con sus win answers 
+        asociadas.
         
         Formato con el cual consulta en la tabla timeline
-        para obtener una pregunta en particular:
+        para obtener una pregunta y sus win answers 
+        en particular:
         
         key= 
             "str" -> UUID  
             
         Example:
-            curl http://localhost:5000/api/1.0/post_q/11EC2020-3AEA-4069-A2DD-08002B30309D">
+            curl http://localhost:5000/api/1.0/post_qwa/11EC2020-3AEA-4069-A2DD-08002B30309D
         
         """
+        result = {}
         header_q = table.get_item(key_post=hashValidation(key))
         
-        return items_to_list(header_q._data)
+        if header_q._data.get('win_answers'):
+            win_answers = hashKeyList(list(header_q._data['win_answers']))
+            winanswers_a = table.batch_get(win_answers) 
+            result ={
+                     "question": marshal(item_to_dict(header_q._data),format_timeline)
+                    ,"winanswers": marshal(items_to_list(winanswers_a),format_timeline)
+                    }  
+        else:
+            result ={
+                     "question": marshal(item_to_dict(header_q._data),format_timeline)
+                    ,"winanswers": []
+                    }  
+        
+        return result
 
-#Batch Get Timeline Table
-class Timeline_win_answers(Resource):
-    decorators = [marshal_with(format_timeline)]
 
-    def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('hash_keyList', type=hashKeyList, required=True)
-        super(Timeline_win_answers, self).__init__()
-    
-    def get(self):
-        """ () -> list
-        
-        Retorna una lista con las respuestas ganadoras
-        de una pregunta particular.
-        
-        Formato con el cual consulta en la tabla timeline
-        para obtener la lista de respuestas ganadoras de 
-        una pregunta:
-        
-        hash_keyList= 
-            list["str","str"] -> "str" -> UUID  
-            
-        Example:
-            
-            curl http://localhost:5000/api/1.0/winanswers -d 'hash_keyList=["31EC2020-3AEA-4069-A2DD-08002B30309D","21EC2020-3AEA-4069-A2DD-08002B30309D"]' -X GET
-        
-        """
-        args = self.reqparse.parse_args()
-        hash_keylist = args.hash_keyList
-        
-        win_answers = table.batch_get(hash_keylist)   
-        
-        return items_to_list(win_answers)
- 
- 
 class Timeline_Answers(Resource):
     decorators = [marshal_with(format_timeline)]  
     
@@ -146,7 +132,7 @@ class Timeline_Answers(Resource):
         
         Example:
         
-            curl http://localhost:5000/api/1.0/aloneview -d 'hash_key=11EC2020-3AEA-4069-A2DD-08002B30309D' -X GET
+            curl http://localhost:5000/api/1.0/allanswers -d 'hash_key=11EC2020-3AEA-4069-A2DD-08002B30309D' -X GET
         
         """
         
@@ -155,7 +141,7 @@ class Timeline_Answers(Resource):
         
         answers = table.query_2(key_post_original__eq=hash_key
                                      ,limit=3
-                                     ,index='GAI_VerTodoPublic'
+                                     ,index='VerTodoPublic'
                                      ,reverse=True)
         #,exclusive_start_key=_exclusive_start_key
 
@@ -168,6 +154,7 @@ class Timeline_Update(Resource):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('hash_key', type=hashValidation, required=False)
         self.reqparse.add_argument('jsontimeline', type=str, required=False)
+        self.reqparse.add_argument('plus', type=int, required=False)
         super(Timeline_Update, self).__init__()   
     
     @marshal_with(format_timeline)
@@ -186,50 +173,50 @@ class Timeline_Update(Resource):
         en la tabla timeline:
         
         Insert Question
-        jsontimeline=
-            {
-                "message140": str
-                , "source": str
-                , "geolocation": str -> Format = "4.598056,-74.075833"
-                , "skills": [,,]
-                , "link": str
-                , "key_user": "UUID"
-            }
+            jsontimeline=
+                {
+                    "message140": str
+                    , "source": str
+                    , "geolocation": str -> Format = "4.598056,-74.075833"
+                    , "skills": [,,]
+                    , "link": str
+                    , "key_user": "UUID"
+                }
         
         Insert Answer
-        jsontimeline=
-            {
-                "message140": str
-                , "source": str
-                , "geolocation": str -> Format = "4.598056,-74.075833"
-                , "link": "Imagen de Pregunta"
-                , "key_user": "UUID"
-                , "key_post_original" : "UUID"
-            }
+            jsontimeline=
+                {
+                    "message140": str
+                    , "source": str
+                    , "geolocation": str -> Format = "4.598056,-74.075833"
+                    , "link": "Imagen de Pregunta"
+                    , "key_user": "UUID"
+                    , "key_post_original" : "UUID"
+                }
         
         Examples:
         
             curl http://localhost:5000/api/1.0/post_q 
                 -d 'jsontimeline=
                                 {
-                                    "message140": str
-                                    , "source": str
-                                    , "geolocation": str -> Format = "4.598056,-74.075833"
-                                    , "skills": [,,]
-                                    , "link": str
-                                    , "key_user": "UUID"
+                                      "message140": "Howto work with json in flask?"
+                                    , "source": "web"
+                                    , "geolocation": "4.598056,-74.075833"
+                                    , "skills": ["flask","json","web"]
+                                    , "link": "http://test1"
+                                    , "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea"
                                 }'
                  -X POST
              
             curl http://localhost:5000/api/1.0/post_a 
                 -d 'jsontimeline=
                                 {
-                                    "message140": str
-                                    , "source": str
-                                    , "geolocation": str -> Format = "4.598056,-74.075833"
+                                      "message140": "see the video"
+                                    , "source": "web"
+                                    , "geolocation": "4.598056,-74.075833"
                                     , "link": "Imagen de Pregunta"
-                                    , "key_user": "UUID"
-                                    , "key_post_original" : "UUID"
+                                    , "key_user": "12345678-e9f0-69cc-1c68-362d8f5164ea"
+                                    , "key_post_original" : "c20edb33-4dc7-43c7-bc8b-8ee3365a609b"
                                 }' 
                 -X POST
         
@@ -242,8 +229,14 @@ class Timeline_Update(Resource):
         posting['key_timeline_post'] = timeUTCCreate()
         
         if not posting.get('key_post_original'):
-            posting['flag_answer'] = 0
+            posting['flag_answer'] = 'False'
             posting['skills'] = set(posting['skills'])
+            posting['total_answers'] = 0
+        else:
+            post_original = table.get_item(key_post=posting['key_post_original'])
+            post_original._data['flag_answer'] = 'True'
+            post_original._data['total_answers'] += 1
+            post_original.save()
         
         from boto.dynamodb2.items import Item
         item = Item(table, posting)
@@ -265,57 +258,56 @@ class Timeline_Update(Resource):
         
         jsontimeline=
             {
-               "total_answers" : int -> 1 sum 0 same
-               ,"win_answers" : {
-                                "state" : int -> 1 add 0 remove
-                                ,"hash_key" : "str" -> UUID
-                                }
+            "state" : int -> 1 add 0 remove
+            ,"hash_key" : "str" -> UUID
             }    
         
         hash_key= 
             "str" -> UUID  
         
         Examples:
-        
+            
+==============================================================================
+            
         curl http://localhost:5000/api/1.0/update 
-            -d 'hash_key=UUID' 
-            -d 'jsontimeline={"total_answers" : int}' 
+            -d 'hash_key=11EC2020-3AEA-4069-A2DD-08002B30309D' 
+            -d 'jsontimeline={
+                               "state" : 1
+                              ,"hash_key_answer" : "41EC2020-3AEA-4069-A2DD-08002B30309D"
+                              }' 
             -X PUT
             
         curl http://localhost:5000/api/1.0/update 
-            -d 'hash_key=UUID' 
-            -d 'jsontimeline={"win_answers" : {
-                                                "state" : int, 
-                                                "hash_key" : "UUID"
-                                              }
+            -d 'hash_key=11EC2020-3AEA-4069-A2DD-08002B30309D' 
+            -d 'jsontimeline={
+                               "state" : 0
+                              ,"hash_key_answer" : "41EC2020-3AEA-4069-A2DD-08002B30309D"
                               }' 
             -X PUT
         """
         args = self.reqparse.parse_args()
-        attributes = jsondecoder(args.jsontimeline)
-        hash_key = args.hash_key
         
-        item = table.get_item(key_post=hash_key)
-        item._data['flag_answer'] = 1
+        item = table.get_item(key_post=args.hash_key)
+        attributes = {}
+        #item._data['flag_answer'] = 1
         
-        if attributes.get('total_answers'):
-            if item._data.get('total_answers'):
-                item._data['total_answers'] += 1
-            else:
-                item._data['total_answers'] = 1
-
-        if attributes.get('win_answers'):
-            if item._data.get('win_answers'):
-                if attributes['win_answers']["state"]:
-                    item._data['win_answers'].add(attributes['win_answers']["hash_key"])
-                else:
-                    item._data['win_answers'].remove(attributes['win_answers']["hash_key"])
-            else:
-                item._data['win_answers'] = set([attributes['win_answers']["hash_key"]])
+        if args.get('jsontimeline'):
+            attributes = jsondecoder(args.jsontimeline)
+        
+        if not item._data.get('win_answers'):  
+            item._data['win_answers'] = set([attributes["hash_key_answer"]])
+            item.save()
+            return 'Actualizado'    
+            
+        if attributes["state"]:
+            item._data['win_answers'].add(attributes["hash_key_answer"])
+        else:
+            item._data['win_answers'].remove(attributes["hash_key_answer"])
         
         item.save()
         
         return 'Actualizado'
+     
      
     def delete(self):
         """ () -> list
@@ -355,18 +347,54 @@ class Timeline_Update(Resource):
         Examples:
         
         curl http://localhost:5000/api/1.0/delete 
-            -d 'hash_key=UUID' 
+            -d 'hash_key=41EC2020-3AEA-4069-A2DD-08002B30309D' 
             -X DELETE -v 
             
         """
         
         args = self.reqparse.parse_args()
         hash_key = args.hash_key
+        questionItem = None
+        message = {"success" : {
+                                "message": "delete successful from timeline", 
+                                "status": "Removed"
+                                }
+                    ,"error":{
+                                "message": "delete fail from timeline", 
+                                "status": "NoChange"
+                             }
+                    }
+         
+        
+#        db_connection.delete_item('timeline', key={'key_post':hash_key})
         
         deleteItem = table.get_item(key_post=hash_key)
-        deleteItem.delete()
-        
-        return 'Eliminado'
+#         deleteItem.next().delete()
+  
+        #Eliminando una pregunta
+        if deleteItem._data.get('key_post_original'):
+            questionItem = table.get_item(key_post=deleteItem._data['key_post_original'])       
+        elif not deleteItem._data['total_answers']:
+            db_connection.delete_item('timeline', key={'key_post':hash_key})
+            return message['success']
+ 
+        else:
+            return message['error']
+         
+        #Eliminando una respuesta
+        if not questionItem._data.get('win_answers'): 
+            questionItem._data['total_answers'] -= 1
+            questionItem.save()
+            db_connection.delete_item('timeline', key={'key_post':hash_key})
+            return message['success']
+ 
+        if not hash_key in questionItem._data['win_answers']:
+            questionItem._data['total_answers'] -= 1
+            questionItem.save()
+            db_connection.delete_item('timeline', key={'key_post':hash_key})
+            return message['success']
+
+        return message['error']
         
         
     

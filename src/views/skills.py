@@ -80,7 +80,7 @@ class Skill_count(Resource):
     
     def get(self):
 #         
-#       curl http://localhost:5000/api/1.0/auth/totalskills -d "access_token=85721956-EFmG1NywpV3VEMDnMDbNax9JJ4OfFvEsCLKWi4Slq" -d "token_secret=FnDmaaBBzZceF3whMsZom9BmKpUFfyuRNFuBKJHXngZMf" -d 'skill=dynamodb' 
+#       curl http://localhost:5000/api/1.0/totalskills -d 'skill=dynamodb' 
 
         args = self.reqparse.parse_args()
         

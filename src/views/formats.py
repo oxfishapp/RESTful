@@ -44,7 +44,7 @@ format_timeline= {'keys':
                       ,'hash_key_original': HashKey_Validation(attribute='key_post_original')
                       }
                    ,'geolocation': fields.String
-                   ,'flag_answer': fields.Integer
+                   ,'flag_answer': fields.String
                    ,'skills': Set_to_List
                    ,'key_timeline_post':fields.String
                    ,'key_user':HashKey_Validation

@@ -3,6 +3,7 @@ from boto.dynamodb2.fields import GlobalIncludeIndex, GlobalAllIndex, GlobalKeys
 from boto.dynamodb2.fields import HashKey, RangeKey
 from boto.dynamodb2.table import Table
 from boto.dynamodb2.types import STRING, NUMBER
+from boto import dynamodb2
 
 class dbTables(object):
     
@@ -25,7 +26,7 @@ class dbTables(object):
         #Creacion de la tabla user_suffix_ (ej. user_tets_)
         tables = self.db_connection.list_tables()
         schema_table = [HashKey('key_twitter', data_type = STRING)]
-        throughput={'read': 5, 'write': 3}
+        throughput={'read': 20, 'write': 20}
         
         key_user_index= GlobalIncludeIndex('key_user_index'
                                        , parts=[HashKey('key_user', data_type = STRING)]
@@ -70,25 +71,25 @@ class dbTables(object):
              #RangeKey('key_timelinePost',data_type = STRING),
              ]
         
-        throughput={'read': 5, 'write': 3}
+        throughput={'read': 20, 'write': 20}
         
         
         
-        GAI_TimelinePublic = GlobalAllIndex('GAI_TimelinePublic'
-                                               ,parts=[HashKey('flag_answer',data_type = NUMBER)
+        GAI_TimelinePublic = GlobalAllIndex('TimelinePublic'
+                                               ,parts=[HashKey('flag_answer',data_type = STRING)
                                                ,RangeKey('key_timeline_post',data_type = STRING)
                                                        ]
                                                ,throughput=throughput
                                                )
         
-        GAI_VerTodoPublic = GlobalAllIndex('GAI_VerTodoPublic'
+        GAI_VerTodoPublic = GlobalAllIndex('VerTodoPublic'
                                                ,parts=[HashKey('key_post_original',data_type = STRING),
                                                        RangeKey('key_timeline_post',data_type = STRING)
                                                        ]
                                                ,throughput=throughput
                                                )
         
-        GAI_Home = GlobalAllIndex('GAI_Home'
+        GAI_Home = GlobalAllIndex('Home'
                                       ,parts=[HashKey('key_user',data_type = STRING),
                                               RangeKey('key_timeline_post',data_type = STRING)
                                               ]
@@ -115,6 +116,10 @@ class dbTables(object):
                                           GAI_VerTodoPublic,
                                           GAI_Home,]
                          , connection=self.db_connection
+#                          dynamodb2.connect_to_region('us-west-2',
+#                                                                  aws_access_key_id='key',
+#                                                                  aws_secret_access_key='key',
+#                                                                  )
                          )
         
         self.dynamodb.tables['tbl_timeline'] = table
@@ -230,7 +235,7 @@ class dbTablesTest(dbTables):
                             ,'source'           : 'Web'
                             ,'message140'          : 'Howto Create a table with Python in dynamodb from Flask?'
                             ,'key_user'         : 'fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
-                            ,'flag_answer'       : 1
+                            ,'flag_answer'       : 'True'
                             ,'win_answers'       : set(['31EC2020-3AEA-4069-A2DD-08002B30309D','21EC2020-3AEA-4069-A2DD-08002B30309D'])
                             ,'link'             : 'Imagen de Pregunta'
                             }
@@ -288,7 +293,8 @@ class dbTablesTest(dbTables):
                             ,'source'           : 'Web'
                             ,'message140'          : 'Howto preunta sin resolver?'
                             ,'key_user'         : '87654321-e9f0-69cc-1c68-362d8f5164ea'
-                            ,'flag_answer'       : 0
+                            ,'flag_answer'       : 'False'
+                            ,'total_answers' : 0
                             }
                     )
         item.save()
