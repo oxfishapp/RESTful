@@ -2,14 +2,15 @@
 #!/usr/bin/env python
 #!flask/bin/python
 
-from application import dynamodb
+#from application import dynamodb
 from flask.ext.restful import Resource, reqparse, marshal_with, marshal
 from formats import format_timeline
 from commons import *
+from dynamoDBqueries import Timeline
 #from boto.dynamodb2.layer1 import DynamoDBConnection #DynamoDB Conexion
+from api.errors import message
 
-db_connection = dynamodb.db_connection
-table = dynamodb.tables['tbl_timeline']
+ctimeline = Timeline()
 
 #Global All Index Timeline Public
 class Timeline_Index(Resource):
@@ -26,12 +27,7 @@ class Timeline_Index(Resource):
             curl http://localhost:5000/api/1.0/publictimeline
              
         """       
-        questions = table.query_2(flag_answer__eq='True'
-                                       ,limit=3
-                                       ,index='TimelinePublic'
-                                       ,reverse=True)
-                #,exclusive_start_key=_exclusive_start_key
-        return items_to_list(questions)
+        return items_to_list(ctimeline.public())
     
 #Global All Index Home
 
@@ -55,12 +51,7 @@ class Timeline_Home_Index(Resource):
             curl http://localhost:5000/api/1.0/home/87654321-e9f0-69cc-1c68-362d8f5164ea
         
         """
-        homeUser = table.query_2(key_user__eq=key
-                                      ,limit=3
-                                      ,index='Home'
-                                      ,reverse=True)
-        #,exclusive_start_key=_exclusive_start_key
-        return items_to_list(homeUser)
+        return items_to_list(ctimeline.home(key))
 
 
 class Timeline_QandWinA(Resource):
@@ -85,11 +76,11 @@ class Timeline_QandWinA(Resource):
         
         """
         result = {}
-        header_q = table.get_item(key_post=hashValidation(key))
+        header_q = ctimeline.get_post(key)
         
         if header_q._data.get('win_answers'):
             win_answers = hashKeyList(list(header_q._data['win_answers']))
-            winanswers_a = table.batch_get(win_answers) 
+            winanswers_a = ctimeline.get_posts(win_answers) 
             result ={
                      "question": marshal(item_to_dict(header_q._data),format_timeline)
                     ,"winanswers": marshal(items_to_list(winanswers_a),format_timeline)
@@ -133,11 +124,7 @@ class Timeline_Answers(Resource):
         args = self.reqparse.parse_args()
         hash_key = args.hash_key
         
-        answers = table.query_2(key_post_original__eq=hash_key
-                                     ,limit=3
-                                     ,index='VerTodoPublic'
-                                     ,reverse=True)
-        #,exclusive_start_key=_exclusive_start_key
+        answers = ctimeline.answers(hash_key)
 
         return items_to_list(answers)
 
@@ -218,48 +205,38 @@ class Timeline_Update(Resource):
         args = self.reqparse.parse_args()
         posting = jsondecoder(args.jsontimeline)
         
-        posting['key_post'] = hashCreate()
-        posting['key_timeline_post'] = timeUTCCreate()
+#         posting['key_post'] = hashCreate()
+#         posting['key_timeline_post'] = timeUTCCreate()
         
         if not posting.get('key_post_original'):
-            posting['flag_answer'] = 'False'
-            posting['skills'] = set(posting['skills'])
-            posting['total_answers'] = 0
+            ctimeline.create_post_question(posting)
         else:
-            post_original = table.get_item(key_post=posting['key_post_original'])
-            post_original._data['flag_answer'] = 'True'
-            post_original._data['total_answers'] += 1
-            post_original.save()
-        
-        from boto.dynamodb2.items import Item
-        item = Item(table, posting)
-        item.save()
+            ctimeline.create_post_answer(posting)
         
         return items_to_list(posting)
 
-
     def put(self):
         """ () -> list
-         
+          
         Recibe por parser un string el cual es un
         json encoder con los campos necesarios para 
         actualizar un registro en particular en la 
         tabla Timeline   
-        
+         
         Formato con el cual actualiza los atributos
         en la tabla timeline:
-        
+         
         jsontimeline=
             {
             "state" : int -> 1 add 0 remove
             ,"hash_key" : "str" -> UUID
             }    
-        
+         
         hash_key= 
             "str" -> UUID  
-        
+         
         Examples:
-            
+             
         curl http://localhost:5000/api/1.0/update 
             -d 'hash_key=11EC2020-3AEA-4069-A2DD-08002B30309D' 
             -d 'jsontimeline={
@@ -267,7 +244,7 @@ class Timeline_Update(Resource):
                               ,"hash_key_answer" : "41EC2020-3AEA-4069-A2DD-08002B30309D"
                               }' 
             -X PUT
-            
+             
         curl http://localhost:5000/api/1.0/update 
             -d 'hash_key=11EC2020-3AEA-4069-A2DD-08002B30309D' 
             -d 'jsontimeline={
@@ -277,51 +254,46 @@ class Timeline_Update(Resource):
             -X PUT
         """
         args = self.reqparse.parse_args()
-        
-        item = table.get_item(key_post=args.hash_key)
+         
+        item = ctimeline.get_post(args.hash_key)
         attributes = dict()
-        message = {"success" : {
-                                "message": "Updated successful from timeline", 
-                                "status": "Updated"
-                                }
-                   }
-        
+         
         if args.get('jsontimeline'):
             attributes = jsondecoder(args.jsontimeline)
-        
+         
         if not item._data.get('win_answers'):  
             item._data['win_answers'] = set([attributes["hash_key_answer"]])
             item.save()
             return message['success']    
-            
+             
         if attributes["state"]:
             item._data['win_answers'].add(attributes["hash_key_answer"])
         else:
             item._data['win_answers'].remove(attributes["hash_key_answer"])
-        
+         
         item.save()
-        
+         
         return message['success']
-     
-     
+      
+      
     def delete(self):
         """ () -> list
-         
+          
         Recibe por parser un string el cual es un
         json encoder con los campos necesarios para 
         eliminar un registro en particular en la 
         tabla Timeline. 
-         
+          
         Se podrá eliminar una pregunta si y solo si 
         no tiene respuestas ya realizadas asociadas a 
         dicha pregunta.
-         
+          
         Se podrá eliminar una respuesta si y solo si
         no es una respuesta ganadora o winanswer de la 
         pregunta a la que esta haciendo referencia.   
-        
+         
         Retornara tres valores diferentes:
-        
+         
             1. Si se elimina una Pregunta retornara al home
                 del usuario
             2. Si se elimina una Respuesta retornara al aloneview
@@ -329,80 +301,38 @@ class Timeline_Update(Resource):
             3. Si no es posible eliminar, la pregunta o la
                 respuesta retornara una vista que diga.
                 No puedes eliminar este item.
-                
+                 
         Estas validaciones se deberan realizar en el frontend
         con javascript.
-        
+         
         Formato con el cual elimina un item 
         en la tabla timeline:
-        
+         
         hash_key= 
             "str" -> UUID  
-            
+             
         Examples:
-        
+         
         curl http://localhost:5000/api/1.0/delete 
             -d 'hash_key=41EC2020-3AEA-4069-A2DD-08002B30309D' 
-            -X DELETE -v 
-            
+            -X DELETE
+             
         """
-        
         args = self.reqparse.parse_args()
         hash_key = args.hash_key
-        questionItem = None
-        message = {"success" : {
-                                "message": "delete successful from timeline", 
-                                "status": "Removed"
-                                }
-                    ,"error":{
-                                "message": "delete fail from timeline", 
-                                "status": "NoChange"
-                             }
-                    }        
-#        db_connection.delete_item('timeline', key={'key_post':hash_key})
+        statuserror = None
         
-        deleteItem = table.get_item(key_post=hash_key)
-#         deleteItem.next().delete()
-  
-        #Eliminando una pregunta
+        deleteItem = ctimeline.get_post(hash_key)
+   
         if deleteItem._data.get('key_post_original'):
-            questionItem = table.get_item(key_post=deleteItem._data['key_post_original'])       
+            statuserror = ctimeline.delete_answer(key=hash_key,answer=deleteItem)
         elif not deleteItem._data['total_answers']:
-            db_connection.delete_item('timeline', key={'key_post':hash_key})
-            
-            
-            skillsDelete = db_connection.query('skill', { 
-                                                  "key_post": 
-                                                            { 
-                                                    "ComparisonOperator": "EQ",
-                                                    "AttributeValueList": [ {"S": hash_key} ]
-                                                            }
-                                                         }, index_name='GII_Post')
-            
-            for skill in dict(skillsDelete.items())['Items']:
-                db_connection.delete_item('skill', key={'skill':'q_'+skill['key_time']['S']
-                                                        ,'key_time':skill['key_time']['S']
-                                                        })
-            return message['success']
-        else:
-            return message['error']
-         
-        #Eliminando una respuesta
-        if not questionItem._data.get('win_answers'): 
-            questionItem._data['total_answers'] -= 1
-            questionItem.save()
-            db_connection.delete_item('timeline', key={'key_post':hash_key})
-            return message['success']
- 
-        if not hash_key in questionItem._data['win_answers']:
-            questionItem._data['total_answers'] -= 1
-            questionItem.save()
-            db_connection.delete_item('timeline', key={'key_post':hash_key})
-            return message['success']
+            statuserror = ctimeline.delete_question(key=hash_key)
 
-        return message['error']
-        
-        
-    
-    
-    
+        return statuserror
+        #return message[statuserror]
+         
+         
+     
+     
+     

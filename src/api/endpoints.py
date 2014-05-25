@@ -39,7 +39,7 @@ api.add_resource(timeline.Timeline_Update, api_version + '/update', endpoint='up
 
 api.add_resource(skills.Skill_Table, api_version + '/findbyskill/<string:skill>')
 api.add_resource(skills.Skill_count, api_version + '/totalskills')
-api.add_resource(skills.Skill_Table, api_version + '/auth/skills' ,endpoint='insertskills')
+api.add_resource(skills.Skill_Table, api_version + '/skills' ,endpoint='insertskills')
 
 
 
