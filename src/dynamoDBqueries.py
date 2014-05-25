@@ -120,6 +120,7 @@ class Timeline():
         if not data:
             data = self.get_post(key)
         self._minus_plus(data, -1)   
+
     
     def _minus_plus(self,data,number):
         data._data['total_answers'] += number
@@ -129,12 +130,14 @@ class Timeline():
     def create_post_answer(self,data): 
         self._plus_one_total_answers(key=data['key_post_original'])
         self._create_post(data)  
+
     
     def create_post_question(self,data):
         data['flag_answer'] = 'False'
         data['skills'] = set(data['skills'])
         data['total_answers'] = 0
         self._create_post(data)       
+
     
     def _create_post(self,data):
         data['key_post'] = hashCreate()
