@@ -22,6 +22,36 @@ class Timeline_Index(Resource):
         
         Example:
             curl http://localhost:5000/api/1.0/publictimeline
+            
+        Result:
+            [
+                {
+                    "flag_answer": "True", 
+                    "geolocation": "4.598056,-74.075833", 
+                    "key_timeline_post": "2014-05-13 17:24:31", 
+                    "key_user": "fedcf7af-e9f0-69cc-1c68-362d8f5164ea", 
+                    "keys": {
+                        "hash_key": "11EC2020-3AEA-4069-A2DD-08002B30309D", 
+                        "hash_key_original": null
+                    }, 
+                    "link": "Imagen de Pregunta", 
+                    "link_image": "http://twitter.com/anroco/image", 
+                    "message140": "Howto Create a table with Python in dynamodb from Flask?", 
+                    "name": "Andres Rodriguez", 
+                    "nickname": "anroco", 
+                    "skills": [
+                        "flask", 
+                        "python", 
+                        "dynamodb"
+                    ], 
+                    "source": "Web", 
+                    "total_answers": 3, 
+                    "win_answers": [
+                        "31EC2020-3AEA-4069-A2DD-08002B30309D", 
+                        "21EC2020-3AEA-4069-A2DD-08002B30309D"
+                    ]
+                }
+            ]
              
         """       
         return items_to_list(ctimeline.public())
@@ -33,7 +63,7 @@ class Timeline_Home_Index(Resource):
     def get(self, key):
         """ (str) -> list
         
-        Retorna una lista con las preguntas realizadas
+        Retorna una lista con las publicaciones realizadas
         por un usuario en particular.   
         
         Formato con el cual consulta en la tabla timeline
@@ -45,6 +75,51 @@ class Timeline_Home_Index(Resource):
         Example:
             curl http://localhost:5000/api/1.0/home/87654321-e9f0-69cc-1c68-362d8f5164ea
         
+        Result:
+            [
+                {
+                    "flag_answer": null, 
+                    "geolocation": "4.598056,-74.075833", 
+                    "key_timeline_post": "2014-05-15 17:24:31", 
+                    "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea", 
+                    "keys": {
+                        "hash_key": "31EC2020-3AEA-4069-A2DD-08002B30309D", 
+                        "hash_key_original": "11EC2020-3AEA-4069-A2DD-08002B30309D"
+                    }, 
+                    "link": "link video", 
+                    "link_image": "http://twitter.com/franper/image", 
+                    "message140": "DOS link del video mas respuesta del usuario", 
+                    "name": "Francisco Perez", 
+                    "nickname": "franper", 
+                    "skills": null, 
+                    "source": "Web", 
+                    "total_answers": 0, 
+                    "win_answers": null
+                }, 
+                {
+                    "flag_answer": null, 
+                    "geolocation": "4.598056,-74.075833", 
+                    "key_timeline_post": "2014-05-15 17:24:31", 
+                    "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea", 
+                    "keys": {
+                        "hash_key": "41EC2020-3AEA-4069-A2DD-08002B30309D", 
+                        "hash_key_original": "11EC2020-3AEA-4069-A2DD-08002B30309D"
+                    }, 
+                    "link": "link video", 
+                    "link_image": "http://twitter.com/franper/image", 
+                    "message140": "TRES link del video mas respuesta del usuario", 
+                    "name": "Francisco Perez", 
+                    "nickname": "franper", 
+                    "skills": null, 
+                    "source": "Web", 
+                    "total_answers": 0, 
+                    "win_answers": null
+                },
+                .
+                .
+                .
+            ]
+        
         """
         return items_to_list(ctimeline.home(key))
 
@@ -52,7 +127,7 @@ class Timeline_Home_Index(Resource):
 class Timeline_QandWinA(Resource):
     
     def get(self, key):
-        """ (str) -> list
+        """ (str) -> dict
         
         Retorna el encabezado (Pregunta) de una 
         vista en particular con sus win answers 
@@ -67,6 +142,59 @@ class Timeline_QandWinA(Resource):
             
         Example:
             curl http://localhost:5000/api/1.0/post_qwa/11EC2020-3AEA-4069-A2DD-08002B30309D
+        
+        Result:
+            {
+                "question": {
+                    "flag_answer": "True", 
+                    "geolocation": "4.598056,-74.075833", 
+                    "key_timeline_post": "2014-05-13 17:24:31", 
+                    "key_user": "fedcf7af-e9f0-69cc-1c68-362d8f5164ea", 
+                    "keys": {
+                        "hash_key": "11EC2020-3AEA-4069-A2DD-08002B30309D", 
+                        "hash_key_original": null
+                    }, 
+                    "link": "Imagen de Pregunta", 
+                    "link_image": "http://twitter.com/anroco/image", 
+                    "message140": "Howto Create a table with Python in dynamodb from Flask?", 
+                    "name": "Andres Rodriguez", 
+                    "nickname": "anroco", 
+                    "skills": [
+                        "flask", 
+                        "python", 
+                        "dynamodb"
+                    ], 
+                    "source": "Web", 
+                    "total_answers": 3, 
+                    "win_answers": [
+                        "31EC2020-3AEA-4069-A2DD-08002B30309D", 
+                        "21EC2020-3AEA-4069-A2DD-08002B30309D"
+                    ]
+                }, 
+                "winanswers": [
+                    {
+                        "flag_answer": null, 
+                        "geolocation": "4.598056,-74.075833", 
+                        "key_timeline_post": "2014-05-15 17:24:31", 
+                        "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea", 
+                        "keys": {
+                            "hash_key": "31EC2020-3AEA-4069-A2DD-08002B30309D", 
+                            "hash_key_original": "11EC2020-3AEA-4069-A2DD-08002B30309D"
+                        }, 
+                        "link": "link video", 
+                        "link_image": "http://twitter.com/franper/image", 
+                        "message140": "DOS link del video mas respuesta del usuario", 
+                        "name": "Francisco Perez", 
+                        "nickname": "franper", 
+                        "skills": null, 
+                        "source": "Web", 
+                        "total_answers": 0, 
+                        "win_answers": null
+                    }, 
+                    .
+                    .
+                    .
+            }
         
         """
         result = {}
@@ -114,6 +242,51 @@ class Timeline_Answers(Resource):
             curl http://localhost:5000/api/1.0/allanswers 
                 -d 'hash_key=11EC2020-3AEA-4069-A2DD-08002B30309D' 
                 -X GET
+                
+        Result:
+            [
+                {
+                    "flag_answer": null, 
+                    "geolocation": "4.598056,-74.075833", 
+                    "key_timeline_post": "2014-05-15 17:24:31", 
+                    "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea", 
+                    "keys": {
+                        "hash_key": "31EC2020-3AEA-4069-A2DD-08002B30309D", 
+                        "hash_key_original": "11EC2020-3AEA-4069-A2DD-08002B30309D"
+                    }, 
+                    "link": "link video", 
+                    "link_image": "http://twitter.com/franper/image", 
+                    "message140": "DOS link del video mas respuesta del usuario", 
+                    "name": "Francisco Perez", 
+                    "nickname": "franper", 
+                    "skills": null, 
+                    "source": "Web", 
+                    "total_answers": 0, 
+                    "win_answers": null
+                }, 
+                {
+                    "flag_answer": null, 
+                    "geolocation": "4.598056,-74.075833", 
+                    "key_timeline_post": "2014-05-15 17:24:31", 
+                    "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea", 
+                    "keys": {
+                        "hash_key": "41EC2020-3AEA-4069-A2DD-08002B30309D", 
+                        "hash_key_original": "11EC2020-3AEA-4069-A2DD-08002B30309D"
+                    }, 
+                    "link": "link video", 
+                    "link_image": "http://twitter.com/franper/image", 
+                    "message140": "TRES link del video mas respuesta del usuario", 
+                    "name": "Francisco Perez", 
+                    "nickname": "franper", 
+                    "skills": null, 
+                    "source": "Web", 
+                    "total_answers": 0, 
+                    "win_answers": null
+                }, 
+                .
+                .
+                .
+            ]
         
         """
         
@@ -165,7 +338,7 @@ class Timeline_Update(Resource):
                     "message140": str
                     , "source": str
                     , "geolocation": str -> Format = "4.598056,-74.075833"
-                    , "link": "Imagen de Pregunta"
+                    , "link": str
                     , "key_user": "UUID"
                     , "key_post_original" : "UUID"
                 }
@@ -179,7 +352,7 @@ class Timeline_Update(Resource):
                                     , "source": "web"
                                     , "geolocation": "4.598056,-74.075833"
                                     , "skills": ["flask","json","web"]
-                                    , "link": "http://test1"
+                                    , "link": "http://test1/Pregunta"
                                     , "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea"
                                 }'
                  -X POST
@@ -190,7 +363,7 @@ class Timeline_Update(Resource):
                                       "message140": "see the video"
                                     , "source": "web"
                                     , "geolocation": "4.598056,-74.075833"
-                                    , "link": "Imagen de Pregunta"
+                                    , "link": "http://test2/Respuesta"
                                     , "key_user": "12345678-e9f0-69cc-1c68-362d8f5164ea"
                                     , "key_post_original" : "c20edb33-4dc7-43c7-bc8b-8ee3365a609b"
                                 }' 
