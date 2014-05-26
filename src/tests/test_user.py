@@ -110,6 +110,5 @@ class UserTestCase(unittest.TestCase):
         self.assertListEqual(resultado_esperado, json_data)
         self.assertTrue(resultado.status_code == 200)
 
-        
 if __name__ == '__main__':
     unittest.main()

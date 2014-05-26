@@ -80,7 +80,7 @@ class Skill_count(Resource):
 
         totalUsers = cskill.count(args.skill)
         
-        return {args.skill : totalUsers}
+        return { args.skill : totalUsers }
 
 
 

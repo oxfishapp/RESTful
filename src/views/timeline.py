@@ -2,12 +2,10 @@
 #!/usr/bin/env python
 #!flask/bin/python
 
-#from application import dynamodb
 from flask.ext.restful import Resource, reqparse, marshal_with, marshal
 from formats import format_timeline
-from commons import *
+from commons import item_to_dict, items_to_list, hashKeyList, hashValidation ,jsondecoder
 from dynamoDBqueries import Timeline
-#from boto.dynamodb2.layer1 import DynamoDBConnection #DynamoDB Conexion
 from api.errors import message
 
 ctimeline = Timeline()
@@ -23,15 +21,12 @@ class Timeline_Index(Resource):
         Publica de Oxfish.  
         
         Example:
-        
             curl http://localhost:5000/api/1.0/publictimeline
              
         """       
         return items_to_list(ctimeline.public())
     
 #Global All Index Home
-
-
 class Timeline_Home_Index(Resource):
     decorators = [marshal_with(format_timeline)]
     
@@ -55,7 +50,6 @@ class Timeline_Home_Index(Resource):
 
 
 class Timeline_QandWinA(Resource):
-    #decorators = [marshal_with(format_timeline)]
     
     def get(self, key):
         """ (str) -> list
@@ -117,7 +111,9 @@ class Timeline_Answers(Resource):
         
         Example:
         
-            curl http://localhost:5000/api/1.0/allanswers -d 'hash_key=11EC2020-3AEA-4069-A2DD-08002B30309D' -X GET
+            curl http://localhost:5000/api/1.0/allanswers 
+                -d 'hash_key=11EC2020-3AEA-4069-A2DD-08002B30309D' 
+                -X GET
         
         """
         
@@ -205,15 +201,13 @@ class Timeline_Update(Resource):
         args = self.reqparse.parse_args()
         posting = jsondecoder(args.jsontimeline)
         
-#         posting['key_post'] = hashCreate()
-#         posting['key_timeline_post'] = timeUTCCreate()
-        
         if not posting.get('key_post_original'):
             ctimeline.create_post_question(posting)
         else:
             ctimeline.create_post_answer(posting)
         
         return items_to_list(posting)
+
 
     def put(self):
         """ () -> list
@@ -330,8 +324,7 @@ class Timeline_Update(Resource):
             statuserror = ctimeline.delete_question(key=hash_key)
 
         return statuserror
-        #return message[statuserror]
-         
+     
          
      
      
