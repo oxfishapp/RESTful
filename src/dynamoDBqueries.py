@@ -1,11 +1,12 @@
-from application import dynamodb
-from commons import *
-from boto.dynamodb2.items import Item
 '''
 Created on May 25, 2014
 
 @author: root
 '''
+
+from application import dynamodb
+from commons import *
+from boto.dynamodb2.items import Item
 
 db_connection = dynamodb.db_connection
 table_skill = dynamodb.tables['tbl_skills']
@@ -103,7 +104,19 @@ class Skill():
         '''
         return table_skill.query_count(skill__eq=skill)
 
-  
+    def skills_from_user(self, key_user):
+        '''(UUID) -> Resultset
+
+        Retorna los skills de un usuario en particular.
+
+        '''
+
+        return table_skill.query_2(key_user__eq=key_user
+                            , limit=3
+                            , index='GKOI_Navbar'
+                            , reverse=True)
+
+
 class Timeline():
 
     def delete_question(self, key):
@@ -261,17 +274,102 @@ class Timeline():
         data['key_timeline_post'] = timeUTCCreate()
         post = Item(table_timeline, data)
         post.save()
-        
+
+
 class User():
-    pass
 
+    def get_item(self, **kwargs):
+        '''
+        (**kwarg) -> Item
 
+        retorna un item de la tabla user buscado por hash_key y/o range_key
+        si no se encuentra un item retorna None
+        '''
 
+        from boto.dynamodb2.exceptions import ItemNotFound
+        from boto.exception import JSONResponseError
 
+        try:
+            item = table_user.get_item(**kwargs)
+        except (ItemNotFound, JSONResponseError):
+            return None
+        return item
 
+    def get_by_nickname(self, nickname):
+        '''(str) -> Item
 
+        Retorna los datos del usuario buscando por su nickname.
+        '''
 
+        return table_user.query_2(nickname__eq=nickname
+                               , index='nickname_user_index').next()
 
+    def get_by_key_user(self, key_user):
+        '''(str) -> Item
 
+        Retorna los datos del usuario buscando por su nickname.
+        '''
 
+        return table_user.query_2(key_user__eq=key_user
+                                  , index='key_user_index').next()
 
+    def update_scores(self, item, post=False, answer=False):
+        '''(Item, bool, bool) -> None
+
+        Actualiza los scores del usuario.
+        '''
+
+        if post:
+            item._data['total_post'] += 1
+        if answer:
+            item._data['score_answers'] += 10
+        item.save()
+
+    def update_email(self, item, email):
+        '''(Item, str) -> dict
+
+        Actualiza los scores del usuario.
+        '''
+
+        item._data['email'] = email
+        item.save()
+        return item._data
+
+    def update_token(self, item, access_token, token_secret):
+        '''(Item, str) -> str
+
+        registra un nuevo token asociado al usuario.
+        '''
+
+        token = generate_token(hash_key=item._data['key_twitter']
+                               , access_token=access_token
+                               , token_secret=token_secret)
+        item._data['token_user'] = token
+        return item._data['token_user']
+
+    def create_or_update_user(self, datos_twitter, access_token, token_secret):
+        '''(dict or Item) -> bool
+
+        crea un nuevo usaurio o lo actualiza si ya existe.
+        '''
+
+        user = self.get_item(key_twitter=datos_twitter['key_twitter'])
+
+        token = generate_token(hash_key=datos_twitter['key_twitter']
+                               , access_token=access_token
+                               , token_secret=token_secret)
+
+        #Valida si el usuario ya se encuentra registrado en la base de datos.
+        #si no existe se crea y si existe se actualiza.
+        if not user:
+            datos_twitter['registered'] = timeUTCCreate()
+            datos_twitter['key_user'] = hashCreate()
+            datos_twitter['token_user'] = token
+            user = Item(table_user, datos_twitter)
+        else:
+            user._data['nickname'] = datos_twitter['nickname']
+            user._data['name'] = datos_twitter['name']
+            user._data['link_image'] = datos_twitter['link_image']
+            user._data['token_user'] = token
+        user.save()
+        return user._data

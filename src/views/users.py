@@ -4,17 +4,14 @@ Created on May 8, 2014
 @author: anroco
 '''
 
-from application import dynamodb
+from dynamoDBqueries import User as UserDB
 from flask import abort, g
-from boto.dynamodb2.items import Item
 from views.formats import format_user, format_user_twitter, format_user_header
 from flask.ext.restful import Resource, marshal_with, reqparse, marshal
-from commons import (get_item, validate_email, hashCreate, user_skills,
-                     twitter_credentials, timeUTCCreate, generate_token)
+from commons import (validate_email, hashCreate, user_skills, timeUTCCreate,
+                     decrypt_token, twitter_credentials, generate_token)
 
-
-db_connection = dynamodb.db_connection
-table = dynamodb.tables['tbl_user']
+users = UserDB()
 
 
 class User(Resource):
@@ -70,10 +67,10 @@ class User(Resource):
 
         #valida el atributo *basic* para definir la consulta a realizar.
         if args.basic:
-            result = get_item(table, key_twitter=args.hash_key
-                              , attributes=BASIC_USER_FIELDS)
+            result = users.get_item(key_twitter=args.hash_key
+                                    , attributes=BASIC_USER_FIELDS)
         else:
-            result = get_item(table, key_twitter=args.hash_key)
+            result = users.get_item(key_twitter=args.hash_key)
         return [user_skills(result._data)] if result else abort(404)
 
 
@@ -107,10 +104,7 @@ class Nickname(Resource):
             }
         ]
         '''
-
-        result = table.query_2(nickname__eq=nickname
-                               , index='nickname_user_index')
-        item = result.next()
+        item = users.get_by_nickname(nickname)
         return [user_skills(item._data)]
 
 
@@ -143,16 +137,7 @@ class User_scores(Resource):
         '''
 
         args = self.parser.parse_args()
-        item = g.user_item
-
-        if args.post:
-            item._data['total_post'] = int(item._data['total_post']) + 1
-
-        if args.answer:
-            item._data['score_answers'] = int(item._data['score_answers']) + 10
-
-        item.save()
-
+        users.update_scores(g.user_item, args.post, args.answer)
         return '', 204
 
 
@@ -168,10 +153,10 @@ class User_register(Resource):
         '''
         () -> list
 
-        requisito: email debe tener formato
+        requisito: email debe tener formato de correo electronico
 
         recibe la solicitud PUT del endpoint ('/api/1.0/auth/register/')
-        que permite registrar el correo electronico del usuario.
+        permite registrar el correo electronico del usuario.
 
         Retorna un json con los datos del usuario actualizado.
 
@@ -195,16 +180,12 @@ class User_register(Resource):
         '''
 
         args = self.parser.parse_args()
-        item = g.user_item
-
-        item._data['email'] = args.email
-        item.save()
+        user = users.update_email(g.user_item, args.email)
 
         #verificar si se el usuario ya registro sus habilidades
         if not len(g.user_skills):
             abort(428)
 
-        user = item._data
         user['skills'] = g.user_skills
         return [user]
 
@@ -233,6 +214,12 @@ class Auth_user(Resource):
         usuario no se encuentra registrado se realiza el proceso de registro,
         Si ya se encuentra registrado se realiza una actualizacion de los
         atributos obtenidos desde la cuenta twitter del usuario.
+
+        Se retorna un status_code 200 con los datos del usuario creado o
+        autenticado, si el usuario no ha registrado un correo o sus habilidades
+        se retorna un status_code 428. Si no se tiene registrados esos dos
+        atributos no podra realizar alguna actividad que requira estar
+        autenticado.
 
         curl http://localhost:500/api/1.0/login/
         -d "access_token=85721956-EFmG1NywpV3VEMDnMDbNax9JJ4OfFvEsCLKWi4Slq"
@@ -263,26 +250,9 @@ class Auth_user(Resource):
             abort(401)
 
         datos = marshal(user_tiwtter.data, format_user_twitter)
-        user = get_item(table, key_twitter=datos['key_twitter'])
-
-        token = generate_token(hash_key=user['key_twitter']
-                               , access_token=args.access_token
-                               , token_secret=args.token_secret)
-
-        #Valida si el usuario ya se encuentra registrado en la base de datos.
-        #si no existe se crea y si existe se actualiza.
-        if not user:
-            datos['registered'] = timeUTCCreate()
-            datos['key_user'] = hashCreate()
-            datos['token_user'] = token
-            user = Item(table, datos)
-        else:
-            user._data['nickname'] = datos['nickname']
-            user._data['name'] = datos['name']
-            user._data['link_image'] = datos['link_image']
-            user._data['token_user'] = token
-        user.save()
-        user = user_skills(user._data)
+        user = users.create_or_update_user(datos, args.access_token
+                                           , args.token_secret)
+        user = user_skills(user)
 
         #verificar si se el usuario ya registro el email y sus habilidades
         if not 'email' in user or user['email'] == '' or \
@@ -290,3 +260,34 @@ class Auth_user(Resource):
             return [user], 428
 
         return [user]
+
+
+class Generate_token(Resource):
+
+    def put(self):
+        '''
+        () -> list
+
+        requisito: el usuario debe estar registrado en la base de datos, el
+        token actual debe ser vigente y debe ser el igual al que tiene registrado
+        en la base de datos.
+
+        recibe la solicitud PUT del endpoint ('/api/1.0/auth/get_token/')
+        permite generar un  nuevo token para el usuario.
+
+        Retorna el token nuevo.
+        '''
+
+        item = g.user_item
+        datos_token = decrypt_token(item._data['token_user'])
+        user_tiwtter = twitter_credentials(datos_token['access_token']
+                                           , datos_token['token_secret'])
+
+        #valida la respuesta dada por twitter.
+        if user_tiwtter.status != 200:
+            abort(401)
+
+        token = users.update_token(item._data['token_user']
+                           , datos_token['access_token']
+                           , datos_token['token_secret'])
+        return [token]

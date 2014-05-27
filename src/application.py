@@ -10,6 +10,7 @@ from db import DynamoDB
 
 dynamodb = DynamoDB()
 
+
 def create_app(config_type):
     """(str) -> Flask
 
