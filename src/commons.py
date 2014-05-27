@@ -294,27 +294,27 @@ def validate_email(email):
 def get_item(table, **kwargs):
     '''
     (boto.dynamodb2.table.Table, **kwarg) -> boto.dynamodb2.items.Item
-
+ 
     retorna un item de la tabla 'table' buscado por hash_key y/o range_key
     si no se encuentra un item retorna None
-
+ 
     Ejemplo::
-
+ 
         Con solo hash key.
         get_item(table=user, key_user='1234')
-
+ 
         Con hash + range key.
         get_item(table=user, key_user='1234', username='pepito')
     '''
-
+ 
     from boto.dynamodb2.exceptions import ItemNotFound
     from boto.exception import JSONResponseError
-
+ 
     try:
         item = table.get_item(**kwargs)
     except (ItemNotFound, JSONResponseError):
         return None
-
+ 
     return item
 
 
