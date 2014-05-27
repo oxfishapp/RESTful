@@ -86,8 +86,8 @@ def hashKeyList(value):
     """
 
     list_hashkey = []
-    values = jsondecoder(value)
-    for item in values:
+    #values = jsondecoder(value)
+    for item in value:
         list_hashkey.append({'key_post': hashValidation(item)})
     return list_hashkey
 
