@@ -3,13 +3,13 @@ import json
 from flask import url_for
 from application import create_app
 
+token_user = None
 
 class UserTestCase(unittest.TestCase):
 
     aplicattion = create_app('test')
     access_token_twitter = '85721956-EFmG1NywpV3VEMDnMDbNax9JJ4OfFvEsCLKWi4Slq'
     token_secret_twitter = 'FnDmaaBBzZceF3whMsZom9BmKpUFfyuRNFuBKJHXngZMf'
-    token_user = ''
 
     def setUp(self):
         '''
@@ -19,10 +19,20 @@ class UserTestCase(unittest.TestCase):
         servicios
         '''
 
+        global token_user
         self.app = self.aplicattion
         self.app_context = self.app.app_context()
         self.app_context.push()
         self.client = self.app.test_client()
+        if not token_user:
+            token_user = self.get_token()
+
+    def get_token(self):
+        resultado = self.client.post(url_for('endpoints.auth_user'
+                                    , access_token=self.access_token_twitter
+                                    , token_secret=self.token_secret_twitter))
+        json_data = json.loads(resultado.data.decode('utf-8'))
+        return json_data[0]['token_user']
 
     def test_get_user_key_twitter(self):
         '''
@@ -106,7 +116,7 @@ class UserTestCase(unittest.TestCase):
                         , "link_image": "http://abs.twimg.com/sticky/" +
                          "default_profile_images/default_profile_5_normal.png"
                         , "skills": ["python", "flask", "dynamodb"]
-                        , "token_user": self.token_user}]
+                        , "token_user": token_user}]
 
         #El usuario no existe, status_code = 404
         resultado = self.client.get(url_for('endpoints.nickname'
@@ -149,7 +159,7 @@ class UserTestCase(unittest.TestCase):
         resultado = self.client.put(url_for('endpoints.user_scores'
                                             , post='verdadero'
                                             , answer=2
-                                            , token_user=self.token_user))
+                                            , token_user=token_user))
         self.assertTrue(resultado.status_code == 400)
 
         #Solicitud con todos los datos correctos, proceso satisfactorio,
@@ -157,7 +167,7 @@ class UserTestCase(unittest.TestCase):
         resultado = self.client.put(url_for('endpoints.user_scores'
                                             , post=True
                                             , answer=False
-                                            , token_user=self.token_user))
+                                            , token_user=token_user))
         self.assertTrue(resultado.status_code == 204)
 
     def test_register_email(self):
@@ -177,7 +187,7 @@ class UserTestCase(unittest.TestCase):
                          , "link_image": "http://abs.twimg.com/sticky/" +
                          "default_profile_images/default_profile_5_normal.png"
                          , "skills": ["python", "flask", "dynamodb"]
-                         , "token_user": self.token_user}]
+                         , "token_user": token_user}]
 
         #token_user no validos (usuario no autenticado), status_code = 401
         resultado = self.client.put(url_for('endpoints.user_register'
@@ -193,23 +203,23 @@ class UserTestCase(unittest.TestCase):
         #status_code = 400
         resultado = self.client.put(url_for('endpoints.user_register'
                                             , email='anroco@dom@inio.com'
-                                            , token_user=self.token_user))
+                                            , token_user=token_user))
         self.assertTrue(resultado.status_code == 400)
 
         #Solicitud con todos los datos correctos, proceso satisfactorio,
         #status_code = 200
         resultado = self.client.put(url_for('endpoints.user_register'
                                             , email='anroco@dominio.com'
-                                            , token_user=self.token_user))
+                                            , token_user=token_user))
         json_data = json.loads(resultado.data.decode('utf-8'))
         self.assertListEqual(resultado_exitoso, json_data)
         self.assertTrue(resultado.status_code == 200)
 
-    def test_auth_register_user(self):
+    def test_users_register_auth(self):
         '''
         () -> NoneType
         permite realizar la prueba al recurso (/api/1.0/login/ -> POST)
- 
+
         verifica:
             * Los datos requeridos sean proporcionados.
             * Los datos solicitados por el recurso tengan el formato adecuado.
@@ -232,18 +242,56 @@ class UserTestCase(unittest.TestCase):
         resultado = self.client.post(url_for('endpoints.auth_user'
                                     , access_token=self.access_token_twitter
                                     , token_secret=self.token_secret_twitter))
-        self.assertTrue(resultado.status_code == 428)
+#        self.assertTrue(resultado.status_code == 428)
+
+        #Recuperar el token generado tras la creacion del usuario
+        json_data = json.loads(resultado.data.decode('utf-8'))
+        token_user = json_data[0]['token_user']
+
+        #registrar el email para realizar un proceso de autenticacion completo.
+        resultado = self.client.put(url_for('endpoints.user_register'
+                                            , email='anroco@dominio.com'
+                                            , token_user=token_user))
+        json_data = json.loads(resultado.data.decode('utf-8'))
+        self.assertTrue(resultado.status_code == 200)
 
         #Solicitud con todos los datos correctos, proceso satisfactorio,
         #status_code = 200
         resultado = self.client.post(url_for('endpoints.auth_user'
                                     , access_token=self.access_token_twitter
                                     , token_secret=self.token_secret_twitter))
-#        self.assertTrue(resultado.status_code == 200)
-        if resultado.status_code == 428:
-            json_data = json.loads(resultado.data.decode('utf-8'))
-            x = json_data[0]['token_user']
-            self.token_user = x
+        #Recuperar el token generado tras la autenticacion del usuario
+        json_data = json.loads(resultado.data.decode('utf-8'))
+        token_user = json_data[0]['token_user']
+        resultado_exitoso = [{"hash_key": "85721956"
+                         , "key": "fedcf7af-e9f0-69cc-1c68-362d8f5164ea"
+                         , "link_image": "http://abs.twimg.com/sticky/" +
+                         "default_profile_images/default_profile_5_normal.png"
+                         , "skills": ["python", "flask", "dynamodb"]
+                         , "token_user": token_user}]
+        self.assertListEqual(resultado_exitoso, json_data)
+        self.assertTrue(resultado.status_code == 200)
+
+    def test_get_new_token(self):
+        '''
+        () -> NoneType
+        permite realizar la prueba al recurso (/api/1.0/auth/get_token -> PUT)
+
+        verifica:
+            * Los datos requeridos sean proporcionados.
+            * El token sea valido.
+            * El response sea el correcto status_code = 200 (Proceso exitoso)
+        '''
+        global token_user
+
+        #Algun campo requerido no es proporcionado, status_code = 400
+        resultado = self.client.post(url_for('endpoints.generate_token'))
+        self.assertTrue(resultado.status_code == 400)
+
+        #token_user no valido, status_code = 401
+        resultado = self.client.put(url_for('endpoints.generate_token'
+                                            , token_user='No_Registrado'))
+        self.assertTrue(resultado.status_code == 401)
 
 if __name__ == '__main__':
     unittest.main()

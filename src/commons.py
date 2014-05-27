@@ -151,13 +151,12 @@ def items_to_list(items):
 
 def item_to_dict(value):
 
+    from dynamoDBqueries import User
+
+    user = User()
     dictionary = {}
     dictionary.update(value)
-
-    from application import dynamodb
-    table = dynamodb.tables['tbl_user']
-    user_insert = table.query_2(key_user__eq=value['key_user']
-                                , index='key_user_index').next()
+    user_insert = user.get_by_key_user(value['key_user'])
     dictionary.update(user_insert)
     return dictionary
 
@@ -203,14 +202,15 @@ def validate_user_auth(token):
     retorna el usuario y en caso de ser fallida retorna un status_code 401.
     '''
 
-    from application import dynamodb
+    from dynamoDBqueries import User
     from flask import abort
-    table = dynamodb.tables['tbl_user']
 
+    user = User()
     token_user = decrypt_token(token)
-    user = get_item(table, key_twitter=token_user['hash_key'])
+    user = user.get_item(key_twitter=token_user['hash_key'])
 
-    #valida si el token proporcionado es igual al registrado en la db.
+    #valida si el usuario esta registrado en la base de datos y el token
+    #proporcionado es igual al registrado en la base de datos.
     if user and token == user._data['token_user']:
         return user
     abort(401)
@@ -291,48 +291,17 @@ def validate_email(email):
     raise ValueError('Malformed email')
 
 
-def get_item(table, **kwargs):
-    '''
-    (boto.dynamodb2.table.Table, **kwarg) -> boto.dynamodb2.items.Item
- 
-    retorna un item de la tabla 'table' buscado por hash_key y/o range_key
-    si no se encuentra un item retorna None
- 
-    Ejemplo::
- 
-        Con solo hash key.
-        get_item(table=user, key_user='1234')
- 
-        Con hash + range key.
-        get_item(table=user, key_user='1234', username='pepito')
-    '''
- 
-    from boto.dynamodb2.exceptions import ItemNotFound
-    from boto.exception import JSONResponseError
- 
-    try:
-        item = table.get_item(**kwargs)
-    except (ItemNotFound, JSONResponseError):
-        return None
- 
-    return item
-
-
 def user_skills(user):
     '''
     (dict) -> dict
 
     permite agregar la lista de skills al dict de datos del user.
     '''
+    from dynamoDBqueries import Skill
 
-    from application import dynamodb
-    table = dynamodb.tables['tbl_skills']
-
+    skills = Skill()
     datos = dict()
     datos.update(user)
-    skillUser = table.query_2(key_user__eq=user['key_user']
-                            , limit=3
-                            , index='GKOI_Navbar'
-                            , reverse=True)
-    datos['skills'] = [skill._data['skill'] for skill in skillUser]
+    skill_user = skills.skills_from_user(user['key_user'])
+    datos['skills'] = [skill._data['skill'] for skill in skill_user]
     return datos
