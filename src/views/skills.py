@@ -39,11 +39,11 @@ class Skill_Table(Resource):
             "str" -> UUID
             
         Examples:
-            curl http://localhost:5000/skills 
+            curl http://localhost:5000/api/1.0/skills 
                 -d 'jsonskills=["csharp","html","jquery"]'  
                 -d 'key_user=fedcf7af-e9f0-69cc-1c68-362d8f5164ea' 
                
-            curl http://localhost:5000/skills 
+            curl http://localhost:5000/api/1.0/skills 
                 -d 'key_post=12EC2020-3AEA-4069-A2DD-08002B30309B' 
                 -d 'jsonskills=["csharp","html","jquery"]'  
                 
@@ -57,9 +57,9 @@ class Skill_Table(Resource):
         keyPost = args.get('key_post')
                 
         if not keyPost:
-            cskill.put_skills_user(skillsList,args.key_user)
+            cskill.post_skills_user(skillsList,args.key_user)
         else:
-            cskill.put_skills_post(skillsList,hashValidation(keyPost))
+            cskill.post_skills_post(skillsList,hashValidation(keyPost))
     
         return 'Ingreso'
 

@@ -17,33 +17,33 @@ LIMIT = 10
 
 class Skill():
 
-    def put_skills_user(self, skills, key_user,):
+    def post_skills_user(self, skills, key_user,):
         '''(list, UUID) -> NoneType
         
         Crea todos los skills de un usuario en la tabla skill.
         
         
         '''
-        self._put_skills(skills, key_user, '')
+        self._post_skills(skills, key_user, '')
     
-    def put_skills_post(self, skills, key_post):
+    def post_skills_post(self, skills, key_post):
         '''(list, UUID) -> NoneType
         
         Crea todos los skills de un post en la tabla skill.
         
         '''
-        self._put_skills(skills, key_post, PREFIX)
+        self._post_skills(skills, key_post, PREFIX)
           
-    def _put_skills(self, skills, key, prefix):
+    def _post_skills(self, skills, key, prefix):
         '''(list, UUID, str) -> NoneType
         
         Funcion de apoyo, inserta skills en la tabla skill.
         
         '''
         for skill in skills:
-            self._put_skill(skill, key, prefix)
+            self._post_skill(skill, key, prefix)
     
-    def _put_skill(self, skill, key_user, prefix):
+    def _post_skill(self, skill, key_user, prefix):
         '''(list, UUID, str) -> NoneType
         
         Funcion de apoyo, inserta un skill en la tabla skill.
