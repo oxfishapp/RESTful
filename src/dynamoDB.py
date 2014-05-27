@@ -2,8 +2,7 @@ from boto.dynamodb2.items import Item
 from boto.dynamodb2.fields import GlobalIncludeIndex, GlobalAllIndex, GlobalKeysOnlyIndex
 from boto.dynamodb2.fields import HashKey, RangeKey
 from boto.dynamodb2.table import Table
-from boto.dynamodb2.types import STRING, NUMBER
-from boto import dynamodb2
+from boto.dynamodb2.types import STRING
 
 class dbTables(object):
     
@@ -26,7 +25,7 @@ class dbTables(object):
         #Creacion de la tabla user_suffix_ (ej. user_tets_)
         tables = self.db_connection.list_tables()
         schema_table = [HashKey('key_twitter', data_type = STRING)]
-        throughput={'read': 20, 'write': 20}
+        throughput={'read': 5, 'write': 3}
         
         key_user_index= GlobalIncludeIndex('key_user_index'
                                        , parts=[HashKey('key_user', data_type = STRING)]
@@ -34,10 +33,9 @@ class dbTables(object):
                                        , includes=['nickname', 'name', 'link_image'],
                                        )
         
-        nickname_user_index= GlobalIncludeIndex('nickname_user_index'
+        nickname_user_index= GlobalAllIndex('nickname_user_index'
                                        , parts=[HashKey('nickname', data_type = STRING)]
                                        , throughput=throughput
-                                       , includes=['key_user'],
                                        )
         
         table_name = 'user' + self.TABLE_SUFFIX
@@ -181,6 +179,7 @@ class dbTables(object):
         self.dynamodb.tables['tbl_skills'] = table
 
 
+
 class dbTablesTest(dbTables):
     
     def __init__(self, database):
@@ -230,6 +229,7 @@ class dbTablesTest(dbTables):
                                }
                         )
         item.save()
+        
         
     def create_table_timeline(self):
         table = self.dynamodb.tables['tbl_timeline']
@@ -418,6 +418,7 @@ class dbTablesTest(dbTables):
                             ,'skill' : 'dynamodb'
                             ,'key_time' :  str(datetime.utcnow())})
         item.save()
+
 
 class dbTablesDev(dbTables):
     

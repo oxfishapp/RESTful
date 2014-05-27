@@ -8,9 +8,13 @@ Created on May 10, 2014
 @author: anroco
 '''
 
+
 class Config:
-    
+
+    import os
+
     SERVER_NAME = 'localhost:5000'
+    SECRET_KEY = os.urandom(64)
     DB_HOST = 'localhost'
     DB_PORT = 8000
     DB_AWS_ACCESS_KEY_ID = 'DEVDB'
@@ -24,8 +28,7 @@ class Config:
     TW_AUTHORIZE_URL = 'https://api.twitter.com/oauth/authorize'
     TW_REQUEST_TOKEN_URL = 'https://api.twitter.com/oauth/request_token'
     TW_BASE_URL = 'https://api.twitter.com/1.1/'
-    
-    
+
     @staticmethod
     def iniciar_app(app):
         pass

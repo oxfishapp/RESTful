@@ -14,16 +14,15 @@ from views import users
 from views import timeline
 from views import skills
 
-endpoints = Blueprint('endpoints',__name__)
+endpoints = Blueprint('endpoints', __name__)
 
 api_version = '/api/1.0'
 
 api = restful.Api(endpoints)
 
 #defir los diferentes endpoints de la aplicacion
-api.add_resource(users.User, api_version +  '/user/')
-api.add_resource(users.Nickname, api_version +  '/user/<string:nickname>')
-api.add_resource(users.User_post, api_version + '/post/user/')
+api.add_resource(users.User, api_version + '/user/')
+api.add_resource(users.Nickname, api_version + '/user/<string:nickname>')
 api.add_resource(users.User_scores, api_version + '/auth/user/')
 api.add_resource(users.Auth_user, api_version + '/login/')
 api.add_resource(users.User_register, api_version + '/auth/register/')

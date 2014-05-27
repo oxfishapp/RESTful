@@ -15,7 +15,7 @@ class Timeline_Index(Resource):
     decorators = [marshal_with(format_timeline)]
     
     def get(self):
-        """ () -> list
+        ''' () -> list
         
         Retorna la lista de preguntas en la vista
         Publica de Oxfish.  
@@ -53,7 +53,7 @@ class Timeline_Index(Resource):
                 }
             ]
              
-        """       
+        '''       
         return items_to_list(ctimeline.public())
     
 #Global All Index Home
@@ -61,7 +61,7 @@ class Timeline_Home_Index(Resource):
     decorators = [marshal_with(format_timeline)]
     
     def get(self, key):
-        """ (str) -> list
+        ''' (str) -> list
         
         Retorna una lista con las publicaciones realizadas
         por un usuario en particular.   
@@ -120,14 +120,14 @@ class Timeline_Home_Index(Resource):
                 .
             ]
         
-        """
+        '''
         return items_to_list(ctimeline.home(key))
 
 
 class Timeline_QandWinA(Resource):
     
     def get(self, key):
-        """ (str) -> dict
+        ''' (str) -> dict
         
         Retorna el encabezado (Pregunta) de una 
         vista en particular con sus win answers 
@@ -196,7 +196,7 @@ class Timeline_QandWinA(Resource):
                     .
             }
         
-        """
+        '''
         result = {}
         header_q = ctimeline.get_post(key)
         
@@ -225,7 +225,7 @@ class Timeline_Answers(Resource):
         super(Timeline_Answers, self).__init__()  
 
     def get(self):
-        """ (str) -> list
+        ''' (str) -> list
         
         Retorna una lista cronológica con las respuestas
         de una pregunta en particular para ser cargadas 
@@ -288,7 +288,7 @@ class Timeline_Answers(Resource):
                 .
             ]
         
-        """
+        '''
         
         args = self.reqparse.parse_args()
         hash_key = args.hash_key
@@ -308,7 +308,7 @@ class Timeline_Update(Resource):
     
     @marshal_with(format_timeline)
     def post(self):
-        """ () -> list
+        ''' () -> list
          
         Recibe por parse un string el cual es un 
         json encoder con los campos necesarios para 
@@ -369,7 +369,7 @@ class Timeline_Update(Resource):
                                 }' 
                 -X POST
         
-        """
+        '''
         
         args = self.reqparse.parse_args()
         posting = jsondecoder(args.jsontimeline)
@@ -383,7 +383,7 @@ class Timeline_Update(Resource):
 
 
     def put(self):
-        """ () -> list
+        ''' () -> list
           
         Recibe por parser un string el cual es un
         json encoder con los campos necesarios para 
@@ -419,7 +419,7 @@ class Timeline_Update(Resource):
                               ,"hash_key_answer" : "41EC2020-3AEA-4069-A2DD-08002B30309D"
                               }' 
             -X PUT
-        """
+        '''
         args = self.reqparse.parse_args()
          
         item = ctimeline.get_post(args.hash_key)
@@ -444,7 +444,7 @@ class Timeline_Update(Resource):
       
       
     def delete(self):
-        """ () -> list
+        ''' () -> list
           
         Recibe por parser un string el cual es un
         json encoder con los campos necesarios para 
@@ -484,7 +484,7 @@ class Timeline_Update(Resource):
             -d 'hash_key=41EC2020-3AEA-4069-A2DD-08002B30309D' 
             -X DELETE
              
-        """
+        '''
         args = self.reqparse.parse_args()
         hash_key = args.hash_key
         statuserror = None

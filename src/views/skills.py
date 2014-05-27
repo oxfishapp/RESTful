@@ -30,7 +30,7 @@ class Skill_Table(Resource):
         en la tabla skill:
         
         jsontimeline=
-            ["csharp","html","jquery"]'   
+            '["csharp","html","jquery"]'   
          
         key_user= 
             "str" -> UUID  
