@@ -42,6 +42,10 @@ class Skill_Table(Resource):
             curl http://localhost:5000/api/1.0/skills 
                 -d 'jsonskills=["csharp","html","jquery"]'  
                 -d 'key_user=fedcf7af-e9f0-69cc-1c68-362d8f5164ea' 
+                
+            curl http://localhost:5000/api/1.0/skills 
+                -d 'jsonskills=["csharp2","html2","jquery2"]'  
+                -d 'key_user=fedcf7af-e9f0-69cc-1c68-362d8f5164ea' 
                
             curl http://localhost:5000/api/1.0/skills 
                 -d 'key_post=12EC2020-3AEA-4069-A2DD-08002B30309B' 
@@ -53,13 +57,20 @@ class Skill_Table(Resource):
         
         import json
         skillsList = json.loads(args.jsonskills)
-        
+        skillsUser =[]
         keyPost = args.get('key_post')
+        keyUser = args.get('key_user')
+        
+        if keyUser:
+            skills_user = cskill.skills_from_user(keyUser)
+            skillsUser = [skill for skill in skills_user]
+            if skillsUser:
+                for item in skillsUser:
+                    cskill.delete_skill(item._data['skill'], item._data['key_time']) 
+            cskill.post_skills_user(skillsList, keyUser)
                 
-        if not keyPost:
-            cskill.post_skills_user(skillsList,args.key_user)
-        else:
-            cskill.post_skills_post(skillsList,hashValidation(keyPost))
+        if keyPost:
+            cskill.post_skills_post(skillsList, keyPost)
     
         return 'Ingreso'
 

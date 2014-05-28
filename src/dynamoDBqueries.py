@@ -115,8 +115,11 @@ class Skill():
                             , limit=3
                             , index='GKOI_Navbar'
                             , reverse=True)
-
-
+        
+    def delete_skill(self,skill,key_time):
+        db_connection.delete_item('skill', key={'skill':skill,'key_time':key_time})      
+      
+        
 class Timeline():
 
     def delete_question(self, key):
