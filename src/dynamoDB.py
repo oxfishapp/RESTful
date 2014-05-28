@@ -97,7 +97,7 @@ class dbTables(object):
         table_name = 'timeline' + self.TABLE_SUFFIX
         
         table = Table(table_name, connection=self.db_connection)
-        
+         
         if table.delete(): 
             tables['TableNames'].remove(table_name)
         
@@ -159,7 +159,7 @@ class dbTables(object):
         table_name = 'skill' + self.TABLE_SUFFIX
         
         table = Table(table_name, connection=self.db_connection)
-            
+             
         if table.delete(): 
             tables['TableNames'].remove(table_name)
           

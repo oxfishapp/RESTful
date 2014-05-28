@@ -1,9 +1,14 @@
-import unittest
+# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+#!flask/bin/python
+
+from unittest import TestCase
 import json
 from flask import url_for
 from application import create_app
+from unittest import main
 
-class SkillsTestCase(unittest.TestCase):
+class SkillsTestCase(TestCase):
     
     aplicattion = create_app('test')
     
@@ -20,26 +25,7 @@ class SkillsTestCase(unittest.TestCase):
         self.app_context.push()
         self.client = self.app.test_client()
         
-    def test_get_totalskills(self):
-        '''
-        () -> NoneType
-        permite realizar la prueba al recurso (/api/1.0/totalskills -> GET) 
-           
-        verifica que los datos solicitados por el servicio tengan 
-        el formato adecuado y valida que el response sea el correcto.
-        status_code = 200 
-        '''
-        resultado = self.client.get(url_for('endpoints.skill_count',skill='dynamodb'))
-           
-        json_data = json.loads(resultado.data.decode('utf-8'))
-        resultado_esperado ={
-                                "dynamodb": 3
-                            }
-
-        
-        self.assertDictEqual(resultado_esperado, json_data)
-        self.assertTrue(resultado.status_code == 200)
-    
+  
     def test_get_findbyskill(self):
         '''
         () -> NoneType
@@ -49,7 +35,8 @@ class SkillsTestCase(unittest.TestCase):
         el formato adecuado y valida que el response sea el correcto.
         status_code = 200 
         '''
-        resultado = self.client.get(url_for('endpoints.skill_table',skill='flask'))
+        resultado = self.client.get(url_for('endpoints.findbyskill',skill='flask'))
+        #resultado = self.client.get(url_for('endpoints.totalskills',fskill='dynamodb'))
            
         json_data = json.loads(resultado.data.decode('utf-8'))
         resultado_esperado =[
@@ -84,5 +71,26 @@ class SkillsTestCase(unittest.TestCase):
         self.assertListEqual(resultado_esperado, json_data)
         self.assertTrue(resultado.status_code == 200)
         
+    def test_get_totalskills(self):
+        '''
+        () -> NoneType
+        permite realizar la prueba al recurso (/api/1.0/totalskills -> GET) 
+           
+        verifica que los datos solicitados por el servicio tengan 
+        el formato adecuado y valida que el response sea el correcto.
+        status_code = 200 
+        '''
+        
+        resultado = self.client.get(url_for('endpoints.totalskills',fskill='dynamodb'))
+           
+        json_data = json.loads(resultado.data.decode('utf-8'))
+        resultado_esperado ={
+                                "dynamodb": 3
+                            }
+
+        
+        self.assertDictEqual(resultado_esperado, json_data)
+        self.assertTrue(resultado.status_code == 200)
+        
 if __name__ == '__main__':
-    unittest.main()
+    main()

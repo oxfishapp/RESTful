@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+#!flask/bin/python
+
 import unittest
 import json
 from flask import url_for
@@ -305,6 +309,7 @@ class TimelineTestCase(unittest.TestCase):
                                     "win_answers": None
                                 }
                             ]
+
 
         self.assertListEqual(resultado_esperado, json_data)
         self.assertTrue(resultado.status_code == 200)

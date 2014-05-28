@@ -41,6 +41,6 @@ def authentication_user():
 
         g.user_item = user_item
         g.user_skills = user_dict['skills']
-    else:
-        user_item = validate_user_auth(request.values['token_user']
-                                       , anonymous=True)
+#     else:
+#         user_item = validate_user_auth(request.values['token_user']
+#                                        , anonymous=True)

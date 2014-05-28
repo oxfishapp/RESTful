@@ -37,9 +37,9 @@ api.add_resource(timeline.Timeline_Update, api_version + '/post_a', endpoint='po
 api.add_resource(timeline.Timeline_Update, api_version + '/delete', endpoint='delete_q_a')
 api.add_resource(timeline.Timeline_Update, api_version + '/update', endpoint='update_q')
 
-api.add_resource(skills.Skill_Table, api_version + '/findbyskill/<string:skill>')
-api.add_resource(skills.Skill_count, api_version + '/totalskills')
+api.add_resource(skills.Skill_Table, api_version + '/findbyskill/<string:skill>', endpoint='findbyskill')
 api.add_resource(skills.Skill_Table, api_version + '/skills' ,endpoint='insertskills')
+api.add_resource(skills.Skill_count, api_version + '/totalskills', endpoint='totalskills')
 
 
 

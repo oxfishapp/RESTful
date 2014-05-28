@@ -138,7 +138,7 @@ class Skill_count(Resource):
     
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('skill', type=str, required=True)
+        self.reqparse.add_argument('fskill', type=str, required=True)
         super(Skill_count, self).__init__()  
     
     def get(self):  
@@ -162,10 +162,10 @@ class Skill_count(Resource):
         """
 
         args = self.reqparse.parse_args()
+        skill = args.get('fskill')
 
-        totalUsers = cskill.count(args.skill)
-        
-        return { args.skill : totalUsers }
+        totalUsers = cskill.count(skill)
+        return { skill : totalUsers }
 
 
 
