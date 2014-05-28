@@ -6,17 +6,19 @@ from flask.ext.restful import Resource, reqparse, marshal_with
 from commons import hashValidation, item_to_dict
 from formats import format_timeline
 from dynamoDBqueries import Skill
+from flask import abort
+
 
 cskill = Skill()
 
-class Skill_Table(Resource):
+class Skill_Update(Resource):
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('key_user', type=hashValidation, required=False)
         self.reqparse.add_argument('key_post', type=hashValidation, required=False)
-        self.reqparse.add_argument('jsonskills', type=str, required=False)
-        super(Skill_Table, self).__init__()  
+        self.reqparse.add_argument('jsonskills', type=str, required=True)
+        super(Skill_Update, self).__init__()  
         
     def post(self):
         """() -> list
@@ -68,11 +70,13 @@ class Skill_Table(Resource):
                 for item in skillsUser:
                     cskill.delete_skill(item._data['skill'], item._data['key_time']) 
             cskill.post_skills_user(skillsList, keyUser)
-                
-        if keyPost:
+        elif keyPost:
             cskill.post_skills_post(skillsList, keyPost)
-    
-        return 'Ingreso'
+        else:
+            abort(400)
+
+
+class Skill_List(Resource):
 
     @marshal_with(format_timeline)
     def get(self, skill):
@@ -133,7 +137,6 @@ class Skill_Table(Resource):
 
         return results             
 
-
 class Skill_count(Resource):
     
     def __init__(self):
@@ -151,7 +154,7 @@ class Skill_count(Resource):
         
         Example:
             curl http://localhost:5000/api/1.0/totalskills 
-            -d 'skill=dynamodb'  
+            -d 'fskill=dynamodb'  
             -X GET
             
         Result:

@@ -17,13 +17,3 @@ def error_handled(f):
         except ValueError as e:
             abort(404, e.message)
     return exceptions
-
-message = {"success" : {
-                        "message": "delete successful from timeline", 
-                        "status": "Removed"
-                        }
-            ,"error":{
-                        "message": "delete fail from timeline", 
-                        "status": "NoChange"
-                     }
-            }  

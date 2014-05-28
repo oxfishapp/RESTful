@@ -31,12 +31,17 @@ class SkillsTestCase(TestCase):
         () -> NoneType
         permite realizar la prueba al recurso (/api/1.0/findbyskill -> GET) 
            
-        verifica que los datos solicitados por el servicio tengan 
-        el formato adecuado y valida que el response sea el correcto.
-        status_code = 200 
+        Test 1.1. Valida que el response sea el correcto.         
+                status_code = 200 
+        Test 1.2. Verifica que los datos solicitados por el servicio tengan 
+                el formato adecuado.         
+                status_code = 200 
+        Test 2. Generar un error 400 al no suministrar skill.  
+                status_code = 400 
+
         '''
-        resultado = self.client.get(url_for('endpoints.findbyskill',skill='flask'))
-        #resultado = self.client.get(url_for('endpoints.totalskills',fskill='dynamodb'))
+        resultado = self.client.get(url_for('endpoints.findbyskill'
+                                            ,skill='flask'))
            
         json_data = json.loads(resultado.data.decode('utf-8'))
         resultado_esperado =[
@@ -68,29 +73,100 @@ class SkillsTestCase(TestCase):
                                 }
                             ]
 
+        #Valida el resultado esperado con el resultado obtenido y 
+        #el status code.
         self.assertListEqual(resultado_esperado, json_data)
         self.assertTrue(resultado.status_code == 200)
+        
+        #El campo skill es requerido y no es suministrado en el request
+        resultado = self.client.get(url_for('endpoints.findbyskill'))
+        self.assertTrue(resultado.status_code == 404)
+        
         
     def test_get_totalskills(self):
         '''
         () -> NoneType
         permite realizar la prueba al recurso (/api/1.0/totalskills -> GET) 
-           
-        verifica que los datos solicitados por el servicio tengan 
-        el formato adecuado y valida que el response sea el correcto.
-        status_code = 200 
+            
+        Test 1. verifica que los datos solicitados por el servicio tengan 
+                el formato adecuado y valida que el response sea el correcto.
+                status_code = 200 
+        Test 2. Generar un error 400 al no suministrar fskill.
+                status_code = 400
         '''
-        
-        resultado = self.client.get(url_for('endpoints.totalskills',fskill='dynamodb'))
-           
+         
+        resultado = self.client.get(url_for('endpoints.totalskills'
+                                            ,fskill='dynamodb'))
+            
         json_data = json.loads(resultado.data.decode('utf-8'))
-        resultado_esperado ={
-                                "dynamodb": 3
-                            }
-
-        
+        resultado_esperado ={ "dynamodb": 3 }
+ 
+        #Valida el resultado esperado con el resultado obtenido y 
+        #el status code.
         self.assertDictEqual(resultado_esperado, json_data)
         self.assertTrue(resultado.status_code == 200)
         
+        #El campo fskill es requerido y no es suministrado en el request
+        resultado = self.client.get(url_for('endpoints.totalskills'))
+        self.assertTrue(resultado.status_code == 400)
+    
+    
+    def test_post_updateskills(self):
+        '''
+        () -> NoneType
+        permite realizar la prueba al recurso (/api/1.0/skills -> GET) 
+            
+        Test 1. verifica que los datos se hayan ingresado o acutalizado.
+            Test 1.1 key_post
+            Test 1.2 key_user
+                status_code = 200 
+        Test 2. Generar un error 400 al no suministrar jsonskills.
+                status_code = 400
+        Test 3. Generar un error 400 al no suministrar key_user ni Key_post.
+                status_code = 400
+        
+        '''
+        #El campo key_user y jsonskills son suministrados
+        #status code 200
+        resultado = self.client.post(url_for('endpoints.updateskills'
+                                            ,key_user='fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
+                                            ,jsonskills='["csharp","html","jquery"]'))
+        self.assertTrue(resultado.status_code == 200)
+        
+        #El campo key_post y jsonskills son suministrados
+        #status code 200
+        resultado = self.client.post(url_for('endpoints.updateskills'
+                                            ,key_post='12EC2020-3AEA-4069-A2DD-08002B30309B'
+                                            ,jsonskills='["csharp","html","jquery"]'))
+        self.assertTrue(resultado.status_code == 200)
+        
+        #El campo key_user o key post son requeridos y no es 
+        #suministrado en el request
+        #status code 400
+        resultado = self.client.post(url_for('endpoints.updateskills'
+                                            ,jsonskills='["csharp","html","jquery"]'))
+        self.assertTrue(resultado.status_code == 400)
+        
+        #El campo (key_user o key post) y jsonskills son requeridos y no es 
+        #suministrado en el request
+        #status code 400
+        resultado = self.client.post(url_for('endpoints.updateskills'))
+        self.assertTrue(resultado.status_code == 400)
+        
+        #El campo key_user no tiene el formato adecuado
+        #status code 400
+        resultado = self.client.post(url_for('endpoints.updateskills'
+                                            ,key_user='zedcf7af-e9f0-69cc-1c68-362d8f5164ea'
+                                            ,jsonskills='["csharp","html","jquery"]'))
+        self.assertTrue(resultado.status_code == 400)
+        
+        #El campo key_post no tiene el formato adecuado
+        #status code 400
+        resultado = self.client.post(url_for('endpoints.updateskills'
+                                            ,key_post='z2EC2020-3AEA-4069-A2DD-08002B30309B'
+                                            ,jsonskills='["csharp","html","jquery"]'))
+        self.assertTrue(resultado.status_code == 400)
+        
+    
 if __name__ == '__main__':
     main()

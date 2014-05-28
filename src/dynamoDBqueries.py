@@ -131,7 +131,7 @@ class Timeline():
         self._delete_post(key)
         cskill = Skill()
         cskill.delete_skills_from_post(key)
-        return 'TLQWA'
+        return 200
     
     def delete_answer(self, key, answer):
         '''(UUID,item) -> status
@@ -146,7 +146,7 @@ class Timeline():
         else:
             return self._delete_post_answer(key_delete=key,question_update = question)
         
-        return None
+        return 304
     
     def _delete_post_answer(self, key_delete, question_update):
         '''(UUID,item) -> status
@@ -157,7 +157,7 @@ class Timeline():
         '''
         self._delete_post(key_delete)
         self._minus_one_total_answers(data=question_update)
-        return 'TLA'        
+        return 200        
         
     def _delete_post(self,key):   
         '''(UUID) -> NoneType

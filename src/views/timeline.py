@@ -6,7 +6,7 @@ from flask.ext.restful import Resource, reqparse, marshal_with, marshal
 from formats import format_timeline
 from commons import item_to_dict, items_to_list, hashKeyList, hashValidation ,jsondecoder
 from dynamoDBqueries import Timeline
-from api.errors import message
+from flask import abort
 
 ctimeline = Timeline()
 
@@ -121,7 +121,9 @@ class Timeline_Home_Index(Resource):
             ]
         
         '''
-        return items_to_list(ctimeline.home(key))
+        vkey = hashValidation(key)
+        
+        return items_to_list(ctimeline.home(vkey))
 
 
 class Timeline_QandWinA(Resource):
@@ -198,7 +200,8 @@ class Timeline_QandWinA(Resource):
         
         '''
         result = {}
-        header_q = ctimeline.get_post(key)
+        vkey = hashValidation(key)
+        header_q = ctimeline.get_post(vkey)
         
         if header_q._data.get('win_answers'):
             win_answers = hashKeyList(list(header_q._data['win_answers']))
@@ -374,6 +377,9 @@ class Timeline_Update(Resource):
         args = self.reqparse.parse_args()
         posting = jsondecoder(args.jsontimeline)
         
+        if not posting.get('key_user'):
+            abort(500)
+        
         if not posting.get('key_post_original'):
             ctimeline.create_post_question(posting)
         else:
@@ -431,16 +437,16 @@ class Timeline_Update(Resource):
         if not item._data.get('win_answers'):  
             item._data['win_answers'] = set([attributes["hash_key_answer"]])
             item.save()
-            return message['success']    
              
         if attributes["state"]:
-            item._data['win_answers'].add(attributes["hash_key_answer"])
+            if not attributes["hash_key_answer"] in item._data['win_answers']:
+                item._data['win_answers'].add(attributes["hash_key_answer"])
+            else:
+                abort(500)
         else:
             item._data['win_answers'].remove(attributes["hash_key_answer"])
          
         item.save()
-         
-        return message['success']
       
       
     def delete(self):
@@ -487,16 +493,17 @@ class Timeline_Update(Resource):
         '''
         args = self.reqparse.parse_args()
         hash_key = args.hash_key
-        statuserror = None
+        status = None
         
         deleteItem = ctimeline.get_post(hash_key)
    
         if deleteItem._data.get('key_post_original'):
-            statuserror = ctimeline.delete_answer(key=hash_key,answer=deleteItem)
-        elif not deleteItem._data['total_answers']:
-            statuserror = ctimeline.delete_question(key=hash_key)
-
-        return statuserror
+            status = ctimeline.delete_answer(key=hash_key,answer=deleteItem)
+        elif not deleteItem._data.get('total_answers'):
+            status = ctimeline.delete_question(key=hash_key)
+            
+        if status != 200:
+            abort(304)
      
          
      
