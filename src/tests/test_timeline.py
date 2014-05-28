@@ -3,34 +3,35 @@ import json
 from flask import url_for
 from application import create_app
 
+
 class TimelineTestCase(unittest.TestCase):
-    
+
     aplicattion = create_app('test')
-    
+
     def setUp(self):
         '''
         () -> NoneType
         carga la configuracion necesaria para realizar el test_timeline,
-        se crea un test_timeline desde el cual se podra ejecutar los 
-        servicios        
+        se crea un test_timeline desde el cual se podra ejecutar los
+        servicios
         '''
-        
+
         self.app = self.aplicattion
         self.app_context = self.app.app_context()
         self.app_context.push()
         self.client = self.app.test_client()
-        
+
     def test_get_public_timeline(self):
         '''
         () -> NoneType
-        permite realizar la prueba al recurso (/api/1.0/publictimeline -> GET) 
-           
-        verifica que los datos solicitados por el servicio tengan 
+        permite realizar la prueba al recurso (/api/1.0/publictimeline -> GET)
+
+        verifica que los datos solicitados por el servicio tengan
         el formato adecuado y valida que el response sea el correcto.
-        status_code = 200 
+        status_code = 200
         '''
-        resultado = self.client.get(url_for('endpoints.publictimeline'))
-           
+        resultado = self.client.get(url_for('endpoints.timeline_index'))
+
         json_data = json.loads(resultado.data.decode('utf-8'))
         resultado_esperado =[
                                 {
@@ -60,21 +61,22 @@ class TimelineTestCase(unittest.TestCase):
                                     ]
                                 }
                             ]
-        
+
         self.assertListEqual(resultado_esperado, json_data)
         self.assertTrue(resultado.status_code == 200)
-    
+
     def test_get_home(self):
         '''
         () -> NoneType
         permite realizar la prueba al recurso (/api/1.0/home -> GET) 
-           
+
         verifica que los datos solicitados por el servicio tengan 
         el formato adecuado y valida que el response sea el correcto.
         status_code = 200 
         '''
-        resultado = self.client.get(url_for('endpoints.home',key='87654321-e9f0-69cc-1c68-362d8f5164ea'))
-           
+        resultado = self.client.get(url_for('endpoints.timeline_home_index'
+                                , key='87654321-e9f0-69cc-1c68-362d8f5164ea'))
+
         json_data = json.loads(resultado.data.decode('utf-8'))
         resultado_esperado =[
                                 {
@@ -153,7 +155,8 @@ class TimelineTestCase(unittest.TestCase):
         el formato adecuado y valida que el response sea el correcto.
         status_code = 200 
         '''
-        resultado = self.client.get(url_for('endpoints.post_qwa',key='11EC2020-3AEA-4069-A2DD-08002B30309D'))
+        resultado = self.client.get(url_for('endpoints.timeline_qandwina'
+                                , key='11EC2020-3AEA-4069-A2DD-08002B30309D'))
            
         json_data = json.loads(resultado.data.decode('utf-8'))
         resultado_esperado ={
@@ -227,7 +230,7 @@ class TimelineTestCase(unittest.TestCase):
 
 
         
-        self.assertListEqual(resultado_esperado, json_data)
+        self.assertDictEqual(resultado_esperado, json_data)
         self.assertTrue(resultado.status_code == 200)
     
     def test_get_answers(self):
@@ -239,7 +242,8 @@ class TimelineTestCase(unittest.TestCase):
         el formato adecuado y valida que el response sea el correcto.
         status_code = 200 
         '''
-        resultado = self.client.get(url_for('endpoints.allanswers',hash_key='11EC2020-3AEA-4069-A2DD-08002B30309D'))
+        resultado = self.client.get(url_for('endpoints.timeline_answers'
+                            , hash_key='11EC2020-3AEA-4069-A2DD-08002B30309D'))
            
         json_data = json.loads(resultado.data.decode('utf-8'))
         resultado_esperado =[

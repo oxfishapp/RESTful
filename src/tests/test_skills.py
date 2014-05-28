@@ -29,7 +29,7 @@ class SkillsTestCase(unittest.TestCase):
         el formato adecuado y valida que el response sea el correcto.
         status_code = 200 
         '''
-        resultado = self.client.get(url_for('endpoints.totalskills',skill='dynamodb'))
+        resultado = self.client.get(url_for('endpoints.skill_count',skill='dynamodb'))
            
         json_data = json.loads(resultado.data.decode('utf-8'))
         resultado_esperado ={
@@ -37,7 +37,7 @@ class SkillsTestCase(unittest.TestCase):
                             }
 
         
-        self.assertListEqual(resultado_esperado, json_data)
+        self.assertDictEqual(resultado_esperado, json_data)
         self.assertTrue(resultado.status_code == 200)
     
     def test_get_findbyskill(self):
@@ -49,7 +49,7 @@ class SkillsTestCase(unittest.TestCase):
         el formato adecuado y valida que el response sea el correcto.
         status_code = 200 
         '''
-        resultado = self.client.get(url_for('endpoints.findbyskill',skill='flask'))
+        resultado = self.client.get(url_for('endpoints.skill_table',skill='flask'))
            
         json_data = json.loads(resultado.data.decode('utf-8'))
         resultado_esperado =[

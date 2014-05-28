@@ -287,7 +287,6 @@ class Generate_token(Resource):
         if user_tiwtter.status != 200:
             abort(401)
 
-        token = users.update_token(item._data['token_user']
-                           , datos_token['access_token']
-                           , datos_token['token_secret'])
+        token = users.update_token(item, datos_token['access_token']
+                                   , datos_token['token_secret'])
         return [token]

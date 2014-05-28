@@ -216,7 +216,7 @@ def validate_user_auth(token):
     abort(401)
 
 
-def decrypt_token(token_user):
+def decrypt_token(token_user, anonymous=False):
     '''
     (str) -> dict
 
@@ -233,7 +233,8 @@ def decrypt_token(token_user):
     from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
     from flask import current_app, abort
 
-    token = Serializer(current_app.config['SECRET_KEY'])
+    secret_key = current_app.config['SECRET_KEY']# if anonymous else current_app.config['SECRET_KEY']
+    token = Serializer(secret_key)
     try:
         data = token.loads(token_user)
     except:
