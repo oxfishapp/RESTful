@@ -15,6 +15,7 @@ class Config:
 
     SERVER_NAME = 'localhost:5000'
     SECRET_KEY = os.urandom(64)
+    SECRET_KEY_ANONYMOUS = 'definir una buena clave'
     DB_HOST = 'localhost'
     DB_PORT = 8000
     DB_AWS_ACCESS_KEY_ID = 'DEVDB'

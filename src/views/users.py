@@ -8,8 +8,8 @@ from dynamoDBqueries import User as UserDB
 from flask import abort, g
 from views.formats import format_user, format_user_twitter, format_user_header
 from flask.ext.restful import Resource, marshal_with, reqparse, marshal
-from commons import (validate_email, hashCreate, user_skills, timeUTCCreate,
-                     decrypt_token, twitter_credentials, generate_token)
+from commons import (validate_email, user_skills, decrypt_token
+                     , twitter_credentials)
 
 users = UserDB()
 
@@ -27,9 +27,9 @@ class User(Resource):
     @marshal_with(format_user)
     def get(self):
         '''
-        () -> list
+        () -> dict
 
-        requisito: *hash_key* no None
+        requisito: *hash_key* no None, *token_user* valido
 
         recibe las solicitudes GET del endpoint ('/api/1.0/user/'). Si el
         atributo *basic* es true, retorna el usuario con los atributos basicos
@@ -38,27 +38,26 @@ class User(Resource):
         se envia un response status_code 404 HTTP.
 
         curl http://localhost:500/api/1.0/user/
+        -d 'token_user=YbmdaTWYifQqiSFiWCltIlgaUHFOiJGbkRtYW.FCQnpaYk5GdUJLSkh'
         -d "hash_key=23215634"
         -X GET
 
-        [
-            {
-                "email": juanmen@domain.com,
-                "hash_key": "23215634",
-                "key": "455597c8-59b6-f6cc-a6ed-078986e819fb",
-                "link_image": "http://abs.twimg.com/stick/default_profile.png",
-                "name": "Juan Mendoza",
-                "nickname": "juanmen",
-                "registered": "2014-05-21 02:53:55.791210",
-                "score_answers": 40,
-                "total_post": 4,
-                "skills": [
-                    "python",
-                    "flask",
-                    "dynamodb"
-                ]
-            }
-        ]
+        {
+            "email": juanmen@domain.com,
+            "hash_key": "23215634",
+            "key": "455597c8-59b6-f6cc-a6ed-078986e819fb",
+            "link_image": "http://abs.twimg.com/stick/default_profile.png",
+            "name": "Juan Mendoza",
+            "nickname": "juanmen",
+            "registered": "2014-05-21 02:53:55.791210",
+            "score_answers": 40,
+            "total_post": 4,
+            "skills": [
+                "python",
+                "flask",
+                "dynamodb"
+            ]
+        }
         '''
 
         from .formats import BASIC_USER_FIELDS
@@ -71,7 +70,7 @@ class User(Resource):
                                     , attributes=BASIC_USER_FIELDS)
         else:
             result = users.get_item(key_twitter=args.hash_key)
-        return [user_skills(result._data)] if result else abort(404)
+        return user_skills(result._data) if result else abort(404)
 
 
 class Nickname(Resource):
@@ -82,30 +81,30 @@ class Nickname(Resource):
     @error_handled
     def get(self, nickname):
         '''
-        (str) -> list
+        (str) -> dict
 
-        requisito: nickname no None
+        requisito: *nickname* no None y *token_user* valido
 
         recibe solicitudes GET del endpoint ('/api/1.0/user/<string:nickname>')
-        Retorna un json con el key_user del usuario.
+        Retorna un json con los datos del usuario.
 
         curl http://localhost:5000/api/1.0/user/juanmen
+        -d 'token_user=YbmdaTWYifQqiSFiWCltIlgaUHFOiJGbkRtYW.FCQnpaYk5GdUJLSkh'
+        -X GET
 
-        [
-            {
-                "hash_key": "23215634",
-                "key": "455597c8-59b6-f6cc-a6ed-078986e819fb",
-                "link_image": "http://abs.twimg.com/stick/default_profile.png",
-                "skills": [
-                    "python",
-                    "flask",
-                    "dynamodb"
-                ]
-            }
-        ]
+        {
+            "hash_key": "23215634",
+            "key": "455597c8-59b6-f6cc-a6ed-078986e819fb",
+            "link_image": "http://abs.twimg.com/stick/default_profile.png",
+            "skills": [
+                "python",
+                "flask",
+                "dynamodb"
+            ]
+        }
         '''
         item = users.get_by_nickname(nickname)
-        return [user_skills(item._data)]
+        return user_skills(item._data)
 
 
 class User_scores(Resource):
@@ -151,9 +150,10 @@ class User_register(Resource):
     @marshal_with(format_user_header)
     def put(self):
         '''
-        () -> list
+        () -> dict
 
-        requisito: email debe tener formato de correo electronico
+        requisito: email debe tener formato de correo electronico y el usuario
+        debe estar registrado en la aplicacion.
 
         recibe la solicitud PUT del endpoint ('/api/1.0/auth/register/')
         permite registrar el correo electronico del usuario.
@@ -165,18 +165,16 @@ class User_register(Resource):
         -d 'email=juanmen@domain.com'
         -X PUT
 
-        [
-            {
-                "hash_key": "23215634",
-                "key": "455597c8-59b6-f6cc-a6ed-078986e819fb",
-                "link_image": "http://abs.twimg.com/stick/default_profile.png",
-                "skills": [
-                    "python",
-                    "flask",
-                    "dynamodb"
-                ]
-            }
-        ]
+        {
+            "hash_key": "23215634",
+            "key": "455597c8-59b6-f6cc-a6ed-078986e819fb",
+            "link_image": "http://abs.twimg.com/stick/default_profile.png",
+            "skills": [
+                "python",
+                "flask",
+                "dynamodb"
+            ]
+        }
         '''
 
         args = self.parser.parse_args()
@@ -187,7 +185,7 @@ class User_register(Resource):
             abort(428)
 
         user['skills'] = g.user_skills
-        return [user]
+        return user
 
 
 class Auth_user(Resource):
@@ -201,9 +199,9 @@ class Auth_user(Resource):
     @marshal_with(format_user_header)
     def post(self):
         '''
-        () -> list
+        () -> dict
 
-        requisito: access_token y token_secret no None
+        requisito: *access_token*, *token_secret* no None y *token_user* valido
 
         Recibe la solicitud POST del endpoint ('/api/1.0/login/') para
         autenticar un usuario. Se recibe el access_token y token_secret que se
@@ -222,23 +220,22 @@ class Auth_user(Resource):
         autenticado.
 
         curl http://localhost:500/api/1.0/login/
+        -d 'token_user=YbmdaTWYifQqiSFiWCltIlgaUHFOiJGbkRtYW.FCQnpaYk5GdUJLSkh'
         -d "access_token=85721956-EFmG1NywpV3VEMDnMDbNax9JJ4OfFvEsCLKWi4Slq"
         -d "token_secret=FnDmaaBBzZceF3whMsZom9BmKpUFfyuRNFuBKJHXngZMf"
         -X POST
 
-        [
-            {
-                "hash_key": "23215634",
-                "key": "455597c8-59b6-f6cc-a6ed-078986e819fb",
-                "link_image": "http://abs.twimg.com/stick/default_profile.png",
-                "skills": [
-                    "python",
-                    "flask",
-                    "dynamodb"
-                ]
-                "token": "OiJGbkRtYWFCQnpaYk5GdUJLSkhYbmdaTWYifQ.qiSFiWCltIlga"
-            }
-        ]
+        {
+            "hash_key": "23215634",
+            "key": "455597c8-59b6-f6cc-a6ed-078986e819fb",
+            "link_image": "http://abs.twimg.com/stick/default_profile.png",
+            "skills": [
+                "python",
+                "flask",
+                "dynamodb"
+            ]
+            "token": "OiJGbkRtYWFCQnpaYk5GdUJLSkhYbmdaTWYifQ.qiSFiWCltIlga"
+        }
         '''
 
         args = self.parser.parse_args()
@@ -257,25 +254,31 @@ class Auth_user(Resource):
         #verificar si se el usuario ya registro el email y sus habilidades
         if not 'email' in user or user['email'] == '' or \
             not len(user['skills']):
-            return [user], 428
+            return user, 428
 
-        return [user]
+        return user
 
 
 class Generate_token(Resource):
 
     def put(self):
         '''
-        () -> list
+        () -> str
 
         requisito: el usuario debe estar registrado en la base de datos, el
-        token actual debe ser vigente y debe ser el igual al que tiene registrado
-        en la base de datos.
+        token actual debe ser vigente y debe ser el igual al que tiene
+        registrado en la base de datos.
 
         recibe la solicitud PUT del endpoint ('/api/1.0/auth/get_token/')
         permite generar un  nuevo token para el usuario.
 
         Retorna el token nuevo.
+
+        curl http://localhost:500/api/1.0/auth/get_token/
+        -d 'token_user=YbmdaTWYifQqiSFiWCltIlgaUHFOiJGbkRtYW.FCQnpaYk5GdUJLSkh'
+        -X PUT
+
+        "npaYk5GdUJOiJGbkRtYWFCQOiJtYWFCQaTWYGbkRtYWFCQaTWYifQ.qiSFiWCltIlga"
         '''
 
         item = g.user_item
@@ -289,4 +292,4 @@ class Generate_token(Resource):
 
         token = users.update_token(item, datos_token['access_token']
                                    , datos_token['token_secret'])
-        return [token]
+        return token

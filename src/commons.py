@@ -216,7 +216,7 @@ def validate_user_auth(token):
     abort(401)
 
 
-def decrypt_token(token_user, anonymous=False):
+def decrypt_token(token_user, secret_key=None):
     '''
     (str) -> dict
 
@@ -224,8 +224,9 @@ def decrypt_token(token_user, anonymous=False):
     retornado un dict con los datos encriptados en el token, en caso de fallar
     la verificacion retorna None.
 
-    El SECRET_KEY defenido en la configuracion de la aplicacion es utilizado
-    para cifrar y descifrar el token.
+    Si el secret_key es None, se toma como valor por defecto el SECRET_KEY
+    defenido en la configuracion de la aplicacion para el proceso de cifrado y
+    descifrado el token.
 
     JSON Web Token (JWT)
     '''
@@ -233,7 +234,8 @@ def decrypt_token(token_user, anonymous=False):
     from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
     from flask import current_app, abort
 
-    secret_key = current_app.config['SECRET_KEY']# if anonymous else current_app.config['SECRET_KEY']
+    if not secret_key:
+        secret_key = current_app.config['SECRET_KEY']
     token = Serializer(secret_key)
     try:
         data = token.loads(token_user)
@@ -242,16 +244,17 @@ def decrypt_token(token_user, anonymous=False):
     return data
 
 
-def generate_token(expiration=3600, **kwargs):
+def generate_token(secret_key=None, expiration=3600, **kwargs):
     '''
-    (int, **kwargs) -> str
+    (int, str, **kwargs) -> str
 
     Permite generar un token_user temporal en el cual se encapsularan y
     encriptaran loscdatos contenidos en el kwargs. Retorna un str con el
     token_user con los datos encriptados.
 
-    El SECRET_KEY defenido en la configuracion de la aplicacion es utilizado
-    para cifrar y descifrar el token.
+    Si el secret_key es None, se toma como valor por defecto el SECRET_KEY
+    defenido en la configuracion de la aplicacion para el proceso de cifrado y
+    descifrado el token.
 
     JSON Web Token (JWT)
     '''
@@ -259,7 +262,9 @@ def generate_token(expiration=3600, **kwargs):
     from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
     from flask import current_app
 
-    token = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+    if not secret_key:
+        secret_key = current_app.config['SECRET_KEY']
+    token = Serializer(secret_key, expires_in=expiration)
     return token.dumps(kwargs)
 
 
