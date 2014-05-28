@@ -42,8 +42,7 @@ if __name__ == "__main__":
     if app.debug and 'DEBUG_WITH_APTANA' in app.config:
         uso_debug = not (app.config.get('DEBUG_WITH_APTANA'))
 
-    app.run(use_debugger=uso_debug, debug=app.debug
-            , use_reloader=uso_debug, host='localhost', port=5000)
+    app.run(use_debugger=uso_debug, debug=app.debug, use_reloader=uso_debug)
 
 # curl http://localhost:5000/api/1.0/publictimeline
 # curl http://localhost:5000/api/1.0/home/fedcf7af-e9f0-69cc-1c68-362d8f5164ea

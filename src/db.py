@@ -46,11 +46,11 @@ class DynamoDB(Singleton):
 
         if self.db_connection is None:
             self.config = config
-            self.db_connection = DynamoDBConnection(host=self.config.DB_HOST
-                , port=self.config.DB_PORT
-                , aws_access_key_id=self.config.DB_AWS_ACCESS_KEY_ID
-                , aws_secret_access_key=self.config.DB_AWS_SECRET_KEY
-                , is_secure=self.config.DB_IS_SECURE)
+            self.db_connection = DynamoDBConnection(host=self.config.DB_HOST,
+                        port=self.config.DB_PORT,
+                        aws_access_key_id=self.config.DB_AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=self.config.DB_AWS_SECRET_KEY,
+                        is_secure=self.config.DB_IS_SECURE)
 
     def disconnect(self):
         '''

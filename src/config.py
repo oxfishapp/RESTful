@@ -9,7 +9,7 @@ Created on May 10, 2014
 '''
 
 
-class Config:
+class AppConfig:
 
     import os
 
@@ -21,7 +21,7 @@ class Config:
     DB_AWS_ACCESS_KEY_ID = 'DEVDB'
     DB_AWS_SECRET_KEY = 'DEVDB'
     DB_IS_SECURE = False
-    DB_TABLE_SUFFIX = ''
+    DB_TABLE_PREFIX = ''
     TW_CONSUMER_KEY = 'QbINcoPerlOi4Y4QD3wSjHJKp'
     TW_CONSUMER_SECRET = 'ZBR4eNAo6KUK0gnZO2vm2JKLZdU4gh3DVbcnSibC42diBz1fiJ'
     TW_NAME = 'restanroco'
@@ -30,23 +30,22 @@ class Config:
     TW_REQUEST_TOKEN_URL = 'https://api.twitter.com/oauth/request_token'
     TW_BASE_URL = 'https://api.twitter.com/1.1/'
 
-    @staticmethod
-    def iniciar_app(app):
-        pass
 
-
-class DevConfig(Config):
+class DevConfig(AppConfig):
     DEBUG = True
     DEBUG_WITH_APTANA = True
+    DB_TABLE_PREFIX = '_dev_'
+    DB_TEST_DATA_PATH = 'tests/test_data.json'
 
 
-class TestConfig(Config):
+class TestConfig(AppConfig):
     TESTING = True
-    DB_TABLE_SUFFIX = '_test_'
+    DB_TABLE_PREFIX = '_test_'
+    DB_TEST_DATA_PATH = 'test_data.json'
 
 
 config_env = {
     'dev': DevConfig,
     'test': TestConfig,
-    'default': DevConfig
+    'default': AppConfig
 }

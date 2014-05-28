@@ -1,0 +1,164 @@
+{
+"tbl_user":
+	[
+		{
+		"key_twitter": "85721956",
+		"key_user": "fedcf7af-e9f0-69cc-1c68-362d8f5164ea",
+		"nickname": "anroco",
+        "name": "Andres Rodriguez",
+        "registered": "2014-05-09 23:59:59",
+        "link_image": "http://twitter.com/anroco/image",
+        "total_post": 2983,
+        "score_answers": 827377
+        },
+        {
+        "key_twitter": "12345678",
+		"key_user": "12345678-e9f0-69cc-1c68-362d8f5164ea",
+        "nickname": "viejoemer",
+        "name": "Emerson Perdomo",
+        "registered": "2014-05-21 23:59:59",
+        "link_image": "http://twitter.com/viejoemer/image",
+        "total_post": 12,
+        "score_answers": 12
+   		},
+   		{"key_twitter":"87654321",
+        "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea",
+        "nickname": "franper",
+        "name": "Francisco Perez",
+        "registered": "2014-05-22 23:59:59",
+        "link_image": "http://twitter.com/franper/image",
+        "total_post": 2,
+        "score_answers": 1
+		}
+	],
+"tbl_timeline":
+	[
+		{
+        "key_post": "11EC2020-3AEA-4069-A2DD-08002B30309D",
+        "key_timeline_post": "2014-05-13 17:24:31",
+        "geolocation": "4.598056,-74.075833",
+        "total_answers": 3,
+        "skills": ["flask","python","dynamodb"],
+        "source": "Web",
+        "message140":"Howto Create a table with Python in dynamodb from Flask?",
+        "key_user": "fedcf7af-e9f0-69cc-1c68-362d8f5164ea",
+        "flag_answer": "True",
+        "win_answers": ["31EC2020-3AEA-4069-A2DD-08002B30309D","21EC2020-3AEA-4069-A2DD-08002B30309D"],
+        "link": "Imagen de Pregunta"
+        },
+        {
+        "key_post": "21EC2020-3AEA-4069-A2DD-08002B30309D",
+        "key_timeline_post": "2014-05-14 17:24:31",
+        "geolocation": "4.598056,-74.075833",
+        "source": "Web",
+        "message140": "UNO link del video mas respuesta del usuario",
+        "key_user": "12345678-e9f0-69cc-1c68-362d8f5164ea",
+        "key_post_original": "11EC2020-3AEA-4069-A2DD-08002B30309D",
+        "link": "link video"
+        },
+        {
+		"key_post": "31EC2020-3AEA-4069-A2DD-08002B30309D",
+        "key_timeline_post": "2014-05-15 17:24:31",
+        "geolocation": "4.598056,-74.075833",
+        "source": "Web",
+        "message140": "DOS link del video mas respuesta del usuario",
+        "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea",
+        "key_post_original": "11EC2020-3AEA-4069-A2DD-08002B30309D",
+        "link": "link video"
+        },
+        {
+        "key_post": "41EC2020-3AEA-4069-A2DD-08002B30309D",
+        "key_timeline_post": "2014-05-15 17:24:31",
+        "geolocation": "4.598056,-74.075833",
+        "source": "Web",
+        "message140": "TRES link del video mas respuesta del usuario",
+        "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea",
+        "key_post_original": "11EC2020-3AEA-4069-A2DD-08002B30309D",
+        "link": "link video"
+        },
+        {
+        "key_post": "12EC2020-3AEA-4069-A2DD-08002B30309D",
+        "key_timeline_post": "2014-05-13 17:24:31",
+        "geolocation": "4.598056,-74.075833",
+        "skills": ["csharp","html","jquery"],
+        "source": "Web",
+        "message140": "Howto preunta sin resolver?",
+        "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea",
+        "flag_answer": "False",
+        "total_answers": 0
+        }
+	],
+"tbl_skills":
+	[
+		{      
+        "skill": "q_dynamodb",
+        "key_time": "2014-05-28 15:15:51.770983",
+        "key_post": "11EC2020-3AEA-4069-A2DD-08002B30309D"
+        },
+        {    
+        "skill": "q_flask",
+        "key_time": "2014-05-28 15:16:38.828048",
+        "key_post": "11EC2020-3AEA-4069-A2DD-08002B30309D"
+        },
+        {    
+        "skill": "q_python",
+        "key_time": "2014-05-28 15:16:56.496936",
+        "key_post": "11EC2020-3AEA-4069-A2DD-08002B30309D"
+        },
+        {    
+        "skill": "q_csharp",
+        "key_time": "2014-05-28 15:18:31.328458",
+        "key_post": "12EC2020-3AEA-4069-A2DD-08002B30309D"
+        },
+        {    
+        "skill": "q_html",
+        "key_time": "2014-05-28 15:18:52.158597",
+        "key_post": "12EC2020-3AEA-4069-A2DD-08002B30309D"
+        },
+        {   
+        "skill": "q_jquery",
+        "key_time": "2014-05-28 15:19:14.595372",
+        "key_post": "12EC2020-3AEA-4069-A2DD-08002B30309D"
+        },
+        {    
+        "key_user": "fedcf7af-e9f0-69cc-1c68-362d8f5164ea",
+        "skill": "python",
+        "key_time": "2014-05-28 15:19:48.199545"
+        },
+        {    
+        "key_user": "fedcf7af-e9f0-69cc-1c68-362d8f5164ea",
+        "skill": "flask",
+        "key_time": "2014-05-28 15:20:08.797709"
+        },
+        {    
+        "key_user": "fedcf7af-e9f0-69cc-1c68-362d8f5164ea",
+        "skill": "dynamodb",
+        "key_time": "2014-05-28 15:20:26.443834"
+        },
+        {    
+        "key_user": "12345678-e9f0-69cc-1c68-362d8f5164ea",
+        "skill": "csharp",
+        "key_time": "2014-05-28 15:20:57.111017"
+        },
+        {    
+	    "key_user": "12345678-e9f0-69cc-1c68-362d8f5164ea"
+	    ,"skill": "dynamodb"
+	    ,"key_time": "2014-05-28 15:21:13.794897"
+	    },
+	    {    
+        "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea",
+        "skill": "flask",
+        "key_time": "2014-05-28 15:21:27.910911"
+        },
+        {    
+        "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea",
+        "skill": "csharp",
+        "key_time": "2014-05-28 15:21:42.592234"
+        },
+        {    
+        "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea",
+        "skill": "dynamodb",
+        "key_time": "2014-05-28 15:21:54.617863"
+        }
+	]
+}

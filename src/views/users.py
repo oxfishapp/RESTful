@@ -8,8 +8,8 @@ from dynamoDBqueries import User as UserDB
 from flask import abort, g
 from views.formats import format_user, format_user_twitter, format_user_header
 from flask.ext.restful import Resource, marshal_with, reqparse, marshal
-from commons import (validate_email, user_skills, decrypt_token
-                     , twitter_credentials)
+from commons import (validate_email, user_skills, decrypt_token,
+                     twitter_credentials)
 
 users = UserDB()
 
@@ -66,8 +66,8 @@ class User(Resource):
 
         #valida el atributo *basic* para definir la consulta a realizar.
         if args.basic:
-            result = users.get_item(key_twitter=args.hash_key
-                                    , attributes=BASIC_USER_FIELDS)
+            result = users.get_item(key_twitter=args.hash_key,
+                                    attributes=BASIC_USER_FIELDS)
         else:
             result = users.get_item(key_twitter=args.hash_key)
         return user_skills(result._data) if result else abort(404)
@@ -239,16 +239,16 @@ class Auth_user(Resource):
         '''
 
         args = self.parser.parse_args()
-        user_tiwtter = twitter_credentials(args.access_token
-                                           , args.token_secret)
+        user_tiwtter = twitter_credentials(args.access_token,
+                                           args.token_secret)
 
         #valida la respuesta dada por twitter.
         if user_tiwtter.status != 200:
             abort(401)
 
         datos = marshal(user_tiwtter.data, format_user_twitter)
-        user = users.create_or_update_user(datos, args.access_token
-                                           , args.token_secret)
+        user = users.create_or_update_user(datos, args.access_token,
+                                           args.token_secret)
         user = user_skills(user)
 
         #verificar si se el usuario ya registro el email y sus habilidades
@@ -283,13 +283,13 @@ class Generate_token(Resource):
 
         item = g.user_item
         datos_token = decrypt_token(item._data['token_user'])
-        user_tiwtter = twitter_credentials(datos_token['access_token']
-                                           , datos_token['token_secret'])
+        user_tiwtter = twitter_credentials(datos_token['access_token'],
+                                           datos_token['token_secret'])
 
         #valida la respuesta dada por twitter.
         if user_tiwtter.status != 200:
             abort(401)
 
-        token = users.update_token(item, datos_token['access_token']
-                                   , datos_token['token_secret'])
+        token = users.update_token(item, datos_token['access_token'],
+                                   datos_token['token_secret'])
         return token

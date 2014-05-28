@@ -176,13 +176,13 @@ def twitter_credentials(access_token, token_secret):
 
     config = current_app.config
 
-    tw_auth = OAuth().remote_app(name=config['TW_NAME']
-                            , base_url=config['TW_BASE_URL']
-                            , request_token_url=config['TW_REQUEST_TOKEN_URL']
-                            , access_token_url=config['TW_ACCESS_TOKEN_URL']
-                            , authorize_url=config['TW_AUTHORIZE_URL']
-                            , consumer_key=config['TW_CONSUMER_KEY']
-                            , consumer_secret=config['TW_CONSUMER_SECRET'])
+    tw_auth = OAuth().remote_app(name=config['TW_NAME'],
+                            base_url=config['TW_BASE_URL'],
+                            request_token_url=config['TW_REQUEST_TOKEN_URL'],
+                            access_token_url=config['TW_ACCESS_TOKEN_URL'],
+                            authorize_url=config['TW_AUTHORIZE_URL'],
+                            consumer_key=config['TW_CONSUMER_KEY'],
+                            consumer_secret=config['TW_CONSUMER_SECRET'])
 
     #definicion de una funcion tokengetter necesaria para el funcionamiento de
     #Flask-Oauth retorna una tubla con el access_token y token_secret
@@ -290,8 +290,8 @@ def validate_email(email):
     """
 
     import re
-    result = re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,4}$'
-                      , email.lower())
+    result = re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,4}$',
+                      email.lower())
     if result:
         return email
     raise ValueError('Malformed email')
