@@ -5,6 +5,7 @@ Created on May 8, 2014
 '''
 from functools import wraps
 from flask import abort
+from boto.dynamodb2.exceptions import ItemNotFound
 
 
 def error_handled(f):
@@ -12,7 +13,7 @@ def error_handled(f):
     def exceptions(*args, **kw_args):
         try:
             return f(*args, **kw_args)
-        except StopIteration:
+        except (StopIteration, ItemNotFound):
             abort(404)
         except ValueError as e:
             abort(404, e.message)

@@ -8,10 +8,16 @@ from flask import url_for
 from application import create_app
 from unittest import main
 
+token_auth = None
+token_anonymous = None
+
+
 class SkillsTestCase(TestCase):
-    
+
     aplicattion = create_app('test')
-    
+    access_token_twitter = '85721956-EFmG1NywpV3VEMDnMDbNax9JJ4OfFvEsCLKWi4Slq'
+    token_secret_twitter = 'FnDmaaBBzZceF3whMsZom9BmKpUFfyuRNFuBKJHXngZMf'
+
     def setUp(self):
         '''
         () -> NoneType
@@ -24,6 +30,40 @@ class SkillsTestCase(TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         self.client = self.app.test_client()
+        self.get_token_anonymous(self.app.config['SECRET_KEY_ANONYMOUS'])
+#         self.get_token_auth()
+# 
+#     def get_token_auth(self):
+#         '''
+#         () -> None
+# 
+#         Asigna un token para emular un usuario registrado y autenticado.
+#         '''
+# 
+#         global token_auth
+#         if not token_auth:
+#             resultado = self.client.post(url_for('endpoints.auth_user',
+#                                     token_user=token_anonymous,
+#                                     access_token=self.access_token_twitter,
+#                                     token_secret=self.token_secret_twitter))
+#             json_data = json.loads(resultado.data.decode('utf-8'))
+#             token_auth = json_data['token_user']
+#         resultado = self.client.put(url_for('endpoints.user_register'
+#                                             , email='anroco@dominio.com'
+#                                             , token_user=token_auth))
+#         self.assertTrue(resultado.status_code == 200)
+
+    def get_token_anonymous(self, secret_key_anonymous):
+        '''
+        (str) -> None
+
+        Asigna un token para emular un usuario anonimo.
+        '''
+
+        global token_anonymous
+        from commons import generate_token
+        if not token_anonymous:
+            token_anonymous = generate_token(secret_key_anonymous)
         
   
     def test_get_findbyskill(self):
@@ -40,8 +80,9 @@ class SkillsTestCase(TestCase):
                 status_code = 400 
 
         '''
-        resultado = self.client.get(url_for('endpoints.findbyskill'
-                                            ,skill='flask'))
+        resultado = self.client.get(url_for('endpoints.findbyskill',
+                                            token_user=token_anonymous,
+                                            skill='flask'))
            
         json_data = json.loads(resultado.data.decode('utf-8'))
         resultado_esperado =[
@@ -77,10 +118,11 @@ class SkillsTestCase(TestCase):
         #el status code.
         self.assertListEqual(resultado_esperado, json_data)
         self.assertTrue(resultado.status_code == 200)
-        
-        #El campo skill es requerido y no es suministrado en el request
-        resultado = self.client.get(url_for('endpoints.findbyskill'))
-        self.assertTrue(resultado.status_code == 404)
+
+# #         #El campo skill es requerido y no es suministrado en el request
+# #         resultado = self.client.get(url_for('endpoints.findbyskill',
+# #                                             token_user=token_anonymous))
+# #         self.assertTrue(resultado.status_code == 404)
         
         
     def test_get_totalskills(self):
@@ -95,8 +137,9 @@ class SkillsTestCase(TestCase):
                 status_code = 400
         '''
          
-        resultado = self.client.get(url_for('endpoints.totalskills'
-                                            ,fskill='dynamodb'))
+        resultado = self.client.get(url_for('endpoints.totalskills',
+                                            token_user=token_anonymous,
+                                            fskill='dynamodb'))
             
         json_data = json.loads(resultado.data.decode('utf-8'))
         resultado_esperado ={ "dynamodb": 3 }
@@ -107,7 +150,8 @@ class SkillsTestCase(TestCase):
         self.assertTrue(resultado.status_code == 200)
         
         #El campo fskill es requerido y no es suministrado en el request
-        resultado = self.client.get(url_for('endpoints.totalskills'))
+        resultado = self.client.get(url_for('endpoints.totalskills',
+                                            token_user=token_anonymous))
         self.assertTrue(resultado.status_code == 400)
     
     
@@ -128,43 +172,49 @@ class SkillsTestCase(TestCase):
         '''
         #El campo key_user y jsonskills son suministrados
         #status code 200
-        resultado = self.client.post(url_for('endpoints.updateskills'
-                                            ,key_user='fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
-                                            ,jsonskills='["csharp","html","jquery"]'))
+        resultado = self.client.post(url_for('endpoints.updateskills',
+                                             token_user=token_anonymous,
+                                            key_user='fedcf7af-e9f0-69cc-1c68-362d8f5164ea',
+                                            jsonskills='["csharp","html","jquery"]'))
         self.assertTrue(resultado.status_code == 200)
         
         #El campo key_post y jsonskills son suministrados
         #status code 200
-        resultado = self.client.post(url_for('endpoints.updateskills'
-                                            ,key_post='12EC2020-3AEA-4069-A2DD-08002B30309B'
-                                            ,jsonskills='["csharp","html","jquery"]'))
+        resultado = self.client.post(url_for('endpoints.updateskills',
+                                            token_user=token_anonymous,
+                                            key_post='12EC2020-3AEA-4069-A2DD-08002B30309B',
+                                            jsonskills='["csharp","html","jquery"]'))
         self.assertTrue(resultado.status_code == 200)
         
         #El campo key_user o key post son requeridos y no es 
         #suministrado en el request
         #status code 400
-        resultado = self.client.post(url_for('endpoints.updateskills'
-                                            ,jsonskills='["csharp","html","jquery"]'))
+        resultado = self.client.post(url_for('endpoints.updateskills',
+                                             token_user=token_anonymous,
+                                             jsonskills='["csharp","html","jquery"]'))
         self.assertTrue(resultado.status_code == 400)
         
         #El campo (key_user o key post) y jsonskills son requeridos y no es 
         #suministrado en el request
         #status code 400
-        resultado = self.client.post(url_for('endpoints.updateskills'))
+        resultado = self.client.post(url_for('endpoints.updateskills',
+                                             token_user=token_anonymous))
         self.assertTrue(resultado.status_code == 400)
         
         #El campo key_user no tiene el formato adecuado
         #status code 400
-        resultado = self.client.post(url_for('endpoints.updateskills'
-                                            ,key_user='zedcf7af-e9f0-69cc-1c68-362d8f5164ea'
-                                            ,jsonskills='["csharp","html","jquery"]'))
+        resultado = self.client.post(url_for('endpoints.updateskills',
+                                             token_user=token_anonymous,
+                                             key_user='zedcf7af-e9f0-69cc-1c68-362d8f5164ea',
+                                             jsonskills='["csharp","html","jquery"]'))
         self.assertTrue(resultado.status_code == 400)
         
         #El campo key_post no tiene el formato adecuado
         #status code 400
-        resultado = self.client.post(url_for('endpoints.updateskills'
-                                            ,key_post='z2EC2020-3AEA-4069-A2DD-08002B30309B'
-                                            ,jsonskills='["csharp","html","jquery"]'))
+        resultado = self.client.post(url_for('endpoints.updateskills',
+                                             token_user=token_anonymous,
+                                             key_post='z2EC2020-3AEA-4069-A2DD-08002B30309B',
+                                             jsonskills='["csharp","html","jquery"]'))
         self.assertTrue(resultado.status_code == 400)
         
     

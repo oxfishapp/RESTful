@@ -46,13 +46,14 @@ def hashValidation(value):
 
     """
 
+    from flask import abort
     import re
     regex = re.compile('[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\Z', re.I)
     boolhash = regex.match(value)
     if bool(boolhash):
         return value
     #Genera error
-    raise NameError('Hash Validation Crash')
+    abort(400)
 
 
 def hashCreate():

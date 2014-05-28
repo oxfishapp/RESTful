@@ -58,6 +58,7 @@ class Timeline_Index(Resource):
     
 #Global All Index Home
 class Timeline_Home_Index(Resource):
+    
     decorators = [marshal_with(format_timeline)]
     
     def get(self, key):
@@ -302,7 +303,9 @@ class Timeline_Answers(Resource):
 
 
 class Timeline_Update(Resource):
-     
+    
+    from api.errors import error_handled
+    
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('hash_key', type=hashValidation, required=False)
@@ -378,7 +381,7 @@ class Timeline_Update(Resource):
         posting = jsondecoder(args.jsontimeline)
         
         if not posting.get('key_user'):
-            abort(500)
+            abort(400)
         
         if not posting.get('key_post_original'):
             ctimeline.create_post_question(posting)
@@ -448,7 +451,7 @@ class Timeline_Update(Resource):
          
         item.save()
       
-      
+    @error_handled
     def delete(self):
         ''' () -> list
           
