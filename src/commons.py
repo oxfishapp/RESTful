@@ -176,13 +176,13 @@ def twitter_credentials(access_token, token_secret):
 
     config = current_app.config
 
-    tw_auth = OAuth().remote_app(name=config['TW_NAME']
-                            , base_url=config['TW_BASE_URL']
-                            , request_token_url=config['TW_REQUEST_TOKEN_URL']
-                            , access_token_url=config['TW_ACCESS_TOKEN_URL']
-                            , authorize_url=config['TW_AUTHORIZE_URL']
-                            , consumer_key=config['TW_CONSUMER_KEY']
-                            , consumer_secret=config['TW_CONSUMER_SECRET'])
+    tw_auth = OAuth().remote_app(name=config['TW_NAME'],
+                            base_url=config['TW_BASE_URL'],
+                            request_token_url=config['TW_REQUEST_TOKEN_URL'],
+                            access_token_url=config['TW_ACCESS_TOKEN_URL'],
+                            authorize_url=config['TW_AUTHORIZE_URL'],
+                            consumer_key=config['TW_CONSUMER_KEY'],
+                            consumer_secret=config['TW_CONSUMER_SECRET'])
 
     #definicion de una funcion tokengetter necesaria para el funcionamiento de
     #Flask-Oauth retorna una tubla con el access_token y token_secret
@@ -216,7 +216,7 @@ def validate_user_auth(token):
     abort(401)
 
 
-def decrypt_token(token_user, anonymous=False):
+def decrypt_token(token_user, secret_key=None):
     '''
     (str) -> dict
 
@@ -224,8 +224,9 @@ def decrypt_token(token_user, anonymous=False):
     retornado un dict con los datos encriptados en el token, en caso de fallar
     la verificacion retorna None.
 
-    El SECRET_KEY defenido en la configuracion de la aplicacion es utilizado
-    para cifrar y descifrar el token.
+    Si el secret_key es None, se toma como valor por defecto el SECRET_KEY
+    defenido en la configuracion de la aplicacion para el proceso de cifrado y
+    descifrado el token.
 
     JSON Web Token (JWT)
     '''
@@ -233,7 +234,8 @@ def decrypt_token(token_user, anonymous=False):
     from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
     from flask import current_app, abort
 
-    secret_key = current_app.config['SECRET_KEY']# if anonymous else current_app.config['SECRET_KEY']
+    if not secret_key:
+        secret_key = current_app.config['SECRET_KEY']
     token = Serializer(secret_key)
     try:
         data = token.loads(token_user)
@@ -242,16 +244,17 @@ def decrypt_token(token_user, anonymous=False):
     return data
 
 
-def generate_token(expiration=3600, **kwargs):
+def generate_token(secret_key=None, expiration=3600, **kwargs):
     '''
-    (int, **kwargs) -> str
+    (int, str, **kwargs) -> str
 
     Permite generar un token_user temporal en el cual se encapsularan y
     encriptaran loscdatos contenidos en el kwargs. Retorna un str con el
     token_user con los datos encriptados.
 
-    El SECRET_KEY defenido en la configuracion de la aplicacion es utilizado
-    para cifrar y descifrar el token.
+    Si el secret_key es None, se toma como valor por defecto el SECRET_KEY
+    defenido en la configuracion de la aplicacion para el proceso de cifrado y
+    descifrado el token.
 
     JSON Web Token (JWT)
     '''
@@ -259,7 +262,9 @@ def generate_token(expiration=3600, **kwargs):
     from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
     from flask import current_app
 
-    token = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+    if not secret_key:
+        secret_key = current_app.config['SECRET_KEY']
+    token = Serializer(secret_key, expires_in=expiration)
     return token.dumps(kwargs)
 
 
@@ -285,8 +290,8 @@ def validate_email(email):
     """
 
     import re
-    result = re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,4}$'
-                      , email.lower())
+    result = re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,4}$',
+                      email.lower())
     if result:
         return email
     raise ValueError('Malformed email')

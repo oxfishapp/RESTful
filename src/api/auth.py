@@ -4,9 +4,9 @@ Created on May 17, 2014
 @author: anroco
 '''
 
-from flask import Blueprint, abort, g, request
+from flask import Blueprint, abort, g, request, current_app
 from flask.ext import restful
-from commons import validate_user_auth, user_skills
+from commons import validate_user_auth, user_skills, decrypt_token
 
 
 auth = Blueprint('auth', __name__)
@@ -41,6 +41,6 @@ def authentication_user():
 
         g.user_item = user_item
         g.user_skills = user_dict['skills']
-#     else:
-#         user_item = validate_user_auth(request.values['token_user']
-#                                        , anonymous=True)
+    else:
+        decrypt_token(request.values['token_user'],
+                      current_app.config['SECRET_KEY_ANONYMOUS'])
