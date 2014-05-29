@@ -20,6 +20,10 @@ class dbTablesAWS(object):
         self.db_connection = database.db_connection
         self.dynamodb.tables['tbl_user'] = Table(table_name=app.config['user'],
                connection=self.db_connection)
+        self.dynamodb.tables['tbl_timeline'] = Table(table_name=app.config['timeline'],
+               connection=self.db_connection)
+        self.dynamodb.tables['tbl_skills'] = Table(table_name=app.config['skills'],
+               connection=self.db_connection)
 
 
 class dbTables(object):
