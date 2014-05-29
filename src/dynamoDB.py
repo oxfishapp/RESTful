@@ -6,6 +6,22 @@ from boto.dynamodb2.table import Table
 from boto.dynamodb2.types import STRING
 
 
+class dbTablesAWS(object):
+
+    def __init__(self, database, app):
+        '''
+        (boto.dynamodb2.layer1.DynamoDBConnection) -> None
+
+        Inicializa el objeto dbTables el cual permitira realizar el proceso
+        de creacion de las tablas de la aplicacion.
+        '''
+
+        self.dynamodb = database
+        self.db_connection = database.db_connection
+        self.dynamodb.tables['tbl_user'] = Table(table_name=app.config['user'],
+               connection=self.db_connection)
+
+
 class dbTables(object):
 
     def __init__(self, database):
@@ -148,20 +164,20 @@ class dbTables(object):
         throughput = {'read': 5, 'write': 3}
 
         #definicion del global index GKOI_Navbar de la tabla skill.
-        GKOI_Navbar = GlobalKeysOnlyIndex('GKOI_Navbar',
+        GKOI_Navbar = GlobalKeysOnlyIndex('Navbar',
                         parts=[HashKey('key_user', data_type=STRING),
                             RangeKey('skill', data_type=STRING)],
                         throughput=throughput)
 
         #definicion del global index GII_Find de la tabla skill.
-        GII_Find = GlobalIncludeIndex('GII_Find',
+        GII_Find = GlobalIncludeIndex('Find',
                         parts=[HashKey('skill', data_type=STRING),
                             RangeKey('key_time', data_type=STRING)],
                         throughput=throughput,
                         includes=['key_post'])
 
         #definicion del global index GII_Post de la tabla skill.
-        GII_Post = GlobalIncludeIndex('GII_Post',
+        GII_Post = GlobalIncludeIndex('Post',
                         parts=[HashKey('key_post', data_type=STRING),
                             RangeKey('key_time', data_type=STRING)],
                         throughput=throughput,
@@ -213,5 +229,6 @@ class dbTablesTest(dbTables):
 config_db_env = {
     'dev': dbTablesTest,
     'test': dbTablesTest,
-    'default': dbTables
+    'default': dbTables,
+    'aws': dbTablesAWS
 }

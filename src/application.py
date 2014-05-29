@@ -19,10 +19,15 @@ def create_app(config_type):
     """
     app = Flask(__name__)
     config = config_env[config_type]
-    app.config.from_object(config)
-    dynamodb.connect(config)
-    db_tables = config_db_env[config_type](dynamodb)
-    db_tables.create_tables()
+    if config_type == 'aws':
+        app.config.from_envvar('APP_CONFIG', silent=True)
+        dynamodb.connect(config, app.config['AWS_REGION'])
+        db_tables = config_db_env[config_type](dynamodb, app)
+    else:
+        app.config.from_object(config)
+        dynamodb.connect(config)
+        db_tables = config_db_env[config_type](dynamodb)
+        db_tables.create_tables()
 
     #registrar los blueprints en la app
     from api.endpoints import endpoints
@@ -35,7 +40,7 @@ def create_app(config_type):
 
 if __name__ == "__main__":
 
-    app = create_app('dev')
+    app = create_app('aws')
 
     #valida si la aplicacion se inicializa en modo debug y el debug se hace
     #por medio de un tercero(Eclipse, Aptana).

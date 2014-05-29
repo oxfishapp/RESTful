@@ -14,7 +14,7 @@ table_user = dynamodb.tables['tbl_user']
 table_timeline = dynamodb.tables['tbl_timeline']
 
 PREFIX = 'q_'
-LIMIT = 10
+LIMIT = dynamodb.config.DB_LIMIT
 
 
 class Skill():
@@ -65,7 +65,7 @@ class Skill():
                                    {"key_post":
                                     {"ComparisonOperator": "EQ",
                                      "AttributeValueList": [{"S": hash_key}]}},
-                                   index_name='GII_Post')
+                                   index_name='Post')
 
     #http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html
     #http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/MonitoringDynamoDB.html
@@ -91,7 +91,7 @@ class Skill():
         '''
 
         return table_skill.query_2(skill__eq=PREFIX + skill, reverse=True,
-                                   limit=LIMIT, index='GII_Find')
+                                   limit=LIMIT, index='Find')
 
     def count(self, skill):
         '''(str)
@@ -109,7 +109,7 @@ class Skill():
         '''
 
         return table_skill.query_2(key_user__eq=key_user, limit=3,
-                                   index='GKOI_Navbar', reverse=True)
+                                   index='Navbar', reverse=True)
 
     def delete_skill(self, skill, key_time):
         db_connection.delete_item('skill', key={'skill': skill,

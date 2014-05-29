@@ -5,6 +5,7 @@ Created on May 9, 2014
 '''
 
 from boto.dynamodb2.layer1 import DynamoDBConnection
+from boto import dynamodb2
 
 
 class Singleton(object):
@@ -36,7 +37,7 @@ class DynamoDB(Singleton):
     #diccionario con la lista de tablas
     tables = {}
 
-    def connect(self, config):
+    def connect(self, config, cnn=None):
         '''
         (str) -> NoneType
 
@@ -46,7 +47,10 @@ class DynamoDB(Singleton):
 
         if self.db_connection is None:
             self.config = config
-            self.db_connection = DynamoDBConnection(host=self.config.DB_HOST,
+            if config.TYPE == 'AWS':
+                self.db_connection = dynamodb2.connect_to_region(cnn)
+            else:
+                self.db_connection = DynamoDBConnection(host=self.config.DB_HOST,
                         port=self.config.DB_PORT,
                         aws_access_key_id=self.config.DB_AWS_ACCESS_KEY_ID,
                         aws_secret_access_key=self.config.DB_AWS_SECRET_KEY,
