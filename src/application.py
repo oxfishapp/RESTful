@@ -9,6 +9,7 @@ from db import DynamoDB
 #from flask_oauth import OAuth
 
 dynamodb = DynamoDB()
+application = Flask(__name__)
 
 
 def create_app(config_type):
@@ -17,7 +18,6 @@ def create_app(config_type):
     Crea y retorna la aplicacion teniendo en cuenta el tipo de
     configuracion deseada.
     """
-    application = Flask(__name__)
     config = config_env[config_type]
     if config_type == 'aws':
         application.config.from_envvar('APP_CONFIG', silent=True)
