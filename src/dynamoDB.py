@@ -8,7 +8,7 @@ from boto.dynamodb2.types import STRING
 
 class dbTablesAWS(object):
 
-    def __init__(self, database, app):
+    def __init__(self, database, config):
         '''
         (boto.dynamodb2.layer1.DynamoDBConnection) -> None
 
@@ -18,11 +18,11 @@ class dbTablesAWS(object):
 
         self.dynamodb = database
         self.db_connection = database.db_connection
-        self.dynamodb.tables['tbl_user'] = Table(table_name=app.config['user'],
+        self.dynamodb.tables['tbl_user'] = Table(table_name=config['user'],
                connection=self.db_connection)
-        self.dynamodb.tables['tbl_timeline'] = Table(table_name=app.config['timeline'],
+        self.dynamodb.tables['tbl_timeline'] = Table(table_name=config['timeline'],
                connection=self.db_connection)
-        self.dynamodb.tables['tbl_skills'] = Table(table_name=app.config['skills'],
+        self.dynamodb.tables['tbl_skills'] = Table(table_name=config['skills'],
                connection=self.db_connection)
 
 

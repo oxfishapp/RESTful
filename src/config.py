@@ -41,17 +41,11 @@ class AppConfigAWS:
     FLASK_DEBUG = os.environ.get('FLASK_DEBUG') if os.environ.get('FLASK_DEBUG') else False
     SERVER_NAME = os.environ.get('SERVER_NAME') if os.environ.get('SERVER_NAME') else '0.0.0.0:5000'
     SECRET_KEY = os.urandom(64)
-    SECRET_KEY_ANONYMOUS = os.environ.get('SECRET_KEY_ANONYMOUS') if os.environ.get('SECRET_KEY_ANONYMOUS') else 'R)gE0*U&'
+    SECRET_KEY_ANONYMOUS = os.environ.get('SECRET_KEY_ANONYMOUS') if os.environ.get('SECRET_KEY_ANONYMOUS') else 'RsgE0sUw'
     DB_LIMIT = os.environ.get('DB_LIMIT') if os.environ.get('DB_LIMIT') else 5
     TW_CONSUMER_KEY = os.environ.get('TW_CONSUMER_KEY') if os.environ.get('TW_CONSUMER_KEY') else None
     TW_CONSUMER_SECRET = os.environ.get('TW_CONSUMER_SECRET') if os.environ.get('TW_CONSUMER_SECRET') else None
     TW_NAME = os.environ.get('TW_NAME') if os.environ.get('TW_NAME') else 'OxfishRESTful'
-    
-    
-    TW_ACCESS_TOKEN_URL = 'https://api.twitter.com/oauth/access_token'
-    TW_AUTHORIZE_URL = 'https://api.twitter.com/oauth/authorize'
-    TW_REQUEST_TOKEN_URL = 'https://api.twitter.com/oauth/request_token'
-    TW_BASE_URL = 'https://api.twitter.com/1.1/'
 
 
 class DevConfig(AppConfig):

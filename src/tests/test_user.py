@@ -1,7 +1,7 @@
 import unittest
 import json
 from flask import url_for
-from application import create_app
+from devApp import create_app
 
 token_auth = None
 token_anonymous = None

@@ -4,10 +4,11 @@ Created on May 25, 2014
 @author: root
 '''
 
-from application import dynamodb
+from db import DynamoDB
 from commons import *
 from boto.dynamodb2.items import Item
 
+dynamodb = DynamoDB()
 db_connection = dynamodb.db_connection
 table_skill = dynamodb.tables['tbl_skills']
 table_user = dynamodb.tables['tbl_user']

@@ -5,7 +5,7 @@
 from unittest import TestCase
 import json
 from flask import url_for
-from application import create_app
+from devApp import create_app
 from unittest import main
 
 token_auth = None

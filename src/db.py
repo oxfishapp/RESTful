@@ -37,7 +37,7 @@ class DynamoDB(Singleton):
     #diccionario con la lista de tablas
     tables = {}
 
-    def connect(self, config, cnn=None):
+    def connect(self, config):
         '''
         (str) -> NoneType
 
@@ -48,7 +48,7 @@ class DynamoDB(Singleton):
         if self.db_connection is None:
             self.config = config
             if config.TYPE == 'AWS':
-                self.db_connection = dynamodb2.connect_to_region(cnn)
+                self.db_connection = dynamodb2.connect_to_region(config['AWS_REGION'])
             else:
                 self.db_connection = DynamoDBConnection(host=self.config.DB_HOST,
                         port=self.config.DB_PORT,

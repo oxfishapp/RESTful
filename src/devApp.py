@@ -11,21 +11,39 @@ from db import DynamoDB
 dynamodb = DynamoDB()
 application = Flask(__name__)
 
-application.config.from_object(config_env['aws'])
-application.config.from_envvar('APP_CONFIG', silent=True)
-dynamodb.connect(application.config)
-db_tables = config_db_env['aws'](dynamodb, application.config)
 
-#registrar los blueprints en la application
-from api.endpoints import endpoints
-from api.auth import auth
+def create_app(config_type):
+    """(str) -> Flask
 
-application.register_blueprint(endpoints)
-application.register_blueprint(auth)
+    Crea y retorna la aplicacion teniendo en cuenta el tipo de
+    configuracion deseada.
+    """
+    config = config_env[config_type]
+    application.config.from_object(config)
+    dynamodb.connect(config)
+    db_tables = config_db_env[config_type](dynamodb)
+    db_tables.create_tables()
 
+    #registrar los blueprints en la application
+    from api.endpoints import endpoints
+    from api.auth import auth
+
+    application.register_blueprint(endpoints)
+    application.register_blueprint(auth)
+
+    return application
 
 if __name__ == "__main__":
-    application.run(host='0.0.0.0')
+
+    application = create_app('aws')
+
+    #valida si la aplicacion se inicializa en modo debug y el debug se hace
+    #por medio de un tercero(Eclipse, Aptana).
+    if application.debug and 'DEBUG_WITH_APTANA' in application.config:
+        uso_debug = not (application.config.get('DEBUG_WITH_APTANA'))
+
+    application.run(use_debugger=uso_debug, debug=application.debug,
+                    use_reloader=uso_debug, host='0.0.0.0')
 
 # curl http://localhost:5000/api/1.0/publictimeline
 # curl http://localhost:5000/api/1.0/home/fedcf7af-e9f0-69cc-1c68-362d8f5164ea
