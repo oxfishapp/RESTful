@@ -1,8 +1,6 @@
 Flask==0.10.1
 Flask-OAuth==0.12
 Flask-RESTful==0.2.12
-M2Crypto==0.21.1
-Werkzeug==0.9.4
 boto==2.28.0
 itsdangerous==0.24
 

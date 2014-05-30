@@ -17,37 +17,37 @@ def create_app(config_type):
     Crea y retorna la aplicacion teniendo en cuenta el tipo de
     configuracion deseada.
     """
-    app = Flask(__name__)
+    application = Flask(__name__)
     config = config_env[config_type]
     if config_type == 'aws':
-        app.config.from_envvar('APP_CONFIG', silent=True)
-        dynamodb.connect(config, app.config['AWS_REGION'])
-        db_tables = config_db_env[config_type](dynamodb, app)
+        application.config.from_envvar('APP_CONFIG', silent=True)
+        dynamodb.connect(config, application.config['AWS_REGION'])
+        db_tables = config_db_env[config_type](dynamodb, application)
     else:
-        app.config.from_object(config)
+        application.config.from_object(config)
         dynamodb.connect(config)
         db_tables = config_db_env[config_type](dynamodb)
         db_tables.create_tables()
 
-    #registrar los blueprints en la app
+    #registrar los blueprints en la application
     from api.endpoints import endpoints
     from api.auth import auth
 
-    app.register_blueprint(endpoints)
-    app.register_blueprint(auth)
+    application.register_blueprint(endpoints)
+    application.register_blueprint(auth)
 
-    return app
+    return application
 
 if __name__ == "__main__":
 
-    app = create_app('aws')
+    application = create_app('aws')
 
     #valida si la aplicacion se inicializa en modo debug y el debug se hace
     #por medio de un tercero(Eclipse, Aptana).
-    if app.debug and 'DEBUG_WITH_APTANA' in app.config:
-        uso_debug = not (app.config.get('DEBUG_WITH_APTANA'))
+    if application.debug and 'DEBUG_WITH_APTANA' in application.config:
+        uso_debug = not (application.config.get('DEBUG_WITH_APTANA'))
 
-    app.run(use_debugger=uso_debug, debug=app.debug, use_reloader=uso_debug)
+    application.run(use_debugger=uso_debug, debug=application.debug, use_reloader=uso_debug)
 
 # curl http://localhost:5000/api/1.0/publictimeline
 # curl http://localhost:5000/api/1.0/home/fedcf7af-e9f0-69cc-1c68-362d8f5164ea
