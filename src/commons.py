@@ -66,9 +66,9 @@ def hashCreate():
 
     """
 
-    import uuid, M2Crypto
+    import uuid
 
-    value = uuid.UUID(bytes=M2Crypto.m2.rand_bytes(16))
+    value = uuid.uuid4()
     return str(value)
 
 
