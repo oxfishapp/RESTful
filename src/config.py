@@ -67,5 +67,5 @@ config_env = {
     'dev': DevConfig,
     'test': TestConfig,
     'default': AppConfig,
-    'aws': AppConfigAWS
+    'aws': AppConfigAWS()
 }
