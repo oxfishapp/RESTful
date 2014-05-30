@@ -35,7 +35,7 @@ def create_app(config_type):
 
 if __name__ == "__main__":
 
-    application = create_app('aws')
+    application = create_app('dev')
 
     #valida si la aplicacion se inicializa en modo debug y el debug se hace
     #por medio de un tercero(Eclipse, Aptana).
