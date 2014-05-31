@@ -10,6 +10,11 @@ from flask import abort
 
 ctimeline = Timeline()
 
+class HW(Resource):
+    def get(self):   
+        return 'Hellow World!'
+
+
 #Global All Index Timeline Public
 class Timeline_Index(Resource):
     decorators = [marshal_with(format_timeline)]

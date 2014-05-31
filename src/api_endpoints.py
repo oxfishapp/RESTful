@@ -43,7 +43,7 @@ apiapplication.add_resource(views_skills.Skill_List, api_version + '/findbyskill
 apiapplication.add_resource(views_skills.Skill_Update, api_version + '/skills' ,endpoint='updateskills')
 apiapplication.add_resource(views_skills.Skill_count, api_version + '/totalskills', endpoint='totalskills')
 
-
+apiapplication.add_resource(views_timeline.HW, '/')
 
 
 
