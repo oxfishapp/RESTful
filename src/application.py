@@ -29,6 +29,7 @@ TW_AUTHORIZE_URL = 'https://api.twitter.com/oauth/authorize'
 TW_REQUEST_TOKEN_URL = 'https://api.twitter.com/oauth/request_token'
 TW_BASE_URL = 'https://api.twitter.com/1.1/'
 
+
 application = Flask(__name__)
 
 application.config.from_object(__name__)
