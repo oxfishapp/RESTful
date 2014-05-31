@@ -9,7 +9,7 @@ Created on May 10, 2014
 '''
 
 
-class AppConfig:
+class AppConfig(object):
 
     TYPE = 'DEV'
     SERVER_NAME = 'localhost:5000'
