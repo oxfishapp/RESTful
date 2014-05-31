@@ -12,9 +12,9 @@ from api_auth import auth
 
 application = Flask(__name__)
 
-dynamoDBqueries.db_connection = connection=dynamodb2.connect_to_region('us-west-2',
-                        aws_access_key_id='AKIAJ4MQ2TCTX3UAE6AQ',
-                        aws_secret_access_key='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')
+dynamoDBqueries.db_connection = connection=dynamodb2.connect_to_region('us-east-1')
+#                         aws_access_key_id='AKIAJ4MQ2TCTX3UAE6AQ',
+#                         aws_secret_access_key='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')
 dynamoDBqueries.table_timeline = Table(table_name='timeline',
                connection=dynamoDBqueries.db_connection)
 dynamoDBqueries.table_skill = Table(table_name='skill',
