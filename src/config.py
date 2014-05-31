@@ -50,7 +50,7 @@ class DevConfig(AppConfig):
     DEBUG = True
     DEBUG_WITH_APTANA = True
     DB_TABLE_PREFIX = '_dev_'
-    DB_TEST_DATA_PATH = 'tests/test_data.json'
+    DB_TEST_DATA_PATH = 'test_data.json'
 
 
 class TestConfig(AppConfig):
