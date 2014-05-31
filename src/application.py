@@ -22,7 +22,7 @@ dynamoDBqueries.table_skill = Table(table_name='skill',
 dynamoDBqueries.table_user = Table(table_name='user',
                connection=dynamoDBqueries.db_connection)
 
-application.config.from_object(config_env['aws'])
+#application.config.from_object(config_env['aws'])
 
 #registrar los blueprints en la application
 application.register_blueprint(endpoints)
