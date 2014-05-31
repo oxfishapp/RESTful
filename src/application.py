@@ -3,7 +3,7 @@
 #!flask/bin/python
 
 from flask import Flask
-#from config import config_env
+from config import config_env
 import dynamoDBqueries
 from boto.dynamodb2.table import Table
 from boto import dynamodb2
@@ -43,7 +43,7 @@ dynamoDBqueries.table_skill = Table(table_name='skill',
 dynamoDBqueries.table_user = Table(table_name='user',
                connection=dynamoDBqueries.db_connection)
 
-#application.config.from_object(config_env['aws'])
+application.config.from_object(config_env['aws'])
 
 #registrar los blueprints en la application
 application.register_blueprint(endpoints)
