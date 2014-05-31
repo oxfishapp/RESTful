@@ -3,7 +3,7 @@
 #!flask/bin/python
 
 from flask import Flask
-from config import config_env
+#from config import config_env
 import dynamoDBqueries
 from boto.dynamodb2.table import Table
 from boto import dynamodb2
@@ -48,7 +48,7 @@ dynamoDBqueries.table_user = Table(table_name='user',
 
 #registrar los blueprints en la application
 application.register_blueprint(endpoints)
-#application.register_blueprint(auth)
+application.register_blueprint(auth)
 
 
 if __name__ == "__main__":
