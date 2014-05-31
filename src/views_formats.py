@@ -8,7 +8,7 @@ Created on May 21, 2014
 @author: root
 '''
 from flask.ext.restful import fields
-from commons import Set_to_List, HashKey_Validation
+from commons import Set_to_List, HashKey_Validation, Email_validation
 
 
 #lista de campos a traer en una consulta a la tabla users
@@ -28,7 +28,7 @@ format_user = {'hash_key': fields.String(attribute='key_twitter')
                , 'key': HashKey_Validation(attribute='key_user')
                , 'nickname': fields.String
                , 'name' : fields.String
-               , 'email' : fields.String
+               , 'email' : Email_validation
                , 'registered': fields.String
                , 'link_image': fields.String
                , 'total_post': fields.Integer

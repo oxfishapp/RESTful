@@ -3,7 +3,7 @@
 #!flask/bin/python
 
 from flask.ext.restful.fields import Raw
-from api.errors import error_handled
+from api_errors import error_handled
 
 
 class Set_to_List(Raw):
@@ -54,7 +54,6 @@ def hashValidation(value):
         return value
     #Genera error
     abort(400)
-
 
 def hashCreate():
     """ () -> str
@@ -225,7 +224,7 @@ def decrypt_token(token_user, secret_key=None):
     retornado un dict con los datos encriptados en el token, en caso de fallar
     la verificacion retorna None.
 
-    Si el secret_key es None, se toma como valor por defecto el SECRET_KEY
+    Si el secret_key es None, se toma como valor por defecto el OX_SECRET_KEY
     defenido en la configuracion de la aplicacion para el proceso de cifrado y
     descifrado el token.
 
@@ -236,7 +235,7 @@ def decrypt_token(token_user, secret_key=None):
     from flask import current_app, abort
 
     if not secret_key:
-        secret_key = current_app.config['SECRET_KEY']
+        secret_key = current_app.config['OX_SECRET_KEY']
     token = Serializer(secret_key)
     try:
         data = token.loads(token_user)
@@ -253,7 +252,7 @@ def generate_token(secret_key=None, expiration=3600, **kwargs):
     encriptaran loscdatos contenidos en el kwargs. Retorna un str con el
     token_user con los datos encriptados.
 
-    Si el secret_key es None, se toma como valor por defecto el SECRET_KEY
+    Si el secret_key es None, se toma como valor por defecto el OX_SECRET_KEY
     defenido en la configuracion de la aplicacion para el proceso de cifrado y
     descifrado el token.
 
@@ -264,12 +263,12 @@ def generate_token(secret_key=None, expiration=3600, **kwargs):
     from flask import current_app
 
     if not secret_key:
-        secret_key = current_app.config['SECRET_KEY']
+        secret_key = current_app.config['OX_SECRET_KEY']
     token = Serializer(secret_key, expires_in=expiration)
     return token.dumps(kwargs)
 
 
-class email_validation(Raw):
+class Email_validation(Raw):
     def format(self, value):
         """ (str) -> str
 
@@ -282,33 +281,19 @@ class email_validation(Raw):
         return validate_email(value)
 
 
-@error_handled
+#@error_handled
 def validate_email(email):
     """ (str) -> boolean
 
     Permite verificar que el email proporcionado tiene el formato adecuado.
     Si es correcto retorna el email de lo contrario lanza un NameError.
     """
-
+    
+    from flask import abort
     import re
     result = re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,4}$',
                       email.lower())
     if result:
         return email
-    raise ValueError('Malformed email')
-
-
-def user_skills(user):
-    '''
-    (dict) -> dict
-
-    permite agregar la lista de skills al dict de datos del user.
-    '''
-    from dynamoDBqueries import Skill
-
-    skills = Skill()
-    datos = dict()
-    datos.update(user)
-    skill_user = skills.skills_from_user(user['key_user'])
-    datos['skills'] = [skill._data['skill'] for skill in skill_user]
-    return datos
+    abort(400)
+#    raise ValueError('Malformed email')

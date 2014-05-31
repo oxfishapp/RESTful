@@ -28,7 +28,11 @@ class dbTablesAWS(object):
 
 class dbTables(object):
 
-    def __init__(self, database):
+    cnn = None
+    tables = dict()
+    config = None
+
+    def __init__(self, config):
         '''
         (boto.dynamodb2.layer1.DynamoDBConnection) -> None
 
@@ -36,9 +40,21 @@ class dbTables(object):
         de creacion de las tablas de la aplicacion.
         '''
 
-        self.dynamodb = database
-        self.TABLE_PREFIX = database.config.DB_TABLE_PREFIX
-        self.db_connection = database.db_connection
+        self.config = config
+        self.create_connection()
+        self.TABLE_PREFIX = config['DB_TABLE_PREFIX']
+
+    def create_connection(self):
+        from boto.dynamodb2.layer1 import DynamoDBConnection
+        import dynamoDBqueries
+
+        if dynamoDBqueries.db_connection is None:
+            dynamoDBqueries.db_connection = DynamoDBConnection(host=self.config['DB_HOST'],
+                        port=self.config['DB_PORT'],
+                        aws_access_key_id=self.config['DB_AWS_ACCESS_KEY_ID'],
+                        aws_secret_access_key=self.config['DB_AWS_SECRET_KEY'],
+                        is_secure=self.config['DB_IS_SECURE'])
+        self.cnn = dynamoDBqueries.db_connection
 
     def create_tables(self):
         '''
@@ -67,14 +83,14 @@ class dbTables(object):
         Permite crear una tabla. Retorna la tabla que se ha creado.
         '''
 
-        tables = self.db_connection.list_tables()
-        table = Table(table_name, connection=self.db_connection)
+        tables = self.cnn.list_tables()
+        table = Table(table_name, connection=self.cnn)
 
         #verifica si se debe eliminar una tabla antes de crearla, por ejemplo
         #si la aplicacion  esta ejecuntado un entorno de tests
         if table_name in tables['TableNames'] and table_name.startswith('_'):
             if table.delete():
-                tables = self.db_connection.list_tables()
+                tables = self.cnn.list_tables()
 
         #valida si la tabla ya se encuentra creada.
         if not table_name in tables['TableNames']:
@@ -83,7 +99,7 @@ class dbTables(object):
                          throughput=throughput,
                          global_indexes=global_indexes,
                          indexes=indexes,
-                         connection=self.db_connection)
+                         connection=self.cnn)
         return table
 
     def super_create_table_user(self):
@@ -111,9 +127,14 @@ class dbTables(object):
                                 throughput=throughput)
 
         table_name = self.TABLE_PREFIX + 'user'
-        table = self.create_table(table_name, schema, throughput=throughput,
-                          global_indexes=[nickname_user_index, key_user_index])
-        self.dynamodb.tables['tbl_user'] = table
+
+        import dynamoDBqueries
+
+        dynamoDBqueries.table_user = self.create_table(table_name, schema,
+                       throughput=throughput,
+                       global_indexes=[nickname_user_index, key_user_index])
+
+        self.tables['tbl_user'] = dynamoDBqueries.table_user
 
     def super_create_table_timeline(self):
         '''
@@ -147,11 +168,14 @@ class dbTables(object):
                         throughput=throughput)
 
         table_name = self.TABLE_PREFIX + 'timeline'
-        table = self.create_table(table_name, schema, throughput=throughput,
+
+        import dynamoDBqueries
+
+        dynamoDBqueries.table_timeline = self.create_table(table_name, schema, throughput=throughput,
                                   global_indexes=[GAI_TimelinePublic,
                                                   GAI_VerTodoPublic,
                                                   GAI_Home])
-        self.dynamodb.tables['tbl_timeline'] = table
+        self.tables['tbl_timeline'] = dynamoDBqueries.table_timeline
 
     def super_create_table_skill(self):
         '''
@@ -188,9 +212,13 @@ class dbTables(object):
                         includes=['skill'])
 
         table_name = self.TABLE_PREFIX + 'skill'
-        table = self.create_table(table_name, schema, throughput=throughput,
+
+        import dynamoDBqueries
+
+        dynamoDBqueries.table_skill = self.create_table(table_name, schema, throughput=throughput,
                             global_indexes=[GKOI_Navbar, GII_Find, GII_Post])
-        self.dynamodb.tables['tbl_skills'] = table
+
+        self.tables['tbl_skill'] = dynamoDBqueries.table_skill
 
 
 class dbTablesTest(dbTables):
@@ -214,13 +242,13 @@ class dbTablesTest(dbTables):
         from commons import jsondecoder
 
         #cargar los datos de prueba del archivo test_data.json
-        path_file = os.path.abspath(self.dynamodb.config.DB_TEST_DATA_PATH)
+        path_file = os.path.abspath(self.config['DB_TEST_DATA_PATH'])
         json_data = open(path_file).read()
         data = jsondecoder(json_data)
 
         #guardar los datos contenidos en el archivo json en la base de datos.
         for key, value in data.items():
-            table = self.dynamodb.tables[key]
+            table = self.tables[key]
             for item in value:
                 if key == 'tbl_timeline':
                     if 'skills' in item:

@@ -4,18 +4,16 @@ Created on May 25, 2014
 @author: root
 '''
 
-from db import DynamoDB
 from commons import *
 from boto.dynamodb2.items import Item
 
-dynamodb = DynamoDB()
-db_connection = dynamodb.db_connection
-table_skill = dynamodb.tables['tbl_skills']
-table_user = dynamodb.tables['tbl_user']
-table_timeline = dynamodb.tables['tbl_timeline']
+db_connection = None
+table_skill = None
+table_user = None
+table_timeline = None
 
 PREFIX = 'q_'
-LIMIT = dynamodb.config.DB_LIMIT
+LIMIT = 10
 
 
 class Skill():
@@ -376,3 +374,38 @@ class User():
             user._data['token_user'] = token
         user.save()
         return user._data
+
+    def validate_user_auth(self, token):
+        '''
+        (str) -> boto.dynamodb2.items.Item
+
+        Valida si el token proporcionado es el mismos que tiene regitrado el
+        usuadio en la base de datos. En caso de ser correcta la validacion se
+        retorna el usuario y en caso de ser fallida retorna un status_code 401.
+        '''
+
+        from flask import abort
+        from commons import decrypt_token
+
+        token_user = decrypt_token(token)
+        user = self.get_item(key_twitter=token_user['hash_key'])
+
+        #valida si el usuario esta registrado en la base de datos y el token
+        #proporcionado es igual al registrado en la base de datos.
+        if user and token == user._data['token_user']:
+            return user
+        abort(401)
+
+    def user_skills(self, user):
+        '''
+        (dict) -> dict
+
+        permite agregar la lista de skills al dict de datos del user.
+        '''
+
+        skills = Skill()
+        datos = dict()
+        datos.update(user)
+        skill_user = skills.skills_from_user(user['key_user'])
+        datos['skills'] = [skill._data['skill'] for skill in skill_user]
+        return datos

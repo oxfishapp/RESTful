@@ -6,7 +6,8 @@ Created on May 17, 2014
 
 from flask import Blueprint, abort, g, request, current_app
 from flask.ext import restful
-from commons import validate_user_auth, user_skills, decrypt_token
+from commons import validate_user_auth, decrypt_token
+from dynamoDBqueries import User
 
 
 auth = Blueprint('auth', __name__)
@@ -27,8 +28,9 @@ def authentication_user():
 
     #verifica si el recurso solicitado necesita que el usuario este autenticado
     if request.method != 'GET' and '/auth/' in request.path:
+        user = User()
         user_item = validate_user_auth(request.values['token_user'])
-        user_dict = user_skills(user_item._data)
+        user_dict = user.user_skills(user_item._data)
 
         #verificar si se el usuario ya registro el email y sus habilidades
         #validando todos los path a excepcion de los que se encuentran

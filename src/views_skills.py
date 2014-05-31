@@ -4,7 +4,7 @@
 
 from flask.ext.restful import Resource, reqparse, marshal_with
 from commons import hashValidation, item_to_dict
-from formats import format_timeline
+from views_formats import format_timeline
 from dynamoDBqueries import Skill
 from flask import abort
 
@@ -169,27 +169,3 @@ class Skill_count(Resource):
 
         totalUsers = cskill.count(skill)
         return { skill : totalUsers }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

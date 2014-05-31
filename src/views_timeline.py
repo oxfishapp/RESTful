@@ -3,7 +3,7 @@
 #!flask/bin/python
 
 from flask.ext.restful import Resource, reqparse, marshal_with, marshal
-from formats import format_timeline
+from views_formats import format_timeline
 from commons import item_to_dict, items_to_list, hashKeyList, hashValidation ,jsondecoder
 from dynamoDBqueries import Timeline
 from flask import abort
@@ -304,7 +304,7 @@ class Timeline_Answers(Resource):
 
 class Timeline_Update(Resource):
     
-    from api.errors import error_handled
+    from api_errors import error_handled
     
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
@@ -507,8 +507,3 @@ class Timeline_Update(Resource):
             
         if status != 200:
             abort(304)
-     
-         
-     
-     
-     

@@ -5,12 +5,8 @@
 from flask import Flask
 from config import config_env
 from dynamoDB import config_db_env
-from db import DynamoDB
-#from flask_oauth import OAuth
 
-dynamodb = DynamoDB()
 application = Flask(__name__)
-
 
 def create_app(config_type):
     """(str) -> Flask
@@ -18,15 +14,14 @@ def create_app(config_type):
     Crea y retorna la aplicacion teniendo en cuenta el tipo de
     configuracion deseada.
     """
-    config = config_env[config_type]
-    application.config.from_object(config)
-    dynamodb.connect(config)
-    db_tables = config_db_env[config_type](dynamodb)
+    application.config.from_object(config_env[config_type])
+    config = application.config
+    db_tables = config_db_env[config_type](config)
     db_tables.create_tables()
 
     #registrar los blueprints en la application
-    from api.endpoints import endpoints
-    from api.auth import auth
+    from api_endpoints import endpoints
+    from api_auth import auth
 
     application.register_blueprint(endpoints)
     application.register_blueprint(auth)

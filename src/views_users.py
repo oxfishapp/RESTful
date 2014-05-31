@@ -6,9 +6,9 @@ Created on May 8, 2014
 
 from dynamoDBqueries import User as UserDB
 from flask import abort, g
-from views.formats import format_user, format_user_twitter, format_user_header
+from views_formats import format_user, format_user_twitter, format_user_header
 from flask.ext.restful import Resource, marshal_with, reqparse, marshal
-from commons import (validate_email, user_skills, decrypt_token,
+from commons import (validate_email, decrypt_token,
                      twitter_credentials)
 
 users = UserDB()
@@ -60,7 +60,7 @@ class User(Resource):
         }
         '''
 
-        from .formats import BASIC_USER_FIELDS
+        from views_formats import BASIC_USER_FIELDS
 
         args = self.parser.parse_args()
 
@@ -70,12 +70,12 @@ class User(Resource):
                                     attributes=BASIC_USER_FIELDS)
         else:
             result = users.get_item(key_twitter=args.hash_key)
-        return user_skills(result._data) if result else abort(404)
+        return users.user_skills(result._data) if result else abort(404)
 
 
 class Nickname(Resource):
 
-    from api.errors import error_handled
+    from api_errors import error_handled
 
     @marshal_with(format_user_header)
     @error_handled
@@ -104,7 +104,7 @@ class Nickname(Resource):
         }
         '''
         item = users.get_by_nickname(nickname)
-        return user_skills(item._data)
+        return users.user_skills(item._data)
 
 
 class User_scores(Resource):
@@ -249,7 +249,7 @@ class Auth_user(Resource):
         datos = marshal(user_tiwtter.data, format_user_twitter)
         user = users.create_or_update_user(datos, args.access_token,
                                            args.token_secret)
-        user = user_skills(user)
+        user = users.user_skills(user)
 
         #verificar si se el usuario ya registro el email y sus habilidades
         if not 'email' in user or user['email'] == '' or \
