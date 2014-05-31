@@ -10,8 +10,9 @@ from boto import dynamodb2
 from api_endpoints import endpoints
 from api_auth import auth
 
-SERVER_NAME = 'localhost:5000'
+#SERVER_NAME = 'localhost:5000'
 OX_SECRET_KEY = "kEv7FEBT8rarwB41Hf72Bw50HbY6dyOU4CiwXHkFdExs5NgVQWaray6civgs4aYX"
+SECRET_KEY = 'kEv7FEBT8rarwB41Hf72Bw50HbY6dyOU4CiwXHkFdExs5NgVQWaray6civgs4aYX'
 SECRET_KEY_ANONYMOUS = 'YGWF5VLNhwduPtfMisczxgYDWRqoG5bW'
 DB_HOST = 'localhost'
 DB_PORT = 8000
