@@ -3,7 +3,7 @@
 #!flask/bin/python
 
 from flask import Flask
-from config import config_env
+#from config import config_env
 import dynamoDBqueries
 from boto.dynamodb2.table import Table
 from boto import dynamodb2
