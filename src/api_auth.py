@@ -43,6 +43,6 @@ def authentication_user():
 
         g.user_item = user_item
         g.user_skills = user_dict['skills']
-#     else:
-#         decrypt_token(request.values['token_user'],
-#                       current_app.config['SECRET_KEY_ANONYMOUS'])
+    else:
+        decrypt_token(request.values['token_user'],
+                      current_app.config['SECRET_KEY_ANONYMOUS'])
