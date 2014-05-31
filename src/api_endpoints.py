@@ -20,16 +20,14 @@ api_version = '/api/1.0'
 
 apiapplication = restful.Api(endpoints)
 
-
-
-#defir los diferentes endpoints de la aplicacion
-# apiapplication.add_resource(views_users.User, api_version + '/user/')
-# apiapplication.add_resource(views_users.Nickname, api_version + '/user/<string:nickname>')
-# apiapplication.add_resource(views_users.User_scores, api_version + '/auth/user/')
-# apiapplication.add_resource(views_users.Auth_user, api_version + '/login/')
-# apiapplication.add_resource(views_users.User_register, api_version + '/auth/register/')
-# apiapplication.add_resource(views_users.Generate_token, api_version + '/auth/get_token/')
-# 
+# defir los diferentes endpoints de la aplicacion
+apiapplication.add_resource(views_users.User, api_version + '/user/')
+apiapplication.add_resource(views_users.Nickname, api_version + '/user/<string:nickname>')
+apiapplication.add_resource(views_users.User_scores, api_version + '/auth/user/')
+apiapplication.add_resource(views_users.Auth_user, api_version + '/login/')
+apiapplication.add_resource(views_users.User_register, api_version + '/auth/register/')
+apiapplication.add_resource(views_users.Generate_token, api_version + '/auth/get_token/')
+ 
 apiapplication.add_resource(views_timeline.Timeline_Index, api_version + '/publictimeline')
 apiapplication.add_resource(views_timeline.Timeline_Answers, api_version + '/allanswers')
 apiapplication.add_resource(views_timeline.Timeline_Home_Index, api_version + '/home/<string:key>')
@@ -43,7 +41,7 @@ apiapplication.add_resource(views_skills.Skill_List, api_version + '/findbyskill
 apiapplication.add_resource(views_skills.Skill_Update, api_version + '/skills' ,endpoint='updateskills')
 apiapplication.add_resource(views_skills.Skill_count, api_version + '/totalskills', endpoint='totalskills')
 
-apiapplication.add_resource(views_timeline.HW, '/')
+# apiapplication.add_resource(views_timeline.HW, '/')
 
 
 
