@@ -12,7 +12,7 @@ from dynamoDBqueries import User
 
 auth = Blueprint('auth', __name__)
 api = restful.Api(auth)
-PATHS_EXCEPTION = ['/api/1.0/auth/register/']
+PATHS_EXCEPTION = ['/api/1.0/auth/register/', '/api/1.0/auth/skills/']
 
 
 @auth.before_app_request
