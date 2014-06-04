@@ -38,7 +38,7 @@ apiapplication.add_resource(views_timeline.Timeline_Update, api_version + '/auth
 apiapplication.add_resource(views_timeline.Timeline_Update, api_version + '/auth/update', endpoint='update_q')
  
 apiapplication.add_resource(views_skills.Skill_List, api_version + '/findbyskill/<string:skill>', endpoint='findbyskill')
-apiapplication.add_resource(views_skills.Skill_Update, api_version + '/skills' ,endpoint='updateskills')
+apiapplication.add_resource(views_skills.Skill_Update, api_version + '/auth/skills' ,endpoint='updateskills')
 apiapplication.add_resource(views_skills.Skill_count, api_version + '/totalskills', endpoint='totalskills')
 
 # apiapplication.add_resource(views_timeline.HW, '/')
