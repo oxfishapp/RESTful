@@ -78,6 +78,7 @@ class Skill():
 
     #http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html
     #http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/MonitoringDynamoDB.html
+    #http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_DeleteItem.html
 
     def delete_skills_from_post(self, hash_key):
         '''(UUID) -> NoneType
