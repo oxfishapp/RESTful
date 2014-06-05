@@ -41,17 +41,15 @@ class Skill_Update(Resource):
             "str" -> UUID
             
         Examples:
-            curl http://localhost:5000/api/1.0/skills 
-                -d 'jsonskills=["csharp","html","jquery"]'  
+            curl http://localhost:5000/api/1.0/auth/skills 
+                -d 'jsonskills=["csharp2","html2","jquery2"]'   
                 -d 'key_user=fedcf7af-e9f0-69cc-1c68-362d8f5164ea' 
-                
-            curl http://localhost:5000/api/1.0/skills 
-                -d 'jsonskills=["csharp2","html2","jquery2"]'  
-                -d 'key_user=fedcf7af-e9f0-69cc-1c68-362d8f5164ea' 
+                -X POST
                
             curl http://localhost:5000/api/1.0/skills 
                 -d 'key_post=12EC2020-3AEA-4069-A2DD-08002B30309B' 
                 -d 'jsonskills=["csharp","html","jquery"]'  
+                -X POST
                 
         """
         
@@ -67,9 +65,14 @@ class Skill_Update(Resource):
             skills_user = cskill.skills_from_user(keyUser)
             skillsUser = [skill for skill in skills_user]
             if skillsUser:
-                for item in skillsUser:
-                    cskill.delete_skill(item._data['skill'], item._data['key_time']) 
-            cskill.post_skills_user(skillsList, keyUser)
+                for i in range(3):
+                    skillsUser[i]._data['skill'] = skillsList[i]
+                    skillsUser[i].save()
+#                 Fueron reemplazadas por las tres lineas de arriba
+#                 for item in skillsUser:
+#                     cskill.delete_skill(item._data['skill'], item._data['key_time'])
+            else:
+                cskill.post_skills_user(skillsList, keyUser)
         elif keyPost:
             cskill.post_skills_post(skillsList, keyPost)
         else:
