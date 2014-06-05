@@ -209,7 +209,7 @@ class dbTables(object):
                         parts=[HashKey('key_post', data_type=STRING),
                             RangeKey('key_time', data_type=STRING)],
                         throughput=throughput,
-                        includes=['skill'])
+                        includes=['skill','key_skill'])
         
         #definicion del global index GKOI_Count de la tabla skill.
         GKOI_Count = GlobalKeysOnlyIndex('Count',

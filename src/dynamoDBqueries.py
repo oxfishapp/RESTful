@@ -69,11 +69,12 @@ class Skill():
         Retorna los skills de un post en particular.
 
         '''
-        return db_connection.query('skill',
-                                   {"key_post":
-                                    {"ComparisonOperator": "EQ",
-                                     "AttributeValueList": [{"S": hash_key}]}},
-                                   index_name='Post')
+        return table_skill.query_2(key_post__eq=hash_key,index='Post')
+#         return db_connection.query('skill',
+#                                    {"key_post":
+#                                     {"ComparisonOperator": "EQ",
+#                                      "AttributeValueList": [{"S": hash_key}]}},
+#                                    index_name='Post')
 
     #http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html
     #http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/MonitoringDynamoDB.html
@@ -85,11 +86,13 @@ class Skill():
 
         '''
 
-        values = self.skills_from_post(hash_key)
-        for skill in dict(values.items())['Items']:
+        skill_post = self.skills_from_post(hash_key)
+        values = [skill._data for skill in skill_post]
+        
+        for delete in values:
             db_connection.delete_item('skill',
-                                 key={'key_skill': skill['key_skill']['S'],
-                                      'key_time': skill['key_time']['S']})
+                                 key={'key_skill': delete['key_skill'],
+                                      'key_time': delete['key_time']})
 
     def finder(self, skill):
         '''(str) -> Resultset
