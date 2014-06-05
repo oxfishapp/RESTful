@@ -455,7 +455,8 @@ class Timeline_Update(Resource):
             item._data['win_answers'].remove(attributes["hash_key_answer"])
          
         item.save()
-      
+    
+    @marshal_with(format_timeline)
     def delete(self):
         ''' () -> list
           
@@ -500,16 +501,13 @@ class Timeline_Update(Resource):
         '''
         args = self.reqparse.parse_args()
         hash_key = args.hash_key
-        status = None
         
         deleteItem = ctimeline.get_post(hash_key)
-        
-        abort(500)
    
         if deleteItem._data.get('key_post_original'):
-            status = ctimeline.delete_answer(key=hash_key,answer=deleteItem)
+            ctimeline.delete_answer(key=hash_key,answer=deleteItem)
         elif not deleteItem._data.get('total_answers'):
-            status = ctimeline.delete_question(key=hash_key)
+            ctimeline.delete_question(key=hash_key)
             
-        if status != 200:
-            abort(304)
+        return deleteItem._data
+        
