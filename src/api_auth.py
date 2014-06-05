@@ -29,7 +29,7 @@ def authentication_user():
     es correcto.
     '''
     
-    raise Exception(request.path, request.values['token_user'] ,request.method) 
+#    raise Exception(request.path, request.values['token_user'] ,request.method) 
 #     args = reqparse_auth.parse_args()
 
     #verifica si el recurso solicitado necesita que el usuario este autenticado

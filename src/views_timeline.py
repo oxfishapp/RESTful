@@ -309,7 +309,7 @@ class Timeline_Answers(Resource):
 
 class Timeline_Update(Resource):
     
-    from api_errors import error_handled
+    #from api_errors import error_handled
     
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
