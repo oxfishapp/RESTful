@@ -179,7 +179,7 @@ class Timeline():
         Retorna un item de la tabla timeline.
 
         '''
-        return table_timeline.get_item(key_post=hashValidation(key))
+        return table_timeline.get_item(key_post=key)
 
     def get_posts(self, keys):
         '''(list) -> Resultset

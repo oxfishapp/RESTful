@@ -17,6 +17,4 @@ def error_handled(f):
             abort(404)
         except ValueError as e:
             abort(404, e.message)
-        except Exception as e:
-            abort(404, e.message)
     return exceptions

@@ -456,7 +456,6 @@ class Timeline_Update(Resource):
          
         item.save()
       
-    #@error_handled
     def delete(self):
         ''' () -> list
           
@@ -504,6 +503,8 @@ class Timeline_Update(Resource):
         status = None
         
         deleteItem = ctimeline.get_post(hash_key)
+        
+        abort(500)
    
         if deleteItem._data.get('key_post_original'):
             status = ctimeline.delete_answer(key=hash_key,answer=deleteItem)
