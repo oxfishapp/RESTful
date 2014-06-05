@@ -51,13 +51,14 @@ class Skill():
 
         '''
         data = {'key_skill' : hashCreate(),
-               'skill': prefix + skill,
                'key_time':  timeUTCCreate()}
         
         if prefix:
             data['key_post'] = key
+            data['skill'] = prefix + skill
         else: 
             data['key_user'] = key
+            data['skill'] = skill
         
         insert_skill = Item(table_skill, data)
         insert_skill.save()
