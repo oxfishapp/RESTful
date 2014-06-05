@@ -90,9 +90,14 @@ class Skill():
         values = [skill._data for skill in skill_post]
         
         for delete in values:
-            db_connection.delete_item('skill',
-                                 key={'key_skill': delete['key_skill'],
-                                      'key_time': delete['key_time']})
+            db_connection.delete_item(table_skill.table_name
+                                      , key={'key_skill': delete['key_skill']
+                                             , 'key_time': delete['key_time']
+                                             }
+                                      , expected={
+                                                    'key_skill': {'Exists': True}
+                                                  }
+                                      )
 
     def finder(self, skill):
         '''(str) -> Resultset
@@ -175,7 +180,7 @@ class Timeline():
 
         '''
         #db_connection.delete_item(table_timeline.table_name, key={'key_post': key})
-        db_connection.delete_item('timeline'
+        db_connection.delete_item(table_timeline.table_name
                                   , key={'key_post': key}
                                   , expected={
                                                 'key_post': {'Exists': True}
