@@ -104,6 +104,8 @@ class Nickname(Resource):
         }
         '''
         item = users.get_by_nickname(nickname)
+        if 'token_user' in item._data:
+            item._data.pop('token_user')
         return users.user_skills(item._data)
 
 
@@ -185,6 +187,8 @@ class User_register(Resource):
             abort(428)
 
         user['skills'] = g.user_skills
+        if 'token_user' in user:
+            user.pop('token_user')
         return user
 
 

@@ -142,7 +142,7 @@ class UserTestCase(unittest.TestCase):
                         , "link_image": "http://abs.twimg.com/sticky/" +
                          "default_profile_images/default_profile_5_normal.png"
                         , "skills": ["python", "flask", "dynamodb"]
-                        , "token_user": token_auth}
+                        , "token_user": None}
  
         #El usuario no existe, status_code = 404
         resultado = self.client.get(url_for('endpoints.nickname'
@@ -176,7 +176,7 @@ class UserTestCase(unittest.TestCase):
                          , "link_image": "http://abs.twimg.com/sticky/" +
                          "default_profile_images/default_profile_5_normal.png"
                          , "skills": ["python", "flask", "dynamodb"]
-                         , "token_user": token_auth}
+                         , "token_user": None}
  
         #token_user no validos (usuario no autenticado), status_code = 401
         resultado = self.client.put(url_for('endpoints.user_register'

@@ -346,6 +346,7 @@ class User():
                                access_token=access_token,
                                token_secret=token_secret)
         item._data['token_user'] = token
+        item.save()
         return item._data['token_user']
 
     def create_or_update_user(self, datos_twitter, access_token, token_secret):
