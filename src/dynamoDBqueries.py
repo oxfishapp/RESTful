@@ -135,9 +135,9 @@ class Timeline():
         Eliminar una pregunta en particular con las habilidades asociadas.
 
         '''
-        self._delete_post(key)
         cskill = Skill()
-        cskill.delete_skills_from_post(key)
+        cskill.delete_skills_from_post(key)        
+        self._delete_post(key)
         return 200
 
     def delete_answer(self, key, answer):
