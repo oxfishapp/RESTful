@@ -395,7 +395,7 @@ class Timeline_Update(Resource):
         
         return items_to_list(posting)
 
-
+    @marshal_with(format_timeline)
     def put(self):
         ''' () -> list
           
@@ -445,6 +445,7 @@ class Timeline_Update(Resource):
         if not item._data.get('win_answers'):  
             item._data['win_answers'] = set([attributes["hash_key_answer"]])
             item.save()
+            return item._data
              
         if attributes["state"]:
             if not attributes["hash_key_answer"] in item._data['win_answers']:
@@ -455,6 +456,7 @@ class Timeline_Update(Resource):
             item._data['win_answers'].remove(attributes["hash_key_answer"])
          
         item.save()
+        return item._data
     
     @marshal_with(format_timeline)
     def delete(self):
