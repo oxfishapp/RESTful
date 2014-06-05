@@ -125,12 +125,7 @@ class Skill():
         '''
 
         return table_skill.query_2(key_user__eq=key_user, limit=3,
-                                   index='Navbar', reverse=True)#,consistent=True)
-
-#     def delete_skill(self, skill, key_time):
-#         db_connection.delete_item('skill', key={'skill': skill,
-#                                                 'key_time': key_time})
-
+                                   index='Navbar', reverse=True)
 
 class Timeline():
 

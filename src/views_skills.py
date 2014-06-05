@@ -18,7 +18,7 @@ class Skill_Update(Resource):
         self.reqparse.add_argument('key_user', type=hashValidation, required=False)
         self.reqparse.add_argument('key_post', type=hashValidation, required=False)
         self.reqparse.add_argument('jsonskills', type=str, required=True)
-        super(Skill_Update, self).__init__()  
+        #super(Skill_Update, self).__init__()  
         
     def post(self):
         """() -> list
@@ -145,7 +145,7 @@ class Skill_count(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('fskill', type=str, required=True)
-        super(Skill_count, self).__init__()  
+        #super(Skill_count, self).__init__()  
     
     def get(self):  
         """() -> dict

@@ -231,7 +231,7 @@ class Timeline_Answers(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('hash_key', type=hashValidation, required=True)
-        super(Timeline_Answers, self).__init__()  
+        #super(Timeline_Answers, self).__init__()  
 
     def get(self):
         ''' (str) -> list
@@ -315,7 +315,7 @@ class Timeline_Update(Resource):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('hash_key', type=hashValidation, required=False)
         self.reqparse.add_argument('jsontimeline', type=str, required=False)
-        super(Timeline_Update, self).__init__()   
+        #super(Timeline_Update, self).__init__()   
     
     @marshal_with(format_timeline)
     def post(self):
