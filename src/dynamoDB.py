@@ -185,7 +185,7 @@ class dbTables(object):
         '''
 
         #definicion del esquema de la tabla skill.
-        schema = [HashKey('skill', data_type=STRING),
+        schema = [HashKey('key_skill', data_type=STRING),
                   RangeKey('key_time', data_type=STRING)]
 
         #definicion del throughput de la tabla skill.
@@ -210,13 +210,19 @@ class dbTables(object):
                             RangeKey('key_time', data_type=STRING)],
                         throughput=throughput,
                         includes=['skill'])
+        
+        #definicion del global index GKOI_Count de la tabla skill.
+        GKOI_Count = GlobalKeysOnlyIndex('Count',
+                        parts=[HashKey('skill', data_type=STRING),
+                            RangeKey('key_user', data_type=STRING)],
+                        throughput=throughput)
 
         table_name = self.TABLE_PREFIX + 'skill'
 
         import dynamoDBqueries
 
         dynamoDBqueries.table_skill = self.create_table(table_name, schema, throughput=throughput,
-                            global_indexes=[GKOI_Navbar, GII_Find, GII_Post])
+                            global_indexes=[GKOI_Navbar, GII_Find, GII_Post,GKOI_Count])
 
         self.tables['tbl_skill'] = dynamoDBqueries.table_skill
 

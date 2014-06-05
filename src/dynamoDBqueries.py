@@ -44,15 +44,23 @@ class Skill():
         for skill in skills:
             self._post_skill(skill, key, prefix)
 
-    def _post_skill(self, skill, key_user, prefix):
+    def _post_skill(self, skill, key, prefix):
         '''(list, UUID, str) -> NoneType
 
         Funcion de apoyo, inserta un skill en la tabla skill.
 
         '''
-        table_skill.put_item(data={'key_user': key_user,
-                                   'skill': prefix + skill,
-                                   'key_time':  timeUTCCreate()})
+        data = {'key_skill' : hashCreate(),
+               'skill': prefix + skill,
+               'key_time':  timeUTCCreate()}
+        
+        if not prefix:
+            data['key_post'] = key
+        else: 
+            data['key_user'] = key
+        
+        insert_skill = Item(table_skill, data)
+        insert_skill.save()
 
     def skills_from_post(self, hash_key):
         '''(UUID) -> Resultset
@@ -79,7 +87,7 @@ class Skill():
         values = self.skills_from_post(hash_key)
         for skill in dict(values.items())['Items']:
             db_connection.delete_item('skill',
-                                 key={'skill': PREFIX + skill['key_time']['S'],
+                                 key={'key_skill': skill['key_skill']['S'],
                                       'key_time': skill['key_time']['S']})
 
     def finder(self, skill):
@@ -98,7 +106,7 @@ class Skill():
         Retorna el total de usuarios que tienen un skill en particular.
 
         '''
-        return table_skill.query_count(skill__eq=skill)
+        return table_skill.query_count(skill__eq=skill,index='Count')
 
     def skills_from_user(self, key_user):
         '''(UUID) -> Resultset
@@ -108,11 +116,11 @@ class Skill():
         '''
 
         return table_skill.query_2(key_user__eq=key_user, limit=3,
-                                   index='Navbar', reverse=True)
+                                   index='Navbar', reverse=True)#,consistent=True)
 
-    def delete_skill(self, skill, key_time):
-        db_connection.delete_item('skill', key={'skill': skill,
-                                                'key_time': key_time})
+#     def delete_skill(self, skill, key_time):
+#         db_connection.delete_item('skill', key={'skill': skill,
+#                                                 'key_time': key_time})
 
 
 class Timeline():
