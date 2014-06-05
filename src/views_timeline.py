@@ -456,7 +456,7 @@ class Timeline_Update(Resource):
          
         item.save()
       
-    @error_handled
+    #@error_handled
     def delete(self):
         ''' () -> list
           

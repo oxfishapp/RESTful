@@ -47,7 +47,7 @@ if __name__ == "__main__":
 # curl http://localhost:5000/api/1.0/aloneview -d 'HashKey=11EC2020-3AEA-4069-A2DD-08002B30309D' -X GET
 # curl http://oxrestful-env-xhpkmpkmpt.elasticbeanstalk.com/api/1.0/auth/post_q -d 'jsontimeline={"message140": "Howto Create a table with Python in dynamoDB from Flask?", "source": "Web", "Geolocation": "4.598056,-74.075833", "skills": ["flask", "python", "dynamodb"], "link": "Http://Imagen de Pregunta", "key_user": "c19456aa-6fb3-4f27-915a-697b612cdb2f"}' -X POST
 # curl http://localhost:5000/api/1.0/post_a -d 'JsonTimeline={"Message140": "Howto Create a table with Python in dynamoDB from Flask?", "Source": "Web", "Geolocation": "4.598056,-74.075833", "Link": "Imagen de Pregunta", "Key_User": "AEAF8765-4069-4069-A2DD-08002B30309D","Key_PostOriginal" : "11EC2020-3AEA-4069-A2DD-08002B30309D"}' -X POST
-# curl http://localhost:5000/api/1.0/delete -d 'HashKey=8c0b8e8e-8b5a-f8f8-0684-21b76bf61293' -X DELETE -v
+# curl http://oxrestful-env-xhpkmpkmpt.elasticbeanstalk.com/api/1.0/auth/delete -d 'hash_key=0fb4cf4f-240f-44ed-9f20-3ce99954c414' -X DELETE -v
 # curl http://localhost:5000/api/1.0/update -d 'HashKey=722ae3bc-7e1c-aa3d-18c6-a95c028f1c8c' -d 'JsonTimeline={"TotalAnswers" : 1}' -X PUT
 # curl http://localhost:5000/api/1.0/update -d 'HashKey=722ae3bc-7e1c-aa3d-18c6-a95c028f1c8c' -d 'JsonTimeline={"WinAnswers" : {"State" : 1, "HashKey" : "02016600-6f94-4749-b225-040018f7eb19"}}' -X PUT
 

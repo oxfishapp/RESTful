@@ -8,12 +8,15 @@ from flask import Blueprint, abort, g, request, current_app
 from flask.ext import restful
 from commons import validate_user_auth, decrypt_token
 from dynamoDBqueries import User
+# from flask.ext.restful import reqparse
 
 
 auth = Blueprint('auth', __name__)
 api = restful.Api(auth)
 PATHS_EXCEPTION = ['/api/1.0/auth/register', '/api/1.0/auth/skills']
-
+# 
+# reqparse_auth = reqparse.RequestParser()
+# reqparse_auth.add_argument('token_user', type=str, required=True)
 
 @auth.before_app_request
 def authentication_user():
@@ -25,6 +28,9 @@ def authentication_user():
     token_secret generado al autenticarse el usuario con su cuenta de twitter
     es correcto.
     '''
+    
+    abort(408)
+#     args = reqparse_auth.parse_args()
 
     #verifica si el recurso solicitado necesita que el usuario este autenticado
     if request.method != 'GET' and '/auth/' in request.path:
