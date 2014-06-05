@@ -25,7 +25,7 @@ class Skill():
 
 
         '''
-        self._post_skills(skills, key_user, '')
+        self._post_skills(skills, key_user, None)
 
     def post_skills_post(self, skills, key_post):
         '''(list, UUID) -> NoneType
@@ -54,7 +54,7 @@ class Skill():
                'skill': prefix + skill,
                'key_time':  timeUTCCreate()}
         
-        if not prefix:
+        if prefix:
             data['key_post'] = key
         else: 
             data['key_user'] = key
