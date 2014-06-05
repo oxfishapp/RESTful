@@ -22,9 +22,9 @@ def create_app(config_type):
     #registrar los blueprints en la application
     from api_endpoints import endpoints
     from api_auth import auth
-
-    application.register_blueprint(endpoints)
+    
     application.register_blueprint(auth)
+    application.register_blueprint(endpoints)
 
     return application
 

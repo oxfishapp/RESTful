@@ -47,8 +47,9 @@ dynamoDBqueries.table_user = Table(table_name='user',
 #application.config.from_object(config_env['aws'])
 
 #registrar los blueprints en la application
-application.register_blueprint(endpoints)
 application.register_blueprint(auth)
+application.register_blueprint(endpoints)
+
 
 
 if __name__ == "__main__":
