@@ -93,11 +93,7 @@ class Skill():
             db_connection.delete_item(table_skill.table_name
                                       , key={'key_skill': delete['key_skill']
                                              , 'key_time': delete['key_time']
-                                             }
-                                      , expected={
-                                                    'key_skill': {'Exists': True}
-                                                  }
-                                      )
+                                             })
 
     def finder(self, skill):
         '''(str) -> Resultset
@@ -177,9 +173,6 @@ class Timeline():
         #db_connection.delete_item(table_timeline.table_name, key={'key_post': key})
         db_connection.delete_item(table_timeline.table_name
                                   , key={'key_post': key}
-                                  , expected={
-                                                'key_post': {'Exists': True}
-                                              }
                                   )
 
     def get_post(self, key):
