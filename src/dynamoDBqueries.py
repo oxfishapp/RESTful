@@ -91,8 +91,8 @@ class Skill():
         
         for delete in values:
             db_connection.delete_item(table_skill.table_name
-                                      , key={'key_skill': delete['key_skill']
-                                             , 'key_time': delete['key_time']
+                                      , key={"key_skill": { "S" : delete['key_skill'] }
+                                             , "key_time": { "S" : delete['key_time'] }
                                              })
 
     def finder(self, skill):
@@ -172,7 +172,7 @@ class Timeline():
         '''
         #db_connection.delete_item(table_timeline.table_name, key={'key_post': key})
         db_connection.delete_item(table_timeline.table_name
-                                  , key={'key_post': key}
+                                  , key={"key_post": {"S": key }}
                                   )
 
     def get_post(self, key):
