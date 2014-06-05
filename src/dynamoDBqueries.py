@@ -87,7 +87,7 @@ class Skill():
 
         values = self.skills_from_post(hash_key)
         for skill in dict(values.items())['Items']:
-            db_connection.delete_item('skill',
+            db_connection.delete_item(table_skill.table_name,
                                  key={'key_skill': skill['key_skill']['S'],
                                       'key_time': skill['key_time']['S']})
 
@@ -171,7 +171,7 @@ class Timeline():
         Funcion de apoyo, elimina un post.
 
         '''
-        db_connection.delete_item('timeline', key={'key_post': key})
+        db_connection.delete_item(table_timeline.table_name, key={'key_post': key})
 
     def get_post(self, key):
         '''(UUID) -> item
