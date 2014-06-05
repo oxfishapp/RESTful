@@ -284,6 +284,9 @@ class Timeline():
         data['key_timeline_post'] = timeUTCCreate()
         post = Item(table_timeline, data)
         post.save()
+        if not data.get('key_post_original'):
+            cskill = Skill()
+            cskill.post_skills_post(list(data['skills']), data['key_post'])
 
 
 class User():
