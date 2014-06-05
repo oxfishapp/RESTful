@@ -31,27 +31,27 @@ class SkillsTestCase(TestCase):
         self.app_context.push()
         self.client = self.app.test_client()
         self.get_token_anonymous(self.app.config['SECRET_KEY_ANONYMOUS'])
-#         self.get_token_auth()
-# 
-#     def get_token_auth(self):
-#         '''
-#         () -> None
-# 
-#         Asigna un token para emular un usuario registrado y autenticado.
-#         '''
-# 
-#         global token_auth
-#         if not token_auth:
-#             resultado = self.client.post(url_for('endpoints.auth_user',
-#                                     token_user=token_anonymous,
-#                                     access_token=self.access_token_twitter,
-#                                     token_secret=self.token_secret_twitter))
-#             json_data = json.loads(resultado.data.decode('utf-8'))
-#             token_auth = json_data['token_user']
-#         resultado = self.client.put(url_for('endpoints.user_register'
-#                                             , email='anroco@dominio.com'
-#                                             , token_user=token_auth))
-#         self.assertTrue(resultado.status_code == 200)
+        self.get_token_auth()
+ 
+    def get_token_auth(self):
+        '''
+        () -> None
+ 
+        Asigna un token para emular un usuario registrado y autenticado.
+        '''
+ 
+        global token_auth
+        if not token_auth:
+            resultado = self.client.post(url_for('endpoints.auth_user',
+                                    token_user=token_anonymous,
+                                    access_token=self.access_token_twitter,
+                                    token_secret=self.token_secret_twitter))
+            json_data = json.loads(resultado.data.decode('utf-8'))
+            token_auth = json_data['token_user']
+        resultado = self.client.put(url_for('endpoints.user_register'
+                                            , email='anroco@dominio.com'
+                                            , token_user=token_auth))
+        self.assertTrue(resultado.status_code == 200)
 
     def get_token_anonymous(self, secret_key_anonymous):
         '''
@@ -96,9 +96,9 @@ class SkillsTestCase(TestCase):
                                         "hash_key_original": None
                                     }, 
                                     "link": "Imagen de Pregunta", 
-                                    "link_image": "http://twitter.com/anroco/image", 
+                                    "link_image": "http://abs.twimg.com/sticky/default_profile_images/default_profile_5_normal.png", 
                                     "message140": "Howto Create a table with Python in dynamodb from Flask?", 
-                                    "name": "Andres Rodriguez", 
+                                    "name": "anroco", 
                                     "nickname": "anroco", 
                                     "skills": [
                                         "flask", 
@@ -173,7 +173,7 @@ class SkillsTestCase(TestCase):
         #El campo key_user y jsonskills son suministrados
         #status code 200
         resultado = self.client.post(url_for('endpoints.updateskills',
-                                             token_user=token_anonymous,
+                                             token_user=token_auth,
                                             key_user='fedcf7af-e9f0-69cc-1c68-362d8f5164ea',
                                             jsonskills='["csharp","html","jquery"]'))
         self.assertTrue(resultado.status_code == 200)
@@ -181,7 +181,7 @@ class SkillsTestCase(TestCase):
         #El campo key_post y jsonskills son suministrados
         #status code 200
         resultado = self.client.post(url_for('endpoints.updateskills',
-                                            token_user=token_anonymous,
+                                            token_user=token_auth,
                                             key_post='12EC2020-3AEA-4069-A2DD-08002B30309B',
                                             jsonskills='["csharp","html","jquery"]'))
         self.assertTrue(resultado.status_code == 200)
@@ -190,7 +190,7 @@ class SkillsTestCase(TestCase):
         #suministrado en el request
         #status code 400
         resultado = self.client.post(url_for('endpoints.updateskills',
-                                             token_user=token_anonymous,
+                                             token_user=token_auth,
                                              jsonskills='["csharp","html","jquery"]'))
         self.assertTrue(resultado.status_code == 400)
         
@@ -198,13 +198,13 @@ class SkillsTestCase(TestCase):
         #suministrado en el request
         #status code 400
         resultado = self.client.post(url_for('endpoints.updateskills',
-                                             token_user=token_anonymous))
+                                             token_user=token_auth))
         self.assertTrue(resultado.status_code == 400)
         
         #El campo key_user no tiene el formato adecuado
         #status code 400
         resultado = self.client.post(url_for('endpoints.updateskills',
-                                             token_user=token_anonymous,
+                                             token_user=token_auth,
                                              key_user='zedcf7af-e9f0-69cc-1c68-362d8f5164ea',
                                              jsonskills='["csharp","html","jquery"]'))
         self.assertTrue(resultado.status_code == 400)
@@ -212,7 +212,7 @@ class SkillsTestCase(TestCase):
         #El campo key_post no tiene el formato adecuado
         #status code 400
         resultado = self.client.post(url_for('endpoints.updateskills',
-                                             token_user=token_anonymous,
+                                             token_user=token_auth,
                                              key_post='z2EC2020-3AEA-4069-A2DD-08002B30309B',
                                              jsonskills='["csharp","html","jquery"]'))
         self.assertTrue(resultado.status_code == 400)

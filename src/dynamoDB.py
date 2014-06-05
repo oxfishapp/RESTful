@@ -265,7 +265,7 @@ class dbTablesTest(dbTables):
                 item.save()
 
 config_db_env = {
-    'dev': dbTablesTest,
+    'dev': dbTables,
     'test': dbTablesTest,
     'default': dbTables,
     'aws': dbTablesAWS
