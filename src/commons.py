@@ -244,7 +244,7 @@ def decrypt_token(token_user, secret_key=None):
     return data
 
 
-def generate_token(secret_key=None, expiration=3600, **kwargs):
+def generate_token(secret_key=None, expiration=45000, **kwargs):
     '''
     (int, str, **kwargs) -> str
 
