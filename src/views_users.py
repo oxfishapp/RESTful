@@ -77,7 +77,7 @@ class Nickname(Resource):
 
     from api_errors import error_handled
 
-    @marshal_with(format_user_header)
+    @marshal_with(format_user)
     @error_handled
     def get(self, nickname):
         '''
@@ -93,9 +93,15 @@ class Nickname(Resource):
         -X GET
 
         {
+            "email": juanmen@domain.com,
             "hash_key": "23215634",
             "key": "455597c8-59b6-f6cc-a6ed-078986e819fb",
             "link_image": "http://abs.twimg.com/stick/default_profile.png",
+            "name": "Juan Mendoza",
+            "nickname": "juanmen",
+            "registered": "2014-05-21 02:53:55.791210",
+            "score_answers": 40,
+            "total_post": 4,
             "skills": [
                 "python",
                 "flask",
@@ -149,7 +155,7 @@ class User_register(Resource):
     def __init__(self):
         self.parser.add_argument('email', type=validate_email, required=True)
 
-    @marshal_with(format_user_header)
+    @marshal_with(format_user)
     def put(self):
         '''
         () -> dict
@@ -168,9 +174,15 @@ class User_register(Resource):
         -X PUT
 
         {
+            "email": juanmen@domain.com,
             "hash_key": "23215634",
             "key": "455597c8-59b6-f6cc-a6ed-078986e819fb",
             "link_image": "http://abs.twimg.com/stick/default_profile.png",
+            "name": "Juan Mendoza",
+            "nickname": "juanmen",
+            "registered": "2014-05-21 02:53:55.791210",
+            "score_answers": 40,
+            "total_post": 4,
             "skills": [
                 "python",
                 "flask",
@@ -187,8 +199,6 @@ class User_register(Resource):
             abort(428)
 
         user['skills'] = g.user_skills
-        if 'token_user' in user:
-            user.pop('token_user')
         return user
 
 

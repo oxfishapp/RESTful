@@ -20,6 +20,7 @@ format_user_header = {'token_user': fields.String
                , 'hash_key': fields.String(attribute='key_twitter')
                , 'key': HashKey_Validation(attribute='key_user')
                , 'link_image': fields.String
+               , 'nickname': fields.String
                , 'skills': Set_to_List
                }
 
