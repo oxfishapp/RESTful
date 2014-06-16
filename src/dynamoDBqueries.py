@@ -309,6 +309,8 @@ class Timeline():
         '''
         if not data:
             data = self.get_post(key)
+        if (data._data['total_answers'] - 1) == 0:
+            data._data['flag_answer'] = 'False' 
         self._minus_plus(data, -1)
 
     def _minus_plus(self, data, number):
