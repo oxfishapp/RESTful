@@ -34,6 +34,7 @@ format_user = {'hash_key': fields.String(attribute='key_twitter')
                , 'link_image': fields.String
                , 'total_post': fields.Integer
                , 'score_answers': fields.Integer
+               , 'score_win_answers': fields.Integer
                , 'skills': Set_to_List
                }
 
