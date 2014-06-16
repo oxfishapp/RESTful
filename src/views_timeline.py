@@ -314,6 +314,7 @@ class Timeline_Update(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('hash_key', type=hashValidation, required=False)
+        self.reqparse.add_argument('key_user', type=hashValidation, required=False)
         self.reqparse.add_argument('jsontimeline', type=str, required=False)
         #super(Timeline_Update, self).__init__()   
     
@@ -480,10 +481,14 @@ class Timeline_Update(Resource):
          
         hash_key= 
             "str" -> UUID  
+            
+        key_user=
+            "str" -> UUID  
              
         Examples:
          
         curl http://localhost:5000/api/1.0/delete 
+            -d 'key_user=...'
             -d 'hash_key=41EC2020-3AEA-4069-A2DD-08002B30309D' 
             -X DELETE
              
@@ -492,11 +497,13 @@ class Timeline_Update(Resource):
         hash_key = args.hash_key
         
         deleteItem = ctimeline.get_post(hash_key)
-   
-        if deleteItem._data.get('key_post_original'):
-            ctimeline.delete_answer(key=hash_key,answer=deleteItem)
-        elif not deleteItem._data.get('total_answers'):
-            ctimeline.delete_question(key=hash_key)
-            
-        return deleteItem._data
         
+        if args.key_user == deleteItem._data['key_user']:
+            if deleteItem._data.get('key_post_original'):
+                ctimeline.delete_answer(key=hash_key,answer=deleteItem)
+            elif not deleteItem._data.get('total_answers'):
+                ctimeline.delete_question(key=hash_key)
+                
+            return deleteItem._data
+        
+        abort(400)
