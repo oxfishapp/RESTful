@@ -51,6 +51,7 @@ class User(Resource):
             "nickname": "juanmen",
             "registered": "2014-05-21 02:53:55.791210",
             "score_answers": 40,
+            "score_win_answers": 10,
             "total_post": 4,
             "skills": [
                 "python",
@@ -123,6 +124,7 @@ class User_scores(Resource):
         from flask.ext.restful import types
         self.parser.add_argument('post', type=types.boolean, default=False)
         self.parser.add_argument('answer', type=types.boolean, default=False)
+        self.parser.add_argument('w_answer', type=types.boolean, default=False)
 
     @marshal_with(format_user)
     def put(self):
@@ -144,7 +146,7 @@ class User_scores(Resource):
         '''
 
         args = self.parser.parse_args()
-        users.update_scores(g.user_item, args.post, args.answer)
+        users.update_scores(g.user_item, args.post, args.answer, args.w_answer)
         return '', 204
 
 

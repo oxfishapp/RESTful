@@ -10,8 +10,8 @@ token_anonymous = None
 class UserTestCase(unittest.TestCase):
 
     aplicattion = create_app('test')
-    access_token_twitter = '85721956-EFmG1NywpV3VEMDnMDbNax9JJ4OfFvEsCLKWi4Slq'
-    token_secret_twitter = 'FnDmaaBBzZceF3whMsZom9BmKpUFfyuRNFuBKJHXngZMf'
+    access_token_twitter = '85721956-9nzXFhcPCdScFjq5CUMDj86NRLPqVmt5PzvflLWha'
+    token_secret_twitter = 'epy3OerYwRA9senZ4A9om0qpBl0pMscQd7DVzX7ZWu3ce'
 
     def setUp(self):
         '''
@@ -78,6 +78,7 @@ class UserTestCase(unittest.TestCase):
                          , "nickname": "anroco"
                          , "registered": "2014-05-09 23:59:59"
                          , "score_answers": 827377
+                         , "score_win_answers": 2323
                          , "skills": ["python", "flask", "dynamodb"]
                          , "total_post": 2983}
         resultado_exitoso_basico = {"email": None
@@ -89,6 +90,7 @@ class UserTestCase(unittest.TestCase):
                          , "nickname": "anroco"
                          , "registered": None
                          , "score_answers": 0
+                         , "score_win_answers": 0
                          , "skills": ["python", "flask", "dynamodb"]
                          , "total_post": 0}
 
@@ -137,12 +139,18 @@ class UserTestCase(unittest.TestCase):
               status_code = 200 (Proceso exitoso)
         '''
  
-        resultado_exitoso = {"hash_key": "85721956"
-                        , "key": "fedcf7af-e9f0-69cc-1c68-362d8f5164ea"
-                        , "link_image": "http://abs.twimg.com/sticky/" +
+        resultado_exitoso = {"email": None
+                         , "hash_key": "85721956"
+                         , "key": "fedcf7af-e9f0-69cc-1c68-362d8f5164ea"
+                         , "link_image": "http://abs.twimg.com/sticky/" +
                          "default_profile_images/default_profile_5_normal.png"
-                        , "skills": ["python", "flask", "dynamodb"]
-                        , "token_user": None}
+                         , "name": "anroco"
+                         , "nickname": "anroco"
+                         , "registered": "2014-05-09 23:59:59"
+                         , "score_answers": 827377
+                         , "score_win_answers": 2323
+                         , "skills": ["python", "flask", "dynamodb"]
+                         , "total_post": 2983}
  
         #El usuario no existe, status_code = 404
         resultado = self.client.get(url_for('endpoints.nickname'
@@ -171,12 +179,18 @@ class UserTestCase(unittest.TestCase):
             * El response sea el correcto status_code = 200 (Proceso exitoso)
         '''
  
-        resultado_exitoso = {"hash_key": "85721956"
+        resultado_exitoso = {"email": "anroco@dominio.com"
+                         , "hash_key": "85721956"
                          , "key": "fedcf7af-e9f0-69cc-1c68-362d8f5164ea"
                          , "link_image": "http://abs.twimg.com/sticky/" +
                          "default_profile_images/default_profile_5_normal.png"
+                         , "name": "anroco"
+                         , "nickname": "anroco"
+                         , "registered": "2014-05-09 23:59:59"
+                         , "score_answers": 827377
+                         , "score_win_answers": 2323
                          , "skills": ["python", "flask", "dynamodb"]
-                         , "token_user": None}
+                         , "total_post": 2983}
  
         #token_user no validos (usuario no autenticado), status_code = 401
         resultado = self.client.put(url_for('endpoints.user_register'
@@ -308,6 +322,7 @@ class UserTestCase(unittest.TestCase):
                          , "key": "fedcf7af-e9f0-69cc-1c68-362d8f5164ea"
                          , "link_image": "http://abs.twimg.com/sticky/" +
                          "default_profile_images/default_profile_5_normal.png"
+                         , "nickname": "anroco"
                          , "skills": ["python", "flask", "dynamodb"]
                          , "token_user": token_user}
         self.assertDictEqual(resultado_exitoso, json_data)

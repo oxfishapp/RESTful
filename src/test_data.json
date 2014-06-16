@@ -9,6 +9,7 @@
         "registered": "2014-05-09 23:59:59",
         "link_image": "http://twitter.com/anroco/image",
         "total_post": 2983,
+        "score_win_answers": 2323,
         "score_answers": 827377
         },
         {
@@ -19,6 +20,7 @@
         "registered": "2014-05-21 23:59:59",
         "link_image": "http://twitter.com/viejoemer/image",
         "total_post": 12,
+        "score_win_answers": 10,
         "score_answers": 12
    		},
    		{"key_twitter":"87654321",
@@ -28,6 +30,7 @@
         "registered": "2014-05-22 23:59:59",
         "link_image": "http://twitter.com/franper/image",
         "total_post": 2,
+        "score_win_answers": 1,
         "score_answers": 1
 		}
 	],
