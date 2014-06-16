@@ -57,7 +57,8 @@
         "message140": "UNO link del video mas respuesta del usuario",
         "key_user": "12345678-e9f0-69cc-1c68-362d8f5164ea",
         "key_post_original": "11EC2020-3AEA-4069-A2DD-08002B30309D",
-        "link": "link video"
+        "link": "link video",
+        "win": 1
         },
         {
 		"key_post": "31EC2020-3AEA-4069-A2DD-08002B30309D",
@@ -67,7 +68,8 @@
         "message140": "DOS link del video mas respuesta del usuario",
         "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea",
         "key_post_original": "11EC2020-3AEA-4069-A2DD-08002B30309D",
-        "link": "link video"
+        "link": "link video",
+        "win": 1
         },
         {
         "key_post": "41EC2020-3AEA-4069-A2DD-08002B30309D",
