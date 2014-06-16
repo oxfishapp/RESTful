@@ -6,6 +6,7 @@ Created on May 25, 2014
 
 from commons import *
 from boto.dynamodb2.items import Item
+from flask import abort
 
 db_connection = None
 table_skill = None
@@ -125,6 +126,69 @@ class Skill():
                                    index='Navbar', reverse=True)
 
 class Timeline():
+    
+    def winanswers(self, item, hash_key_answer, state):
+        
+        if state:
+            self._add_winanswer(item, hash_key_answer)
+        else:
+            self._remove_winanswer(item, hash_key_answer)
+        
+    def _add_winanswer(self,item, hash_key_answer):
+        
+        if not item._data.get('win_answers'):  
+            item._data['win_answers'] = set([hash_key_answer])
+        elif not hash_key_answer in item._data['win_answers']:
+            item._data['win_answers'].add(hash_key_answer)
+        else:
+            abort(400)
+         
+        item.save()
+        self._update_item_timeline(key_post = hash_key_answer,attributeupdates = { "win" : { "N" : 1 } })
+    
+    def _remove_winanswer(self,item, hash_key_answer):
+        if hash_key_answer in item._data['win_answers']:
+            item._data['win_answers'].remove(hash_key_answer)
+            if not len(item._data['win_answers']):
+                del item._data['win_answers']
+            self._update_item_timeline(key_post = hash_key_answer,attributeupdates = { "win" : { "N" : 0 } })
+        
+        item.save()
+    
+    def _update_item_timeline(self, key_post, attributeupdates):
+        '''
+        
+        attributeupdates = {'attribute':{Type(S o N):value}}
+        
+        '''
+        
+        _key = {
+                "key_post": {
+                    "S": key_post
+                }
+            }
+        
+        _attribute_updates = dict()
+        
+        for key, value in attributeupdates.items():
+            _attribute_updates[key] = {
+                        "Value": {
+                            value.keys()[0]: value.values()[0]
+                        },
+                        "Action": "PUT"
+                    }
+                
+        
+        #         _expected = {
+        #                 "TopScore": {
+        #                 "ComparisonOperator":"EQ",
+        #                 "AttributeValueList": [ { "S": "702"} ]
+        #                 }
+        #             }
+        
+        _returnvalues = "ALL_NEW"
+        
+        return db_connection.update_item(table_name = table_timeline.table_name , key = _key, attribute_updates = _attribute_updates, return_values = _returnvalues)
 
     def delete_question(self, key):
         '''(UUID) -> status

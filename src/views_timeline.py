@@ -438,24 +438,11 @@ class Timeline_Update(Resource):
          
         item = ctimeline.get_post(args.hash_key)
         attributes = dict()
-         
+        
         if args.get('jsontimeline'):
             attributes = jsondecoder(args.jsontimeline)
-         
-        if not item._data.get('win_answers'):  
-            item._data['win_answers'] = set([attributes["hash_key_answer"]])
-            item.save()
-            return item._data
-             
-        if attributes["state"]:
-            if not attributes["hash_key_answer"] in item._data['win_answers']:
-                item._data['win_answers'].add(attributes["hash_key_answer"])
-            else:
-                abort(500)
-        else:
-            item._data['win_answers'].remove(attributes["hash_key_answer"])
-         
-        item.save()
+            ctimeline.winanswers(item, attributes['hash_key_answer'], attributes['state'])
+        
         return item._data
     
     @marshal_with(format_timeline)

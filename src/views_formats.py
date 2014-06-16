@@ -65,6 +65,7 @@ format_timeline= {'keys':
                    ,'nickname':fields.String
                    ,'name':fields.String
                    ,'link_image':fields.String
+                   ,'win':fields.Integer
                   }
 
 # format_question={'Keys':
