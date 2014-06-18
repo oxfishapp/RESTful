@@ -235,6 +235,7 @@ class UserTestCase(unittest.TestCase):
                                             , post=1
                                             , answer=0
                                             , w_answer=0
+                                            , key_user='fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
                                             , token_user='No_Registrado'))
         self.assertTrue(resultado.status_code == 401)
  
@@ -248,6 +249,7 @@ class UserTestCase(unittest.TestCase):
                                             , post='verdadero'
                                             , answer=True
                                             , w_answer=False
+                                            , key_user='fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
                                             , token_user=token_auth))
         self.assertTrue(resultado.status_code == 400)
  
@@ -257,6 +259,7 @@ class UserTestCase(unittest.TestCase):
                                             , post=-1
                                             , answer=1
                                             , w_answer=0
+                                            , key_user='fedcf7af-e9f0-69cc-1c68-362d8f5164ea'
                                             , token_user=token_auth))
         self.assertTrue(resultado.status_code == 204)
  

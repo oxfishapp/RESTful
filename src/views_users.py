@@ -8,7 +8,7 @@ from dynamoDBqueries import User as UserDB
 from flask import abort, g
 from views_formats import format_user, format_user_twitter, format_user_header
 from flask.ext.restful import Resource, marshal_with, reqparse, marshal
-from commons import (validate_email, decrypt_token,
+from commons import (validate_email, decrypt_token, hashValidation,
                      twitter_credentials)
 
 users = UserDB()
@@ -124,6 +124,7 @@ class User_scores(Resource):
         self.parser.add_argument('post', type=int, default=0)
         self.parser.add_argument('answer', type=int, default=0)
         self.parser.add_argument('w_answer', type=int, default=0)
+        self.parser.add_argument('key_user', type=hashValidation)
 
     @marshal_with(format_user)
     def put(self):
@@ -146,7 +147,8 @@ class User_scores(Resource):
         '''
 
         args = self.parser.parse_args()
-        users.update_scores(g.user_item, args.post, args.answer, args.w_answer)
+        users.update_scores(args.key_user, args.post, args.answer,
+                            args.w_answer)
         return '', 204
 
 

@@ -116,10 +116,9 @@ class dbTables(object):
         throughput = {'read': 5, 'write': 3}
 
         #definicion del global index key_user_index de la tabla user.
-        key_user_index = GlobalIncludeIndex('key_user_index',
+        key_user_index = GlobalAllIndex('key_user_index',
                                 parts=[HashKey('key_user', data_type=STRING)],
-                                throughput=throughput,
-                                includes=['nickname', 'name', 'link_image'])
+                                throughput=throughput)
 
         #definicion del global index nickname_user_index de la tabla user.
         nickname_user_index = GlobalAllIndex('nickname_user_index',
