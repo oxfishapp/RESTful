@@ -395,18 +395,20 @@ class User():
         return table_user.query_2(key_user__eq=key_user,
                                   index='key_user_index').next()
 
-    def update_scores(self, item, post=False, answer=False, win_answer=False):
+    def update_scores(self, item, post=0, answer=0, win_answer=0):
         '''(Item, bool, bool) -> None
 
         Actualiza los scores del usuario.
         '''
-
         if post:
-            item._data['total_post'] += 1
+            item._data['total_post'] = manage_score(action=post,
+                                                    score=item._data['total_post'])
         if answer:
-            item._data['score_answers'] += 1
+            item._data['score_answers'] = manage_score(action=answer,
+                                                       score=item._data['score_answers'])
         if win_answer:
-            item._data['score_win_answers'] += 1
+            item._data['score_win_answers'] = manage_score(action=win_answer,
+                                                           score=item._data['score_win_answers'])
         item.save()
 
     def update_email(self, item, email):

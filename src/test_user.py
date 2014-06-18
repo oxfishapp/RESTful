@@ -232,8 +232,9 @@ class UserTestCase(unittest.TestCase):
  
         #token_user no validos (usuario no autenticado), status_code = 401
         resultado = self.client.put(url_for('endpoints.user_scores'
-                                            , post=True
-                                            , answer=False
+                                            , post=1
+                                            , answer=0
+                                            , w_answer=0
                                             , token_user='No_Registrado'))
         self.assertTrue(resultado.status_code == 401)
  
@@ -245,15 +246,17 @@ class UserTestCase(unittest.TestCase):
         #status_code = 400
         resultado = self.client.put(url_for('endpoints.user_scores'
                                             , post='verdadero'
-                                            , answer=2
+                                            , answer=True
+                                            , w_answer=False
                                             , token_user=token_auth))
         self.assertTrue(resultado.status_code == 400)
  
         #Solicitud con todos los datos correctos, proceso satisfactorio,
         #status_code = 204
         resultado = self.client.put(url_for('endpoints.user_scores'
-                                            , post=True
-                                            , answer=False
+                                            , post=-1
+                                            , answer=1
+                                            , w_answer=0
                                             , token_user=token_auth))
         self.assertTrue(resultado.status_code == 204)
  

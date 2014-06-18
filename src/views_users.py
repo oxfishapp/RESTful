@@ -121,10 +121,9 @@ class User_scores(Resource):
     parser = reqparse.RequestParser()
 
     def __init__(self):
-        from flask.ext.restful import types
-        self.parser.add_argument('post', type=types.boolean, default=False)
-        self.parser.add_argument('answer', type=types.boolean, default=False)
-        self.parser.add_argument('w_answer', type=types.boolean, default=False)
+        self.parser.add_argument('post', type=int, default=0)
+        self.parser.add_argument('answer', type=int, default=0)
+        self.parser.add_argument('w_answer', type=int, default=0)
 
     @marshal_with(format_user)
     def put(self):
@@ -140,8 +139,9 @@ class User_scores(Resource):
 
         curl http://localhost:5000/api/1.0/auth/user/
         -d 'token_user=OiJGbkRtYWFCQnpaYk5GdUJLSkhYbmdaTWYifQ.qiSFiWCltIlgaUHF'
-        -d 'post=false'
-        -d 'answer=true'
+        -d 'post=-1'
+        -d 'answer=1'
+        -d 'w_answer=0'
         -X PUT
         '''
 

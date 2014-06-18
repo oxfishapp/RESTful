@@ -288,7 +288,7 @@ def validate_email(email):
     Permite verificar que el email proporcionado tiene el formato adecuado.
     Si es correcto retorna el email de lo contrario lanza un NameError.
     """
-    
+
     from flask import abort
     import re
     result = re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,4}$',
@@ -297,3 +297,26 @@ def validate_email(email):
         return email
     abort(400)
 #    raise ValueError('Malformed email')
+
+
+def manage_score(score, action=0, points=1):
+    '''
+    (int, int, int) -> int
+
+    Gestiona las acciones sobre un marcador, permite agregar o quitar points a
+    un score, el tipo de accion a realizar sobre score se definen como sigue:
+
+        * action=1 : se agrega la cantidad de points al score actual.
+        * action=-1 : se quita la cantidad de points al score actual.
+
+    Al finalizar la gestion del score se retorna el nuevo score con el tipo de
+    accion realizada. Si action tiene cualquier otro valor a los definidos
+    anteriormente se retorna el score sin modificaciones.
+    '''
+
+    new_score = score
+    if action == 1:
+        new_score += points
+    if action == -1:
+        new_score -= points
+    return new_score if new_score >= 0 else score
