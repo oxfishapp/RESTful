@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 #!flask/bin/python
 
-from flask.ext.restful import Resource, reqparse, marshal_with
+from flask.ext.restful import Resource, reqparse, marshal_with, marshal
 from commons import hashValidation, item_to_dict
 from views_formats import format_timeline
 from dynamoDBqueries import Skill
@@ -81,7 +81,7 @@ class Skill_Update(Resource):
 
 class Skill_List(Resource):
 
-    @marshal_with(format_timeline)
+    #@marshal_with(format_timeline)
     def get(self, skill):
         """(str) -> list
         
@@ -137,8 +137,15 @@ class Skill_List(Resource):
             post = timeline.get_post(skill._data['key_post'])
             post_and_user = item_to_dict(post._data)
             results.append(post_and_user)
+            
+        #################################
+        __valor = skills._last_key_seen
+        ################################
+        #Format = 
 
-        return results             
+        data_format = marshal(results,format_timeline)
+               
+        return data_format         
 
 class Skill_count(Resource):
     

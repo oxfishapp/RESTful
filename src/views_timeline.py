@@ -14,10 +14,9 @@ class HW(Resource):
     def get(self):   
         return 'Hellow World!'
 
-
 #Global All Index Timeline Public
 class Timeline_Index(Resource):
-    decorators = [marshal_with(format_timeline)]
+    #decorators = [marshal_with(format_timeline)]
     
     def get(self):
         ''' () -> list
@@ -58,13 +57,25 @@ class Timeline_Index(Resource):
                 }
             ]
              
-        '''       
-        return items_to_list(ctimeline.public())
+        '''
+        
+        result = ctimeline.public()
+        
+        data = items_to_list(result)
+        
+        #################################
+        __valor = result._last_key_seen
+        ################################
+        #Format = 
+        
+        data_format = marshal(data,format_timeline)
+               
+        return data_format
     
 #Global All Index Home
 class Timeline_Home_Index(Resource):
     
-    decorators = [marshal_with(format_timeline)]
+    #decorators = [marshal_with(format_timeline)]
     
     def get(self, key):
         ''' (str) -> list
@@ -127,9 +138,20 @@ class Timeline_Home_Index(Resource):
             ]
         
         '''
-        vkey = hashValidation(key)
+        vkey = hashValidation(key) 
         
-        return items_to_list(ctimeline.home(vkey))
+        result = ctimeline.home(vkey)
+    
+        data = items_to_list(result)
+        
+        #################################
+        __valor = result._last_key_seen
+        ################################
+        #Format = 
+        
+        data_format = marshal(data,format_timeline)
+               
+        return data_format
 
 
 class Timeline_QandWinA(Resource):
@@ -226,7 +248,7 @@ class Timeline_QandWinA(Resource):
 
 
 class Timeline_Answers(Resource):
-    decorators = [marshal_with(format_timeline)]  
+    #decorators = [marshal_with(format_timeline)]  
     
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
@@ -302,9 +324,18 @@ class Timeline_Answers(Resource):
         args = self.reqparse.parse_args()
         hash_key = args.hash_key
         
-        answers = ctimeline.answers(hash_key)
-
-        return items_to_list(answers)
+        result = ctimeline.answers(hash_key) 
+    
+        data = items_to_list(result)
+        
+        #################################
+        __valor = result._last_key_seen
+        ################################
+        #Format = 
+        
+        data_format = marshal(data,format_timeline)
+               
+        return data_format
 
 
 class Timeline_Update(Resource):
