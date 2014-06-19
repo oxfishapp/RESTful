@@ -4,7 +4,7 @@
 
 from flask.ext.restful import Resource, reqparse, marshal_with, marshal
 from views_formats import format_timeline
-from commons import item_to_dict, items_to_list, hashKeyList, hashValidation ,jsondecoder
+from commons import item_to_dict, items_to_list, hashKeyList, hashValidation ,jsondecoder, pagination
 from dynamoDBqueries import Timeline
 from flask import abort
 
@@ -17,6 +17,11 @@ class HW(Resource):
 #Global All Index Timeline Public
 class Timeline_Index(Resource):
     #decorators = [marshal_with(format_timeline)]
+    
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('pagination', type=str, required=True)
+        #super(Timeline_Answers, self).__init__()  
     
     def get(self):
         ''' () -> list
@@ -59,23 +64,36 @@ class Timeline_Index(Resource):
              
         '''
         
-        result = ctimeline.public()
+        args = self.reqparse.parse_args()
+        exclusive_start_key = jsondecoder(args.pagination)
+        
+        result = ctimeline.public(_exclusive_start_key=exclusive_start_key)
         
         data = items_to_list(result)
         
         #################################
-        __valor = result._last_key_seen
+        #__valor = result._last_key_seen
         ################################
-        #Format = dict: {u'flag_answer': u'True', u'key_timeline_post': u'2014-06-19 20:44:59.370969', u'key_post': u'9c13be98-a9af-4a53-9e70-03a3bf1ddd67'}
+        #Format = dict: {u'flag_answer': u'True', u'key_timeline_post': u'2014-06-19 20:44:59.370969', u'key_post': u'9c13be98-a9af-4a53-9e70-03a3bf1ddd67'}           
         
         data_format = marshal(data,format_timeline)
+        
+#         if not result._last_key_seen:
+#             data_format.append(not result._last_key_seen)
+#         else:
+#             data_format.append(None)
                
-        return data_format
+        return pagination(data_format,result._last_key_seen)
     
 #Global All Index Home
 class Timeline_Home_Index(Resource):
     
     #decorators = [marshal_with(format_timeline)]
+    
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('pagination', type=str, required=True)
+        #super(Timeline_Answers, self).__init__()  
     
     def get(self, key):
         ''' (str) -> list
@@ -139,19 +157,21 @@ class Timeline_Home_Index(Resource):
         
         '''
         vkey = hashValidation(key) 
+        args = self.reqparse.parse_args()
+        exclusive_start_key = jsondecoder(args.pagination)
         
-        result = ctimeline.home(vkey)
+        result = ctimeline.home(vkey,_exclusive_start_key=exclusive_start_key)
     
         data = items_to_list(result)
         
         #################################
-        __valor = result._last_key_seen
+        #__valor = result._last_key_seen
         ################################
         #Format = dict: {u'key_user': u'db5ae20f-3fd5-483f-9d8b-5e23169596a4', u'key_timeline_post': u'2014-06-19 20:48:41.659719', u'key_post': u'ea35cfd0-dccb-4816-8306-17e05222ad46'}
         
         data_format = marshal(data,format_timeline)
                
-        return data_format
+        return pagination(data_format,result._last_key_seen)
 
 
 class Timeline_QandWinA(Resource):
@@ -253,6 +273,7 @@ class Timeline_Answers(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('hash_key', type=hashValidation, required=True)
+        self.reqparse.add_argument('pagination', type=str, required=True)
         #super(Timeline_Answers, self).__init__()  
 
     def get(self):
@@ -323,19 +344,20 @@ class Timeline_Answers(Resource):
         
         args = self.reqparse.parse_args()
         hash_key = args.hash_key
+        exclusive_start_key = jsondecoder(args.pagination)
         
-        result = ctimeline.answers(hash_key) 
+        result = ctimeline.answers(hash_key, _exclusive_start_key=exclusive_start_key) 
     
         data = items_to_list(result)
         
         #################################
-        __valor = result._last_key_seen
+        #__valor = result._last_key_seen
         ################################
         #Format = dict: {u'key_timeline_post': u'2014-06-19 20:48:24.385180', u'key_post_original': u'4a825921-78ef-44bb-bda0-0dd97789cfea', u'key_post': u'2c6c04ef-202d-4201-a836-777421686830'}
         
         data_format = marshal(data,format_timeline)
                
-        return data_format
+        return pagination(data_format,result._last_key_seen)
 
 
 class Timeline_Update(Resource):

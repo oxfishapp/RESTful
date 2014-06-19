@@ -70,6 +70,17 @@ def hashCreate():
     value = uuid.uuid4()
     return str(value)
 
+def pagination(data, value):
+    
+    _return = dict()
+    _return['data'] = data
+    
+    if not value:
+        _return['pagination'] = value
+    else:
+        _return['pagination'] = None
+            
+    return _return
 
 def hashKeyList(value):
     """ (str) -> list

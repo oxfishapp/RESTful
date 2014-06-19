@@ -97,15 +97,18 @@ class Skill():
                                              , "key_time": { "S" : delete['key_time'] }
                                              })
 
-    def finder(self, skill):
+    def finder(self, skill,_exclusive_start_key=None):
         '''(str) -> Resultset
 
         Retorna la linea de tiempo de un skill en particular.
 
         '''
 
-        return table_skill.query_2(skill__eq=PREFIX + skill, reverse=True,
-                                   limit=LIMIT, index='Find')
+        return table_skill.query_2(skill__eq=PREFIX + skill, 
+                                   reverse=True,
+                                   limit=LIMIT, 
+                                   index='Find',
+                                   exclusive_start_key=_exclusive_start_key)
 
     def count(self, skill):
         '''(str)
@@ -256,7 +259,7 @@ class Timeline():
         '''
         return table_timeline.batch_get(keys)
 
-    def public(self):
+    def public(self,_exclusive_start_key=None):
         '''() -> Resultset
 
         Devuelve una serie de items que crean el timeline public.
@@ -265,9 +268,10 @@ class Timeline():
         return table_timeline.query_2(flag_answer__eq='True',
                                       limit=LIMIT,
                                       index='TimelinePublic',
-                                      reverse=True)
+                                      reverse=True,
+                                      exclusive_start_key=_exclusive_start_key)
 
-    def home(self, key):
+    def home(self, key,_exclusive_start_key=None):
         '''(UUID) -> Resultset
 
         Devuelve una serie de items que crean el home de un usuario.
@@ -276,9 +280,10 @@ class Timeline():
         return table_timeline.query_2(key_user__eq=key,
                                       limit=LIMIT,
                                       index='Home',
-                                      reverse=True)
+                                      reverse=True,
+                                      exclusive_start_key=_exclusive_start_key)
 
-    def answers(self, hash_key):
+    def answers(self, hash_key,_exclusive_start_key=None):
         '''(UUID) -> Resultset
 
         Devuelve una serie de items que crean el timeline de una
@@ -288,7 +293,8 @@ class Timeline():
         return table_timeline.query_2(key_post_original__eq=hash_key,
                                       limit=LIMIT,
                                       index='VerTodoPublic',
-                                      reverse=True)
+                                      reverse=True,
+                                      exclusive_start_key=_exclusive_start_key)
 
     def _plus_one_total_answers(self, key=None, data=None):
         '''(UUID,item) -> NoneType

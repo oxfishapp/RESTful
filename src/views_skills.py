@@ -3,7 +3,7 @@
 #!flask/bin/python
 
 from flask.ext.restful import Resource, reqparse, marshal_with, marshal
-from commons import hashValidation, item_to_dict
+from commons import hashValidation, item_to_dict, pagination,jsondecoder
 from views_formats import format_timeline
 from dynamoDBqueries import Skill
 from flask import abort
@@ -80,6 +80,11 @@ class Skill_Update(Resource):
 
 
 class Skill_List(Resource):
+    
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('pagination', type=str, required=True)
+        #super(Timeline_Answers, self).__init__()  
 
     #@marshal_with(format_timeline)
     def get(self, skill):
@@ -126,9 +131,11 @@ class Skill_List(Resource):
                 .
     
         """
+        args = self.reqparse.parse_args()
+        exclusive_start_key = jsondecoder(args.pagination)
         
         results = list()
-        skills = cskill.finder(skill)
+        skills = cskill.finder(skill,_exclusive_start_key=exclusive_start_key)
 
         from dynamoDBqueries import Timeline
         timeline = Timeline()
@@ -139,13 +146,13 @@ class Skill_List(Resource):
             results.append(post_and_user)
             
         #################################
-        __valor = skills._last_key_seen
+        #__valor = skills._last_key_seen
         ################################
         #Format = dict: {u'skill': u'q_test', u'key_time': u'2014-06-19 20:45:18.567704', u'key_skill': u'fa885be2-9509-4413-8e3d-f222e9720a9e'}
 
         data_format = marshal(results,format_timeline)
                
-        return data_format         
+        return pagination(data_format,skills._last_key_seen)       
 
 class Skill_count(Resource):
     
