@@ -66,7 +66,7 @@ class Timeline_Index(Resource):
         #################################
         __valor = result._last_key_seen
         ################################
-        #Format = 
+        #Format = dict: {u'flag_answer': u'True', u'key_timeline_post': u'2014-06-19 20:44:59.370969', u'key_post': u'9c13be98-a9af-4a53-9e70-03a3bf1ddd67'}
         
         data_format = marshal(data,format_timeline)
                
@@ -147,7 +147,7 @@ class Timeline_Home_Index(Resource):
         #################################
         __valor = result._last_key_seen
         ################################
-        #Format = 
+        #Format = dict: {u'key_user': u'db5ae20f-3fd5-483f-9d8b-5e23169596a4', u'key_timeline_post': u'2014-06-19 20:48:41.659719', u'key_post': u'ea35cfd0-dccb-4816-8306-17e05222ad46'}
         
         data_format = marshal(data,format_timeline)
                

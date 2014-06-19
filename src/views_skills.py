@@ -141,7 +141,7 @@ class Skill_List(Resource):
         #################################
         __valor = skills._last_key_seen
         ################################
-        #Format = 
+        #Format = dict: {u'skill': u'q_test', u'key_time': u'2014-06-19 20:45:18.567704', u'key_skill': u'fa885be2-9509-4413-8e3d-f222e9720a9e'}
 
         data_format = marshal(results,format_timeline)
                
