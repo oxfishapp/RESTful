@@ -75,7 +75,7 @@ def pagination(data, value):
     _return = dict()
     _return['data'] = data
     
-    if not value:
+    if value:
         _return['pagination'] = value
     else:
         _return['pagination'] = None
