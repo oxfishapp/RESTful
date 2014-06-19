@@ -331,7 +331,7 @@ class Timeline_Answers(Resource):
         #################################
         __valor = result._last_key_seen
         ################################
-        #Format = 
+        #Format = dict: {u'key_timeline_post': u'2014-06-19 20:48:24.385180', u'key_post_original': u'4a825921-78ef-44bb-bda0-0dd97789cfea', u'key_post': u'2c6c04ef-202d-4201-a836-777421686830'}
         
         data_format = marshal(data,format_timeline)
                
