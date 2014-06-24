@@ -14,6 +14,7 @@ class AppConfig(object):
     TYPE = 'DEV'
     SERVER_NAME = 'localhost:5000'
     OX_SECRET_KEY = "kEv7FEBT8rarwB41Hf72Bw50HbY6dyOU4CiwXHkFdExs5NgVQWaray6civgs4aYX"
+    OX_TOKEN_USER_LIFETIME = 60
     SECRET_KEY_ANONYMOUS = 'YGWF5VLNhwduPtfMisczxgYDWRqoG5bW'
     DB_HOST = 'localhost'
     DB_PORT = 8000

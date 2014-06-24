@@ -316,7 +316,7 @@ class Timeline():
         if not data:
             data = self.get_post(key)
         if (data._data['total_answers'] - 1) == 0:
-            data._data['flag_answer'] = 'False' 
+            data._data['flag_answer'] = 'False'
         self._minus_plus(data, -1)
 
     def _minus_plus(self, data, number):
@@ -411,17 +411,16 @@ class User():
         if post:
             score = item._data['total_post'] \
                                     if 'total_post' in item._data else 0
-            item._data['total_post'] = manage_score(action=post, score=score)
+            item._data['total_post'] = manage_score(score, post)
         if answer:
             score = item._data['score_answers'] \
                                     if 'score_answers' in item._data else 0
-            item._data['score_answers'] = manage_score(action=answer,
-                                                       score=score)
+            item._data['score_answers'] = manage_score(score, answer)
         if win_answer:
             score = item._data['score_win_answers'] \
                                     if 'score_win_answers' in item._data else 0
-            item._data['score_win_answers'] = manage_score(action=win_answer,
-                                                           score=score)
+            item._data['score_win_answers'] = manage_score(score,
+                                                           win_answer, 5)
         item.save()
 
     def update_email(self, item, email):
@@ -482,10 +481,6 @@ class User():
         usuadio en la base de datos. En caso de ser correcta la validacion se
         retorna el usuario y en caso de ser fallida retorna un status_code 401.
         '''
-
-        from flask import abort
-        from commons import decrypt_token
-
         token_user = decrypt_token(token)
         user = self.get_item(key_twitter=token_user['hash_key'])
 

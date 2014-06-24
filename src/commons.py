@@ -255,12 +255,12 @@ def decrypt_token(token_user, secret_key=None):
     return data
 
 
-def generate_token(secret_key=None, expiration=45000, **kwargs):
+def generate_token(secret_key=None, expiration=0, **kwargs):
     '''
     (int, str, **kwargs) -> str
 
     Permite generar un token_user temporal en el cual se encapsularan y
-    encriptaran loscdatos contenidos en el kwargs. Retorna un str con el
+    encriptaran los datos contenidos en el kwargs. Retorna un str con el
     token_user con los datos encriptados.
 
     Si el secret_key es None, se toma como valor por defecto el OX_SECRET_KEY
@@ -273,6 +273,8 @@ def generate_token(secret_key=None, expiration=45000, **kwargs):
     from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
     from flask import current_app
 
+    if not expiration:
+        expiration = current_app.config['OX_TOKEN_USER_LIFETIME']
     if not secret_key:
         secret_key = current_app.config['OX_SECRET_KEY']
     token = Serializer(secret_key, expires_in=expiration)
