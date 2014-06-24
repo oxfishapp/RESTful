@@ -409,14 +409,19 @@ class User():
         item = table_user.query_2(key_user__eq=key_user,
                                   index='key_user_index').next()
         if post:
-            item._data['total_post'] = manage_score(action=post,
-                                                    score=item._data['total_post'])
+            score = item._data['total_post'] \
+                                    if 'total_post' in item._data else 0
+            item._data['total_post'] = manage_score(action=post, score=score)
         if answer:
+            score = item._data['score_answers'] \
+                                    if 'score_answers' in item._data else 0
             item._data['score_answers'] = manage_score(action=answer,
-                                                       score=item._data['score_answers'])
+                                                       score=score)
         if win_answer:
+            score = item._data['score_win_answers'] \
+                                    if 'score_win_answers' in item._data else 0
             item._data['score_win_answers'] = manage_score(action=win_answer,
-                                                           score=item._data['score_win_answers'])
+                                                           score=score)
         item.save()
 
     def update_email(self, item, email):

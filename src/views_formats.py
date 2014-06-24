@@ -44,8 +44,6 @@ format_user_twitter = {'key_twitter': fields.String(attribute='id_str')
                    , 'nickname': fields.String(attribute='screen_name')
                    , 'name' : fields.String
                    , 'link_image': fields.String(attribute='profile_image_url')
-                   , 'total_post': fields.Integer
-                   , 'score_answers': fields.Integer
                    }
 
 format_timeline= {'keys':
