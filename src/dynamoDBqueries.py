@@ -265,7 +265,7 @@ class Timeline():
         Devuelve una serie de items que crean el timeline public.
 
         '''
-        return table_timeline.query_2(flag_answer__eq='True',
+        return table_timeline.query_2(flag_answer__eq=1,
                                       limit=LIMIT,
                                       index='TimelinePublic',
                                       reverse=True,
@@ -304,7 +304,7 @@ class Timeline():
         '''
         if not data:
             data = self.get_post(key)
-        data._data['flag_answer'] = 'True'
+        data._data['flag_answer'] = 1
         self._minus_plus(data, 1)
 
     def _minus_one_total_answers(self, key=None, data=None):
@@ -316,7 +316,7 @@ class Timeline():
         if not data:
             data = self.get_post(key)
         if (data._data['total_answers'] - 1) == 0:
-            data._data['flag_answer'] = 'False'
+            data._data['flag_answer'] = 0
         self._minus_plus(data, -1)
 
     def _minus_plus(self, data, number):
@@ -344,7 +344,7 @@ class Timeline():
         Crea un post en la tabla timeline
 
         '''
-        data['flag_answer'] = 'False'
+        data['flag_answer'] = 0
         data['skills'] = set(data['skills'])
         data['total_answers'] = 0
         self._create_post(data)

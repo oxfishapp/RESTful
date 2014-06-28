@@ -3,7 +3,7 @@ from boto.dynamodb2.fields import (GlobalIncludeIndex, GlobalAllIndex,
                                    GlobalKeysOnlyIndex)
 from boto.dynamodb2.fields import HashKey, RangeKey
 from boto.dynamodb2.table import Table
-from boto.dynamodb2.types import STRING
+from boto.dynamodb2.types import STRING, NUMBER
 
 
 class dbTablesAWS(object):
@@ -124,6 +124,12 @@ class dbTables(object):
         nickname_user_index = GlobalAllIndex('nickname_user_index',
                                 parts=[HashKey('nickname', data_type=STRING)],
                                 throughput=throughput)
+        
+        #Usuarios registrados en la aplicacion para las invitaciones a eventos, 
+        #streaming, cursos, verificacion de la fecha de finalizacion de suscripcion. etc.
+        payment_user_index = GlobalAllIndex('payment_user_index',
+            parts=[HashKey('expiration', data_type=STRING)],
+            throughput=throughput)
 
         table_name = self.TABLE_PREFIX + 'user'
 
@@ -131,7 +137,7 @@ class dbTables(object):
 
         dynamoDBqueries.table_user = self.create_table(table_name, schema,
                        throughput=throughput,
-                       global_indexes=[nickname_user_index, key_user_index])
+                       global_indexes=[nickname_user_index, key_user_index,payment_user_index])
 
         self.tables['tbl_user'] = dynamoDBqueries.table_user
 
@@ -150,7 +156,7 @@ class dbTables(object):
 
         #definicion del global index TimelinePublic de la tabla timeline.
         GAI_TimelinePublic = GlobalAllIndex('TimelinePublic',
-                        parts=[HashKey('flag_answer', data_type=STRING),
+                        parts=[HashKey('flag_answer', data_type=NUMBER),
                             RangeKey('key_timeline_post', data_type=STRING)],
                         throughput=throughput)
 
@@ -165,6 +171,14 @@ class dbTables(object):
                         parts=[HashKey('key_user', data_type=STRING),
                             RangeKey('key_timeline_post', data_type=STRING)],
                         throughput=throughput)
+        
+        #Indice para crear a Lucy, motor de inteligencia artificial para el 
+        #analisis de preguntas y respuestas ganadoras, para desplegar al usuario
+        #varias posibles respuestas inmediatamente despues de hacer la pregunta.
+        GAI_WinPost = GlobalAllIndex('WinPosts',
+                        parts=[HashKey('win', data_type=NUMBER),
+                            RangeKey('key_timeline_post', data_type=STRING)],
+                        throughput=throughput)
 
         table_name = self.TABLE_PREFIX + 'timeline'
 
@@ -173,7 +187,8 @@ class dbTables(object):
         dynamoDBqueries.table_timeline = self.create_table(table_name, schema, throughput=throughput,
                                   global_indexes=[GAI_TimelinePublic,
                                                   GAI_VerTodoPublic,
-                                                  GAI_Home])
+                                                  GAI_Home,
+                                                  GAI_WinPost])
         self.tables['tbl_timeline'] = dynamoDBqueries.table_timeline
 
     def super_create_table_skill(self):

@@ -79,7 +79,7 @@ class TimelineTestCase(unittest.TestCase):
         json_data = json.loads(resultado.data.decode('utf-8'))
         resultado_esperado =[
                                 {
-                                    "flag_answer": "True",
+                                    "flag_answer": 1,
                                     "geolocation": "4.598056,-74.075833",
                                     "key_timeline_post": "2014-05-13 17:24:31",
                                     "key_user": "fedcf7af-e9f0-69cc-1c68-362d8f5164ea",
@@ -166,7 +166,7 @@ class TimelineTestCase(unittest.TestCase):
                                     "win_answers": None
                                 }, 
                                 {
-                                    "flag_answer": "False", 
+                                    "flag_answer": 0, 
                                     "geolocation": "4.598056,-74.075833", 
                                     "key_timeline_post": "2014-05-13 17:24:31", 
                                     "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea", 
@@ -226,7 +226,7 @@ class TimelineTestCase(unittest.TestCase):
         json_data = json.loads(resultado.data.decode('utf-8'))
         resultado_esperado ={
                                 "question": {
-                                    "flag_answer": "True", 
+                                    "flag_answer": 1, 
                                     "geolocation": "4.598056,-74.075833", 
                                     "key_timeline_post": "2014-05-13 17:24:31", 
                                     "key_user": "fedcf7af-e9f0-69cc-1c68-362d8f5164ea", 

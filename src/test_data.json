@@ -45,7 +45,7 @@
         "source": "Web",
         "message140":"Howto Create a table with Python in dynamodb from Flask?",
         "key_user": "fedcf7af-e9f0-69cc-1c68-362d8f5164ea",
-        "flag_answer": "True",
+        "flag_answer": 1,
         "win_answers": ["31EC2020-3AEA-4069-A2DD-08002B30309D","21EC2020-3AEA-4069-A2DD-08002B30309D"],
         "link": "Imagen de Pregunta"
         },
@@ -89,7 +89,7 @@
         "source": "Web",
         "message140": "Howto preunta sin resolver?",
         "key_user": "87654321-e9f0-69cc-1c68-362d8f5164ea",
-        "flag_answer": "False",
+        "flag_answer": 0,
         "total_answers": 0
         }
 	],
