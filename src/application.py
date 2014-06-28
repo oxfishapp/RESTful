@@ -2,6 +2,7 @@
 #!/usr/bin/env python
 #!flask/bin/python
 
+import os
 from flask import Flask
 #from config import config_env
 import dynamoDBqueries
@@ -10,20 +11,20 @@ from boto import dynamodb2
 from api_endpoints import endpoints
 from api_auth import auth
 
-#SERVER_NAME = 'localhost:5000'
-OX_SECRET_KEY = "kEv7FEBT8rarwB41Hf72Bw50HbY6dyOU4CiwXHkFdExs5NgVQWaray6civgs4aYX"
-OX_TOKEN_USER_LIFETIME = 3600
-SECRET_KEY_ANONYMOUS = 'YGWF5VLNhwduPtfMisczxgYDWRqoG5bW'
-DB_HOST = 'localhost'
-DB_PORT = 8000
-DB_AWS_ACCESS_KEY_ID = 'DEVDB'
-DB_AWS_SECRET_KEY = 'DEVDB'
-DB_IS_SECURE = False
-DB_TABLE_PREFIX = ''
-DB_LIMIT = 10
-TW_CONSUMER_KEY = 'QbINcoPerlOi4Y4QD3wSjHJKp'
-TW_CONSUMER_SECRET = 'ZBR4eNAo6KUK0gnZO2vm2JKLZdU4gh3DVbcnSibC42diBz1fiJ'
-TW_NAME = 'restanroco'
+
+#OX_SECRET_KEY = "kEv7FEBT8rarwB41Hf72Bw50HbY6dyOU4CiwXHkFdExs5NgVQWaray6civgs4aYX"
+#SECRET_KEY_ANONYMOUS = 'YGWF5VLNhwduPtfMisczxgYDWRqoG5bW'
+#OX_TOKEN_USER_LIFETIME = 3600
+#TW_CONSUMER_KEY = 'QbINcoPerlOi4Y4QD3wSjHJKp'
+#TW_CONSUMER_SECRET = 'ZBR4eNAo6KUK0gnZO2vm2JKLZdU4gh3DVbcnSibC42diBz1fiJ'
+#TW_NAME = 'restanroco'
+
+OX_SECRET_KEY = os.environ.get('SECRET_KEY_ANONYMOUS')
+OX_TOKEN_USER_LIFETIME = int(os.environ.get('OX_TOKEN_USER_LIFETIME'))
+SECRET_KEY_ANONYMOUS = os.environ.get('SECRET_KEY_ANONYMOUS')
+TW_CONSUMER_KEY = os.environ.get('TW_CONSUMER_KEY')
+TW_CONSUMER_SECRET = os.environ.get('TW_CONSUMER_SECRET')
+TW_NAME = os.environ.get('TW_NAME')
 TW_ACCESS_TOKEN_URL = 'https://api.twitter.com/oauth/access_token'
 TW_AUTHORIZE_URL = 'https://api.twitter.com/oauth/authorize'
 TW_REQUEST_TOKEN_URL = 'https://api.twitter.com/oauth/request_token'
