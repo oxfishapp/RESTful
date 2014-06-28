@@ -25,6 +25,7 @@ SECRET_KEY_ANONYMOUS = os.environ.get('SECRET_KEY_ANONYMOUS')
 TW_CONSUMER_KEY = os.environ.get('TW_CONSUMER_KEY')
 TW_CONSUMER_SECRET = os.environ.get('TW_CONSUMER_SECRET')
 TW_NAME = os.environ.get('TW_NAME')
+DEBUG_APP = True if os.environ.get('DEBUG') == 'True' else False
 TW_ACCESS_TOKEN_URL = 'https://api.twitter.com/oauth/access_token'
 TW_AUTHORIZE_URL = 'https://api.twitter.com/oauth/authorize'
 TW_REQUEST_TOKEN_URL = 'https://api.twitter.com/oauth/request_token'
@@ -54,4 +55,4 @@ application.register_blueprint(endpoints)
 
 
 if __name__ == "__main__":
-    application.run(host='0.0.0.0', debug=False)
+    application.run(host='0.0.0.0', debug=DEBUG_APP)
