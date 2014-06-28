@@ -4,6 +4,7 @@ Created on May 25, 2014
 @author: root
 '''
 
+import os
 from commons import *
 from boto.dynamodb2.items import Item
 from flask import abort
@@ -13,8 +14,8 @@ table_skill = None
 table_user = None
 table_timeline = None
 
-PREFIX = 'q_'
-LIMIT = 10
+PREFIX = 'q__'
+LIMIT = os.environ.get('PAGINATION_DB_LIMIT')
 
 
 class Skill():
