@@ -15,7 +15,7 @@ table_user = None
 table_timeline = None
 
 PREFIX = 'q__'
-LIMIT = os.environ.get('PAGINATION_DB_LIMIT')
+LIMIT = int(os.environ.get('PAGINATION_DB_LIMIT'))
 
 
 class Skill():
