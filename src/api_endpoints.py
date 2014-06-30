@@ -16,7 +16,7 @@ import views_skills
 
 endpoints = Blueprint('endpoints', __name__)
 
-api_version = '/api/1.0'
+api_version = '/v1.0'
 
 apiapplication = restful.Api(endpoints)
 
