@@ -176,9 +176,7 @@ class Timeline():
         
         for key, value in attributeupdates.items():
             _attribute_updates[key] = {
-                        "Value": {
-                            value.keys()[0]: value.values()[0]
-                        },
+                        "Value": value,
                         "Action": "PUT"
                     }
                 
@@ -190,9 +188,10 @@ class Timeline():
         #                 }
         #             }
         
-        _returnvalues = "ALL_NEW"
+        #_returnvalues = "ALL_NEW"
         
-        return db_connection.update_item(table_name = table_timeline.table_name , key = _key, attribute_updates = _attribute_updates, return_values = _returnvalues)
+        #return db_connection.update_item(table_name = table_timeline.table_name , key = _key, attribute_updates = _attribute_updates, return_values = _returnvalues)
+        db_connection.update_item(table_name = table_timeline.table_name , key = _key, attribute_updates = _attribute_updates)
 
     def delete_question(self, key):
         '''(UUID) -> status
