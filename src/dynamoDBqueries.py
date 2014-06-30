@@ -176,10 +176,11 @@ class Timeline():
         
         for key, value in attributeupdates.items():
             _attribute_updates[key] = {
-                        "Value": value,
-                        "Action": "PUT"
-                    }
-                
+                                    "Value": {
+                                            value.keys()[0]: str(value.values()[0])
+                                            },
+                                    "Action": "PUT"
+                                    }
         
         #         _expected = {
         #                 "TopScore": {
@@ -192,6 +193,7 @@ class Timeline():
         
         #return db_connection.update_item(table_name = table_timeline.table_name , key = _key, attribute_updates = _attribute_updates, return_values = _returnvalues)
         db_connection.update_item(table_name = table_timeline.table_name , key = _key, attribute_updates = _attribute_updates)
+        
 
     def delete_question(self, key):
         '''(UUID) -> status
