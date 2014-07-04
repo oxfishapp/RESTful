@@ -3,7 +3,7 @@
 #!flask/bin/python
 
 from flask.ext.restful import Resource, reqparse, marshal_with, marshal
-from views_formats import format_timeline
+from views_formats import format_timeline , format_pagination_timeline_public
 from commons import item_to_dict, items_to_list, hashKeyList, hashValidation ,jsondecoder, pagination
 from dynamoDBqueries import Timeline
 from flask import abort
@@ -74,7 +74,7 @@ class Timeline_Index(Resource):
         #################################
         #__valor = result._last_key_seen
         ################################
-        #Format = dict: {u'flag_answer': u'True', u'key_timeline_post': u'2014-06-19 20:44:59.370969', u'key_post': u'9c13be98-a9af-4a53-9e70-03a3bf1ddd67'}           
+        #Format = dict: {u'flag_answer': u'Decimal('1')', u'key_timeline_post': u'2014-06-19 20:44:59.370969', u'key_post': u'9c13be98-a9af-4a53-9e70-03a3bf1ddd67'}           
         
         data_format = marshal(data,format_timeline)
         
@@ -82,8 +82,10 @@ class Timeline_Index(Resource):
 #             data_format.append(not result._last_key_seen)
 #         else:
 #             data_format.append(None)
+
+        last_key_seen = marshal(result._last_key_seen,format_pagination_timeline_public)
                
-        return pagination(data_format,result._last_key_seen)
+        return pagination(data_format,last_key_seen)
     
 #Global All Index Home
 class Timeline_Home_Index(Resource):

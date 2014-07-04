@@ -67,6 +67,12 @@ format_timeline= {'keys':
                    ,'win':fields.Integer
                   }
 
+format_pagination_timeline_public= {
+                       'flag_answer': fields.Integer
+                     , 'key_timeline_post': fields.String
+                     , 'key_post': fields.String
+                                    }  
+
 # format_question={'Keys':
 #                       {
 #                       'HashKey': HashKey_Validation(attribute='Key_Post')
