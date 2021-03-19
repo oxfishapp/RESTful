@@ -2,7 +2,7 @@ Flask==0.10.1
 Flask-HTTPAuth==2.2.1
 Flask-OAuth==0.12
 Flask-RESTful==0.2.12
-Jinja2==2.7.2
+Jinja2==2.11.3
 M2Crypto==0.21.1
 MarkupSafe==0.21
 PAM==0.4.2
