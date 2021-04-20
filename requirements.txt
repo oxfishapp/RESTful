@@ -9,7 +9,7 @@ PAM==0.4.2
 Pillow==2.3.0
 Twisted-Core==13.2.0
 Twisted-Web==13.2.0
-Werkzeug==0.9.4
+Werkzeug==0.15.3
 adium-theme-ubuntu==0.3.4
 aniso8601==0.82
 apt-xapian-index==0.45
